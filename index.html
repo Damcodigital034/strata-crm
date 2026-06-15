@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strata CRM — Carrier Relationship Management · Aspen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+  --nav:#1a2b3c;--page:#f4f6f8;--card:#fff;--cb:#e8ecf2;--cbs:#f0f3f7;--cr:#f7f9fb;--sidebar:#fff;
+  --lime:#7cb800;--lt:#ecf5cc;--ld:#5a8a00;
+  --ts:#20303f;--tb:#4a5568;--tm:#6a7485;--tsu:#9aa3b0;--tf:#c0c8d4;
+  --ok:#27ae60;--okd:#1a6b34;--okb:#e8f8ef;--warn:#9a6200;--warnb:#fef3dc;
+  --crit:#c0392b;--critb:#fde8e8;--info:#2563eb;--infob:#eff6ff;
+  --purple:#7c3aed;--purpleb:#faf5ff;
+  --navh:54px;--subh:38px;--railw:206px;--railc:54px;--rsm:5px;--rmd:8px;--rlg:10px;
+  --shc:0 1px 3px rgba(26,43,60,.08);--shm:0 2px 8px rgba(26,43,60,.09);--shl:0 8px 28px rgba(26,43,60,.16);
+}
+[data-theme="dark"]{
+  --nav:#070d16;--page:#111827;--card:#1c2433;--cb:#2a3a50;--cbs:#1f2d40;--cr:#212d3f;--sidebar:#0c1828;
+  --lime:#8ed600;--lt:#1a3010;--ld:#a3e635;
+  --ts:#e2e8f0;--tb:#cbd5e1;--tm:#94a3b8;--tsu:#64748b;--tf:#475569;
+  --ok:#4ade80;--okd:#4ade80;--okb:#0f2a1a;--warn:#fbbf24;--warnb:#2a1f10;
+  --crit:#f87171;--critb:#2a1414;--info:#60a5fa;--infob:#0f1f33;
+  --purple:#a78bfa;--purpleb:#1d1530;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--page);font-size:13px;color:var(--ts);-webkit-font-smoothing:antialiased;transition:background .15s}
+a{text-decoration:none;color:inherit}
+svg{display:block}
+.ic{width:15px;height:15px;stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.shell{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* TOPNAV */
+.topnav{background:var(--nav);display:flex;align-items:center;padding:0 18px;height:var(--navh);gap:14px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.05)}
+.logo{display:flex;align-items:center;cursor:pointer;flex-shrink:0}
+.logo-a span{display:block;font-size:8px;font-weight:400;color:#c8d8e8;letter-spacing:.5px;text-transform:uppercase;line-height:1.2}
+.logo-a strong{font-size:15px;font-weight:800;letter-spacing:-.3px;color:#fff}
+.logo-d{width:1px;height:26px;background:rgba(255,255,255,.13);margin:0 13px}
+.logo-s span{font-size:8px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#6b96c4;display:block;line-height:1.2}
+.logo-s strong{font-size:13px;font-weight:700;letter-spacing:.02em;color:#fff}
+.search{flex:1;max-width:540px;position:relative;display:flex;align-items:center}
+.search input{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:7px 14px 7px 34px;font-size:12px;color:#fff;font-family:var(--font)}
+.search input::placeholder{color:rgba(255,255,255,.45)}
+.search input:focus{outline:none;background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.35)}
+.search .ic{position:absolute;left:11px;width:14px;height:14px;color:rgba(255,255,255,.5)}
+.topnav-right{margin-left:auto;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.live{font-size:11px;color:#a0e0b0;display:flex;align-items:center;gap:5px;font-weight:600}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.tnav-div{width:1px;height:18px;background:rgba(255,255,255,.13)}
+.tnav-date{font-size:11px;color:#dce8f4;font-weight:500}
+.icon-btn{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.8);cursor:pointer}
+.icon-btn:hover{background:rgba(255,255,255,.15);color:#fff}
+.icon-btn .ic{width:14px;height:14px}
+.user-chip{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:4px 12px 4px 5px}
+.user-av{width:26px;height:26px;border-radius:50%;background:var(--lime);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--nav)}
+.user-meta{line-height:1.15}
+.user-meta b{font-size:11px;color:#dce8f4;font-weight:600;display:block}
+.user-meta span{font-size:9px;color:#6b96c4;text-transform:uppercase;letter-spacing:.4px}
+
+/* ROLEBAR */
+.rolebar{background:var(--cr);border-bottom:1px solid var(--cb);padding:0 18px;height:var(--subh);display:flex;align-items:center;gap:4px;flex-shrink:0}
+.role-lbl{font-size:10px;font-weight:600;color:var(--tsu);letter-spacing:.3px;margin-right:6px;text-transform:uppercase}
+.role-btn{padding:4px 13px;border-radius:var(--rsm);font-size:11px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--tm);font-family:var(--font)}
+.role-btn:hover{background:var(--cbs)}
+.role-btn.active{background:var(--lime);color:#fff;font-weight:700}
+.rolebar-note{margin-left:auto;font-size:10px;color:var(--tsu)}
+
+.body-row{display:flex;flex:1;overflow:hidden}
+
+/* RAIL */
+.rail{background:var(--sidebar);border-right:1px solid var(--cb);display:flex;flex-direction:column;width:var(--railw);flex-shrink:0;overflow-y:auto;transition:width .18s}
+.rail.collapsed{width:var(--railc)}
+.rail-sec{padding:8px 0}
+.rail-lbl{font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--tf);padding:8px 16px 4px}
+.rail.collapsed .rail-lbl{opacity:0;height:10px;padding:4px 0}
+.rail.collapsed .rail-sec:not(:first-child){border-top:1px solid var(--cbs)}
+.rail-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;border-left:2px solid transparent;font-size:12px;color:var(--tb);white-space:nowrap}
+.rail-item:hover{background:var(--cr);color:var(--ts)}
+.rail-item.active{background:var(--lt);border-left-color:var(--lime);color:var(--ts);font-weight:600}
+.rail-item .ic{opacity:.5}
+.rail-item.active .ic{opacity:1;color:var(--ld)}
+.rail.collapsed .rail-item{justify-content:center;padding:9px 0}
+.rail.collapsed .rail-item span,.rail.collapsed .r-badge{display:none}
+.r-badge{margin-left:auto;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px}
+.rb-red{background:var(--critb);color:var(--crit)}
+.rb-lime{background:var(--lt);color:var(--ld)}
+.rail-collapse{margin-top:auto;border-top:1px solid var(--cbs);display:flex;align-items:center;gap:8px;padding:11px 16px;font-size:11px;font-weight:500;color:var(--tm);cursor:pointer;flex-shrink:0}
+.rail-collapse:hover{background:var(--cr);color:var(--ts)}
+.rail.collapsed .rail-collapse{justify-content:center;padding:11px 0}
+.rail.collapsed .rail-collapse span{display:none}
+
+.main{flex:1;overflow-y:auto;min-width:0}
+
+/* SHARED */
+.page-hdr{padding:16px 24px;display:flex;align-items:flex-start;justify-content:space-between;background:var(--card);border-bottom:1px solid var(--cb)}
+.page-title{font-size:22px;font-weight:800;letter-spacing:-.4px;color:var(--ts)}
+.page-sub{font-size:12px;color:var(--tm);margin-top:3px}
+.scope{font-size:11px;color:var(--tf);margin-top:4px;display:inline-flex;align-items:center;gap:5px}
+.scope b{color:var(--ld);font-weight:700}
+.btn{border-radius:var(--rsm);padding:7px 13px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--cb);background:var(--card);color:var(--tb);display:inline-flex;align-items:center;gap:6px;font-family:var(--font)}
+.btn:hover{background:var(--cr)}
+.btn .ic{width:14px;height:14px}
+.btn-primary{background:var(--lime);color:#fff;border-color:var(--lime)}
+.btn-primary:hover{background:var(--ld);color:#fff}
+.sec-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--tsu);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.sec-link{font-size:10px;font-weight:600;color:var(--info);background:none;border:none;cursor:pointer;font-family:var(--font);margin-left:auto}
+.sec-link:hover{text-decoration:underline}
+.pill-count{font-size:11px;font-weight:700;padding:1px 8px;border-radius:20px}
+.content-body{padding:16px 24px 48px}
+.card{background:var(--card);border:1px solid var(--cb);border-radius:var(--rlg);padding:16px;margin-bottom:10px;box-shadow:var(--shc)}
+.empty{text-align:center;padding:28px;color:var(--tsu);font-size:12px}
+.empty strong{display:block;font-size:13px;color:var(--tm);margin-bottom:5px}
+
+/* RS BADGES */
+.rs{font-size:9px;font-weight:800;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
+.rs-ac{background:var(--okb);color:var(--okd)}
+.rs-pa{background:var(--warnb);color:var(--warn)}
+.rs-ap{background:var(--purpleb);color:var(--purple)}
+.rs-nu{background:#fff7ed;color:#c2410c}
+.rs-do{background:var(--cbs);color:var(--tm)}
+.rs-ar{background:var(--cbs);color:var(--tsu);opacity:.8}
+[data-theme="dark"] .rs-nu{background:#2a1814;color:#fb923c}
+
+/* ROWS */
+.row{background:var(--card);border:1px solid var(--cb);border-radius:var(--rmd);padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:6px;box-shadow:var(--shc)}
+.row:hover{box-shadow:var(--shm);border-color:var(--lime)}
+.av{width:36px;height:36px;border-radius:var(--rmd);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.av-rd{border-radius:50%}
+.row-body{flex:1;min-width:0}
+.row-name{font-size:13px;font-weight:700;color:var(--ts);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.row-meta{font-size:11px;color:var(--tm);margin-top:2px}
+.row-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.lmc{font-size:10px;font-weight:600;display:flex;align-items:center;gap:4px}
+.lmc .ic{width:11px;height:11px}
+.lmc-green{color:var(--okd)}.lmc-amber{color:var(--warn)}.lmc-red{color:var(--crit)}
+.strat{font-size:9px;color:var(--okd);background:var(--okb);padding:1px 7px;border-radius:10px;display:inline-flex;align-items:center;gap:3px;font-weight:700}
+.strat .ic{width:10px;height:10px;fill:var(--okd);stroke:var(--okd)}
+.owner-chip{font-size:10px;color:var(--tsu);display:flex;align-items:center;gap:5px}
+.owner-av{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff;flex-shrink:0}
+
+/* PORTFOLIO */
+.eco-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.eco-tile{background:var(--card);border:1px solid var(--cb);border-radius:var(--rlg);padding:14px 12px;cursor:pointer;text-align:center;box-shadow:var(--shc)}
+.eco-tile:hover{box-shadow:var(--shm);transform:translateY(-1px);border-color:var(--lime)}
+.eco-val{font-size:24px;font-weight:800;letter-spacing:-.5px;line-height:1}
+.eco-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--tsu);margin-top:5px}
+
+/* ATTENTION */
+.att{background:var(--card);border:1px solid var(--cb);border-radius:var(--rlg);padding:13px 16px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;border-left:3px solid;margin-bottom:6px;box-shadow:var(--shc)}
+.att:hover{box-shadow:var(--shm)}
+.att-crit{border-left-color:var(--crit)}.att-warn{border-left-color:var(--warn)}.att-info{border-left-color:var(--info)}
+.att-ic{width:34px;height:34px;border-radius:var(--rmd);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.att-ic .ic{width:17px;height:17px}
+.att-ic-r{background:var(--critb);color:var(--crit)}.att-ic-a{background:var(--warnb);color:var(--warn)}.att-ic-b{background:var(--infob);color:var(--info)}
+.att-body{flex:1;min-width:0}
+.att-carrier{font-size:13px;font-weight:700;color:var(--ts)}
+.att-line{font-size:11px;color:var(--tm)}
+.att-cond{font-size:12px;font-weight:600;margin-top:4px;line-height:1.4}
+.att-crit .att-cond{color:var(--crit)}.att-warn .att-cond{color:var(--warn)}.att-info .att-cond{color:var(--info)}
+.att-dur{font-size:10px;color:var(--tsu);margin-top:2px}
+.att-right{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+
+/* STAGE/HEALTH */
+.stage{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.sb-prospect{background:var(--cbs);color:var(--tm)}.sb-engaged{background:var(--infob);color:var(--info)}
+.sb-discovery{background:var(--purpleb);color:var(--purple)}.sb-proposal{background:#fff7ed;color:#c2410c}
+.sb-pending{background:var(--warnb);color:var(--warn)}.sb-onboarding{background:var(--okb);color:var(--okd)}
+.sb-won{background:var(--okb);color:var(--okd)}
+[data-theme="dark"] .sb-proposal{background:#2a1814;color:#fb923c}
+.health{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px}
+.hc-ok{background:var(--okb);color:var(--okd)}.hc-att{background:var(--warnb);color:var(--warn)}
+
+/* ACTIVITY */
+.act{display:flex;gap:10px;padding:10px 14px;background:var(--card);border:1px solid var(--cb);border-radius:var(--rmd);margin-bottom:6px;cursor:pointer;box-shadow:var(--shc)}
+.act:hover{box-shadow:var(--shm)}
+.act.mc{border-left:3px solid var(--ok)}
+.act-ic{width:28px;height:28px;border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.act-ic .ic{width:14px;height:14px}
+.ai-email{background:var(--infob);color:var(--info)}.ai-call{background:var(--okb);color:var(--okd)}
+.ai-meeting{background:var(--warnb);color:var(--warn)}.ai-note{background:var(--cr);color:var(--tm)}
+.act-body{flex:1;min-width:0}
+.act-subj{font-size:12px;font-weight:600;color:var(--ts);line-height:1.35}
+.act-meta{font-size:10px;color:var(--tsu);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.mc-badge{font-size:9px;font-weight:700;color:var(--okd);background:var(--okb);padding:1px 6px;border-radius:20px}
+
+/* TASK */
+.task{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;background:var(--card);border:1px solid var(--cb);border-radius:var(--rmd);margin-bottom:6px;box-shadow:var(--shc)}
+.task.t-over{border-left:3px solid var(--crit)}.task.t-today{border-left:3px solid var(--warn)}
+.task.t-trigger{background:var(--warnb)}
+.task.done{opacity:.5}
+.task.done .task-title{text-decoration:line-through}
+.task-check{width:18px;height:18px;border-radius:4px;border:2px solid var(--cb);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.task-check:hover{border-color:var(--ok)}
+.task-check.on{background:var(--ok);border-color:var(--ok)}
+.task-check .ic{width:12px;height:12px;color:#fff;stroke-width:3}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:12px;font-weight:600;color:var(--ts);line-height:1.35}
+.task-meta{font-size:10px;color:var(--tsu);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.t-due-over{color:var(--crit);font-weight:600}.t-due-today{color:#c2410c;font-weight:600}
+.t-trigger-tag{font-size:9px;font-weight:700;padding:1px 6px;border-radius:5px;background:#fff7ed;color:#c2410c}
+[data-theme="dark"] .t-trigger-tag{background:#2a1814;color:#fb923c}
+.t-mod{font-size:9px;font-weight:700;padding:1px 6px;border-radius:5px;background:var(--purpleb);color:var(--purple)}
+
+/* CONTACT */
+.dm-chip{font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px}
+.dm-e{background:var(--okb);color:var(--okd)}.dm-i{background:var(--infob);color:var(--info)}
+
+/* WORK COUNT */
+.work-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.wcc{background:var(--card);border:1px solid var(--cb);border-radius:var(--rmd);padding:12px 14px;cursor:pointer;box-shadow:var(--shc)}
+.wcc:hover{box-shadow:var(--shm)}
+.wcc-val{font-size:22px;font-weight:800;letter-spacing:-.3px}
+.wcc-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--tsu);margin-top:3px}
+
+/* FILTER BAR */
+.filter-bar{background:var(--card);border-bottom:1px solid var(--cb);padding:9px 24px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lsearch{border:1px solid var(--cb);border-radius:var(--rsm);padding:6px 10px 6px 30px;font-size:12px;color:var(--ts);background:var(--cr);width:230px;font-family:var(--font)}
+.lsearch:focus{outline:none;border-color:var(--lime)}
+.lsearch-wrap{position:relative;display:flex;align-items:center}
+.lsearch-wrap .ic{position:absolute;left:9px;width:14px;height:14px;color:var(--tsu)}
+.filt{border:1px solid var(--cb);background:var(--card);color:var(--tm);font-size:11px;padding:5px 11px;border-radius:20px;cursor:pointer;font-weight:600;white-space:nowrap;font-family:var(--font)}
+.filt:hover{border-color:var(--lime)}
+.filt.on{background:var(--ts);border-color:var(--ts);color:var(--card)}
+[data-theme="dark"] .filt.on{background:var(--lime);border-color:var(--lime);color:#0c1828}
+.filt-right{margin-left:auto;font-size:11px;color:var(--tsu)}
+
+/* HERO */
+.bc{background:var(--card);border-bottom:1px solid var(--cb);padding:10px 24px;font-size:12px;display:flex;align-items:center;gap:8px}
+.bc a{color:var(--info);cursor:pointer}.bc a:hover{text-decoration:underline}
+.bc .sep{color:var(--tf)}
+.hero{background:linear-gradient(135deg,#1a2d42,#0f1e2d);padding:18px 24px;color:#fff}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#0c1828,#050a12)}
+.hero-title{font-size:22px;font-weight:800;letter-spacing:-.4px}
+.hero-meta{display:flex;gap:24px;margin-top:10px;flex-wrap:wrap}
+.hero-k{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#64748b}
+.hero-v{font-size:12px;font-weight:700;color:#c8d8e8;margin-top:2px;display:flex;align-items:center;gap:5px}
+.detail-grid{display:grid;grid-template-columns:1fr 320px;gap:16px}
+
+/* REPORTS */
+.rep-card{background:var(--card);border:1px solid var(--cb);border-radius:var(--rlg);margin-bottom:10px;box-shadow:var(--shc);overflow:hidden}
+.rep-head{padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.rep-head:hover{background:var(--cr)}
+.rep-ic{width:34px;height:34px;border-radius:var(--rmd);background:var(--lt);color:var(--ld);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rep-ic .ic{width:17px;height:17px}
+.rep-info{flex:1}
+.rep-title{font-size:13px;font-weight:700;color:var(--ts)}
+.rep-desc{font-size:11px;color:var(--tm);margin-top:1px}
+.rep-toggle{font-size:11px;color:var(--info);font-weight:600}
+.rep-body{border-top:1px solid var(--cb);padding:0;display:none}
+.rep-card.open .rep-body{display:block}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:left;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--tsu);padding:8px 16px;background:var(--cr);border-bottom:1px solid var(--cb)}
+.tbl td{padding:9px 16px;border-bottom:1px solid var(--cbs);color:var(--tb)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr.clk{cursor:pointer}.tbl tr.clk:hover td{background:var(--cr)}
+.tbl .num{font-weight:700;color:var(--ts)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,43,60,.5);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:50px 20px;overflow-y:auto}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border-radius:var(--rlg);width:100%;max-width:520px;margin:auto;box-shadow:var(--shl);border:1px solid var(--cb)}
+.modal.wide{max-width:680px}
+.modal-head{padding:14px 18px;border-bottom:1px solid var(--cbs);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:15px;font-weight:700;color:var(--ts)}
+.modal-close{background:none;border:none;color:var(--tsu);cursor:pointer;padding:4px;border-radius:var(--rsm);display:flex}
+.modal-close:hover{background:var(--cr);color:var(--ts)}
+.modal-body{padding:16px 18px;display:flex;flex-direction:column;gap:12px;max-height:60vh;overflow-y:auto}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;font-weight:700;color:var(--tb)}
+.field .req{color:var(--crit)}
+.field input,.field select,.field textarea{border:1px solid var(--cb);border-radius:var(--rsm);padding:8px 10px;font-size:13px;color:var(--ts);font-family:var(--font);background:var(--card)}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--lime);box-shadow:0 0 0 3px rgba(124,184,0,.12)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.type-opt{border:1.5px solid var(--cb);border-radius:var(--rmd);padding:9px 8px;cursor:pointer;text-align:center}
+.type-opt:hover{border-color:var(--lime);background:var(--lt)}
+.type-opt.sel{border-color:var(--lime);background:var(--lt)}
+.type-opt .ic{width:18px;height:18px;margin:0 auto 3px;color:var(--tb)}
+.type-opt span{font-size:11px;font-weight:600;color:var(--tb)}
+.modal-foot{padding:12px 18px;border-top:1px solid var(--cbs);display:flex;justify-content:flex-end;gap:8px;background:var(--cr);border-radius:0 0 var(--rlg) var(--rlg)}
+.mc-toggle{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--cb);border-radius:var(--rmd);cursor:pointer}
+.mc-toggle.on{border-color:var(--ok);background:var(--okb)}
+.mc-info{flex:1}
+.mc-label{font-size:12px;font-weight:600;color:var(--ts)}
+.mc-desc{font-size:10px;color:var(--tsu);margin-top:1px}
+.tog{width:36px;height:20px;border-radius:20px;background:var(--cb);position:relative;flex-shrink:0;transition:background .15s}
+.tog.on{background:var(--ok)}
+.tog-knob{width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tog.on .tog-knob{left:18px}
+
+/* SEARCH OVERLAY */
+.srch-result{padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid var(--cbs)}
+.srch-result:hover{background:var(--cr)}
+.srch-result .ic{width:15px;height:15px;color:var(--tsu)}
+
+/* TOAST */
+.toast-wrap{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:900;pointer-events:none;display:flex;flex-direction:column;gap:8px;align-items:center}
+.toast{background:var(--nav);color:#fff;padding:10px 18px;border-radius:var(--rmd);font-size:12.5px;font-weight:500;box-shadow:var(--shl);display:flex;align-items:center;gap:8px;animation:tIn .18s ease}
+.toast .ic{width:15px;height:15px;color:var(--lime)}
+@keyframes tIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.screen{display:none}.screen.active{display:block}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="topnav">
+    <div class="logo" onclick="go('dashboard')">
+      <div class="logo-a"><span>Claims Service</span><strong>Aspen</strong></div>
+      <div class="logo-d"></div>
+      <div class="logo-s"><span>Powered by</span><strong>Strata</strong></div>
+    </div>
+    <div class="search">
+      <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="global-search" placeholder="Search carriers, contacts, business lines…" oninput="globalSearch(this.value)" onfocus="globalSearch(this.value)">
+    </div>
+    <div class="topnav-right">
+      <div class="live"><div class="live-dot"></div>Live</div>
+      <div class="tnav-div"></div>
+      <span class="tnav-date">Thu, Jun 12, 2026</span>
+      <div class="tnav-div"></div>
+      <button class="icon-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle light/dark"></button>
+      <div class="user-chip">
+        <div class="user-av" id="user-av">MV</div>
+        <div class="user-meta"><b id="user-name">Mark Vetrovec</b><span id="user-role">Owner</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rolebar">
+    <span class="role-lbl">View as</span>
+    <button class="role-btn" data-role="sales" onclick="setRole('sales')">Sales Rep</button>
+    <button class="role-btn" data-role="manager" onclick="setRole('manager')">Manager</button>
+    <button class="role-btn active" data-role="owner" onclick="setRole('owner')">Owner</button>
+    <span class="rolebar-note">Same system · scope &amp; permissions change by role</span>
+  </div>
+
+  <div class="body-row">
+    <div class="rail" id="rail"></div>
+    <div class="main" id="main"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal-container"></div></div>
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+'use strict';
+const TODAY=new Date('2026-06-12T09:00:00');
+const esc=s=>(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const initials=n=>n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+const fmtRel=iso=>{if(!iso)return'';const d=Math.floor((TODAY-new Date(iso))/864e5);if(d===0)return'Today';if(d===1)return'Yesterday';if(d<7)return d+'d ago';if(d<30)return Math.floor(d/7)+'w ago';return Math.floor(d/30)+'mo ago'};
+const dAgo=n=>{const d=new Date(TODAY);d.setDate(d.getDate()-n);return d.toISOString()};
+const aColor=name=>{const c=['#1e3a8a','#0369a1','#7c3aed','#be123c','#15803d','#0891b2','#92400e','#166534','#854d0e','#0f766e'];let h=0;for(let i=0;i<name.length;i++)h=(h*31+name.charCodeAt(i))&0xffffffff;return c[Math.abs(h)%c.length]};
+
+/* ICONS — lucide line icons (CMS-aligned) */
+const I={
+  dashboard:'<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+  building:'<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/>',
+  target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  activity:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+  checks:'<path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/>',
+  chart:'<path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>',
+  search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/>',
+  moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  cleft:'<path d="m15 18-6-6 6-6"/>',cright:'<path d="m9 18 6-6-6-6"/>',
+  alert:'<path d="m21.7 18-8-14a2 2 0 0 0-3.4 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  phone:'<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7 12.8 12.8 0 0 0 .7 2.8 2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4 12.8 12.8 0 0 0 2.8.7 2 2 0 0 1 1.7 2Z"/>',
+  mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  cal:'<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+  note:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+  plus:'<path d="M5 12h14"/><path d="M12 5v14"/>',
+  arr:'<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  shield:'<path d="M20 13c0 5-3.5 7.5-7.7 9a1 1 0 0 1-.7 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.2-2.7a1.2 1.2 0 0 1 1.5 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1Z"/>',
+  trend:'<path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  star:'<polygon points="12 2 15 9 22 9.3 16.5 14 18 21 12 17.3 6 21 7.5 14 2 9.3 9 9"/>',
+  pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  briefcase:'<rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+};
+const ICON=(k,cls='ic')=>`<svg class="${cls}" viewBox="0 0 24 24">${I[k]||''}</svg>`;
+
+const RS={'active-client':{label:'Active Client',cls:'rs-ac'},'pending-assign':{label:'Pending Assignment',cls:'rs-pa'},'active-pursuit':{label:'Active Pursuit',cls:'rs-ap'},'nurture':{label:'Nurture',cls:'rs-nu'},'dormant':{label:'Dormant',cls:'rs-do'},'archived':{label:'Archived',cls:'rs-ar'}};
+
+/* ===== DATA (verbatim from Mark's v4) ===== */
+const ACCOUNTS=[
+ {id:'trav',name:'Travelers Insurance',rs:'active-client',owner:'Alicia Torres',ownerColor:'#be123c',isStrategic:true,prevOwner:'Joe Rivera',lmc:dAgo(2),lmcWho:'Sarah Chen',hq:'Hartford, CT',size:'Large (National)'},
+ {id:'all',name:'Allstate',rs:'active-client',owner:'Brent Hughes',ownerColor:'#0891b2',isStrategic:false,prevOwner:'Joe Rivera',lmc:dAgo(6),lmcWho:'James Mitchell',hq:'Northbrook, IL',size:'Large (National)'},
+ {id:'usaa',name:'USAA Property Claims',rs:'active-client',owner:'Joe Rivera',ownerColor:'#0369a1',isStrategic:false,lmc:dAgo(3),lmcWho:'Karen Wu',hq:'San Antonio, TX',size:'Large (National)'},
+ {id:'kins',name:'Kinsale Insurance',rs:'pending-assign',owner:'Joe Rivera',ownerColor:'#0369a1',isStrategic:false,lmc:dAgo(0),lmcWho:'Linda Park',hq:'Richmond, VA',size:'Regional'},
+ {id:'nat',name:'Nationwide P&C',rs:'active-pursuit',owner:'Joe Rivera',ownerColor:'#0369a1',isStrategic:true,lmc:dAgo(45),lmcWho:'Rachel Hughes',hq:'Columbus, OH',size:'Large (National)'},
+ {id:'chubb',name:'Chubb Commercial',rs:'active-pursuit',owner:'Mark Vetrovec',ownerColor:'#7c3aed',isStrategic:true,lmc:dAgo(11),lmcWho:'Rachel Greer',hq:'Warren, NJ',size:'Large (National)'},
+ {id:'lib',name:'Liberty Mutual',rs:'active-pursuit',owner:'Joe Rivera',ownerColor:'#0369a1',isStrategic:false,lmc:dAgo(13),lmcWho:'David Kim',hq:'Boston, MA',size:'Large (National)'},
+ {id:'rli',name:'RLI',rs:'nurture',owner:'Joe Rivera',ownerColor:'#0369a1',isStrategic:false,lmc:dAgo(298),lmcWho:'Rick James',hq:'Peoria, IL',size:'Large (National)'},
+ {id:'sf',name:'State Farm',rs:'nurture',owner:'Joe Rivera',ownerColor:'#0369a1',isStrategic:false,lmc:null,lmcWho:null,hq:'Bloomington, IL',size:'Large (National)'},
+ {id:'hart',name:'The Hartford',rs:'dormant',owner:'Joe Rivera',ownerColor:'#0369a1',isStrategic:false,lmc:dAgo(72),lmcWho:'Carl Stevens',hq:'Hartford, CT',size:'Large (National)'},
+ {id:'erie',name:'Erie Insurance',rs:'dormant',owner:'Joe Rivera',ownerColor:'#0369a1',isStrategic:false,lmc:null,lmcWho:null,hq:'Erie, PA',size:'Regional'},
+];
+const LINES=[
+ {id:'tComm',accountId:'trav',name:'Commercial Property',stage:'won',health:'ok',lmc:dAgo(5),lmcWho:'Diane Wells',owner:'Alicia Torres'},
+ {id:'tRes',accountId:'trav',name:'Daily Property',stage:'won',health:'ok',lmc:dAgo(7),lmcWho:'Diane Wells',owner:'Alicia Torres'},
+ {id:'tCAT',accountId:'trav',name:'CAT / Storm',stage:'proposal',health:'att',lmc:dAgo(2),lmcWho:'Sarah Chen',owner:'Joe Rivera'},
+ {id:'allRes',accountId:'all',name:'Residential Property',stage:'won',health:'ok',lmc:dAgo(6),lmcWho:'James Mitchell',owner:'Brent Hughes'},
+ {id:'usaaR',accountId:'usaa',name:'Residential Property',stage:'won',health:'att',lmc:dAgo(3),lmcWho:'Karen Wu',owner:'Joe Rivera'},
+ {id:'kRes',accountId:'kins',name:'Residential Property',stage:'pending',health:'att',lmc:dAgo(0),lmcWho:'Linda Park',owner:'Joe Rivera'},
+ {id:'natCm',accountId:'nat',name:'Commercial Property',stage:'proposal',health:'att',lmc:dAgo(45),lmcWho:'Rachel Hughes',owner:'Joe Rivera'},
+ {id:'natR',accountId:'nat',name:'Residential Property',stage:'engaged',health:'ok',lmc:dAgo(14),lmcWho:'Rachel Hughes',owner:'Joe Rivera'},
+ {id:'chCS',accountId:'chubb',name:'Commercial Specialty',stage:'discovery',health:'ok',lmc:dAgo(11),lmcWho:'Rachel Greer',owner:'Mark Vetrovec'},
+ {id:'libC',accountId:'lib',name:'CAT / Storm',stage:'prospect',health:'ok',lmc:dAgo(13),lmcWho:'David Kim',owner:'Joe Rivera'},
+ {id:'rliD',accountId:'rli',name:'Daily Property',stage:'engaged',health:'att',lmc:dAgo(298),lmcWho:'Rick James',owner:'Joe Rivera'},
+];
+const CONTACTS=[
+ {id:'sarah',accountId:'trav',name:'Sarah Chen',title:'VP Claims Operations',dm:'engaged',color:'#0369a1',lmc:'2d ago'},
+ {id:'diane',accountId:'trav',name:'Diane Wells',title:'Director, Field Ops',dm:null,color:'#7c3aed',lmc:'7d ago'},
+ {id:'james',accountId:'all',name:'James Mitchell',title:'Claims Director',dm:'engaged',color:'#0891b2',lmc:'6d ago'},
+ {id:'karen',accountId:'usaa',name:'Karen Wu',title:'Claims Ops Manager',dm:'engaged',color:'#15803d',lmc:'3d ago'},
+ {id:'linda',accountId:'kins',name:'Linda Park',title:'Claims VP',dm:'engaged',color:'#d97706',lmc:'Today'},
+ {id:'rachel',accountId:'nat',name:'Rachel Hughes',title:'VP Claims',dm:'engaged',color:'#be123c',lmc:'45d ago'},
+ {id:'rgreer',accountId:'chubb',name:'Rachel Greer',title:'EVP Claims',dm:'engaged',color:'#15803d',lmc:'11d ago'},
+ {id:'david',accountId:'lib',name:'David Kim',title:'Catastrophe Director',dm:'identified',color:'#0369a1',lmc:'13d ago'},
+ {id:'rick',accountId:'rli',name:'Rick James',title:'VP Claims',dm:'engaged',color:'#dc2626',lmc:'298d ago'},
+ {id:'robert',accountId:'sf',name:'Robert Hayes',title:'Claims Manager',dm:null,color:'#7c3aed',lmc:'—'},
+];
+const ACTIVITIES=[
+ {type:'email_out',subject:'CAT capacity confirmation — Q3 allocation',accountId:'trav',contact:'Sarah Chen',at:dAgo(2),meaningful:true,ic:'mail',cls:'ai-email'},
+ {type:'meeting',subject:'CAT capacity & SLA review — panel discussion',accountId:'trav',contact:'Sarah Chen',at:dAgo(7),meaningful:true,ic:'cal',cls:'ai-meeting'},
+ {type:'email_in',subject:'Re: Aspen CAT program overview',accountId:'trav',contact:'Sarah Chen',at:dAgo(14),meaningful:true,ic:'mail',cls:'ai-email'},
+ {type:'call_out',subject:'Intro call — Commercial Property program',accountId:'trav',contact:'Diane Wells',at:dAgo(5),meaningful:true,ic:'phone',cls:'ai-call'},
+ {type:'email_in',subject:'Re: Claim file turnaround — Q2 feedback',accountId:'all',contact:'James Mitchell',at:dAgo(6),meaningful:true,ic:'mail',cls:'ai-email'},
+ {type:'call_out',subject:'Onboarding check-in — zero claims after 22 days',accountId:'usaa',contact:'Karen Wu',at:dAgo(3),meaningful:true,ic:'phone',cls:'ai-call'},
+ {type:'email_in',subject:'New claim assignment — ACS-2026-9901',accountId:'kins',contact:'Linda Park',at:dAgo(0),meaningful:true,ic:'mail',cls:'ai-email'},
+ {type:'meeting',subject:'Intro meeting — Commercial Specialty',accountId:'chubb',contact:'Rachel Greer',at:dAgo(11),meaningful:true,ic:'cal',cls:'ai-meeting'},
+ {type:'call_out',subject:'RFP timeline call',accountId:'nat',contact:'Rachel Hughes',at:dAgo(45),meaningful:true,ic:'phone',cls:'ai-call'},
+ {type:'call_out',subject:'Intro call — CAT vendor qualification',accountId:'lib',contact:'David Kim',at:dAgo(13),meaningful:true,ic:'phone',cls:'ai-call'},
+ {type:'email_out',subject:'Follow-up — daily property claims',accountId:'rli',contact:'Rick James',at:dAgo(298),meaningful:true,ic:'mail',cls:'ai-email'},
+];
+let TASKS=[
+ {id:'t1',title:'Send CAT capacity confirmation letter — Sarah waiting on Q3 allocation',carrier:'Travelers',acctId:'trav',owner:'Joe Rivera',due:'overdue',daysOver:1,isTrigger:true,triggerLabel:'No follow-up after proposal',done:false},
+ {id:'t2',title:'Follow up with Kinsale — 32 days since verbal commitment',carrier:'Kinsale',acctId:'kins',owner:'Joe Rivera',due:'overdue',daysOver:1,isTrigger:true,triggerLabel:'Pending assignment aging',done:false},
+ {id:'t3',title:'Nationwide pre-RFP outreach — Sep 15 RFP window',carrier:'Nationwide',acctId:'nat',owner:'Joe Rivera',due:'overdue',daysOver:68,isTrigger:false,done:false},
+ {id:'t4',title:'Liberty Mutual — qualify David Kim as decision maker',carrier:'Liberty',acctId:'lib',owner:'Joe Rivera',due:'overdue',daysOver:3,isTrigger:false,done:false},
+ {id:'t5',title:'Upload Cybersecurity Questionnaire — Chubb requested Jun 1',carrier:'Chubb',acctId:'chubb',owner:'Mark Vetrovec',due:'today',daysOver:0,isTrigger:false,done:false},
+ {id:'t6',title:'Schedule Q3 business review — Allstate · James Mitchell',carrier:'Allstate',acctId:'all',owner:'Brent Hughes',due:'today',daysOver:0,isTrigger:true,triggerLabel:'Quarterly review overdue',done:false},
+ {id:'t7',title:'RLI — attempt phone outreach to Rick James',carrier:'RLI',acctId:'rli',owner:'Joe Rivera',due:'today',daysOver:0,isTrigger:false,done:false},
+];
+const ATTENTION=[
+ {acctId:'kins',carrier:'Kinsale Insurance',line:'Residential Property',cond:'Pending Assignment — 32 days, no claims received',dur:'Verbal commitment May 11 · 32 days',sev:'crit',rs:'rs-pa',ic:'alert',cat:'pursuit',owner:'Joe Rivera'},
+ {acctId:'trav',carrier:'Travelers Insurance',line:'CAT / Storm',cond:'Next action overdue — CAT capacity letter',dur:'Overdue 1 day · Sarah Chen waiting',sev:'crit',rs:'rs-ap',ic:'clock',cat:'pursuit',owner:'Joe Rivera'},
+ {acctId:'rli',carrier:'RLI',line:'Daily Property',cond:'No meaningful contact — 298 days',dur:'Last contact Aug 2025 · Rick James',sev:'crit',rs:'rs-nu',ic:'phone',cat:'pursuit',owner:'Joe Rivera'},
+ {acctId:'nat',carrier:'Nationwide P&C',line:'Commercial Property',cond:'Proposal stage — 54 days, target 21',dur:'In Proposal since Apr 19',sev:'warn',rs:'rs-ap',ic:'clock',cat:'pursuit',owner:'Joe Rivera'},
+ {acctId:'usaa',carrier:'USAA Property Claims',line:'Residential Property',cond:'No claim assignments — 22 days since activation',dur:'Activated May 21 · routing suspected',sev:'warn',rs:'rs-ac',ic:'alert',cat:'stewardship',owner:'Joe Rivera'},
+ {acctId:'all',carrier:'Allstate',line:'Residential Property',cond:'Q3 relationship review overdue — 3 months',dur:'Last review Q1 2026 · James Mitchell',sev:'warn',rs:'rs-ac',ic:'cal',cat:'stewardship',owner:'Brent Hughes'},
+ {acctId:'all',carrier:'Indiana Farmers',line:'Daily Property',cond:'Annual executive review overdue 12+ months',dur:'No exec touchpoint since Jun 2025',sev:'warn',rs:'rs-ac',ic:'cal',cat:'stewardship',owner:'Alicia Torres'},
+];
+const CRED=[
+ {carrier:'Kinsale Insurance',item:'W-9 + Certificate of Insurance',status:'Requested'},
+ {carrier:'Travelers Insurance',item:'COI Renewal — expires Aug 2026',status:'Expiring'},
+ {carrier:'Chubb Commercial',item:'Cybersecurity Questionnaire',status:'Requested'},
+];
+const PORTFOLIO=[
+ {key:'active-client',label:'Active Clients',val:12,color:'var(--okd)'},
+ {key:'pending-assign',label:'Pending',val:3,color:'#854d0e'},
+ {key:'active-pursuit',label:'Pursuits',val:22,color:'var(--purple)'},
+ {key:'nurture',label:'Nurture',val:614,color:'#c2410c'},
+ {key:'dormant',label:'Dormant',val:203,color:'var(--tsu)'},
+ {key:'archived',label:'Archived',val:18,color:'var(--tf)'},
+];
+
+/* ===== ROLE MODEL ===== */
+const ROLES={
+  sales:{name:'Joe Rivera',init:'JR',label:'Sales Rep',greet:'Joe',scope:'My book',me:'Joe Rivera'},
+  manager:{name:'Sales Manager',init:'SM',label:'Manager',greet:'team',scope:'My team',me:null},
+  owner:{name:'Mark Vetrovec',init:'MV',label:'Owner',greet:'Mark',scope:'Full portfolio',me:null},
+};
+let ROLE='owner';
+const canSeeReports=()=>ROLE==='owner'||ROLE==='manager';
+const isMine=ownerName=>ROLE!=='sales'||ownerName===ROLES.sales.me;
+const vAccounts=()=>ACCOUNTS.filter(a=>isMine(a.owner));
+const vLines=()=>LINES.filter(l=>isMine(l.owner));
+const vAttention=()=>ATTENTION.filter(a=>isMine(a.owner));
+const vTasks=()=>TASKS.filter(t=>isMine(t.owner));
+const vContacts=()=>{const ids=new Set(vAccounts().map(a=>a.id));return CONTACTS.filter(c=>ids.has(c.accountId))};
+const vActivities=()=>{const ids=new Set(vAccounts().map(a=>a.id));return ACTIVITIES.filter(x=>ids.has(x.accountId))};
+const vRisks=()=>vAttention().filter(a=>a.cat==='stewardship');
+
+/* ===== ROUTING ===== */
+let ROUTE='dashboard',PARAM=null;
+function go(route,param){ROUTE=route;PARAM=param||null;render();const m=document.getElementById('main');if(m)m.scrollTop=0}
+function render(){document.getElementById('rail').innerHTML=renderRail();document.getElementById('main').innerHTML=renderScreen()}
+
+function setRole(r){
+  ROLE=r;
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.toggle('active',b.dataset.role===r));
+  const R=ROLES[r];
+  document.getElementById('user-av').textContent=R.init;
+  document.getElementById('user-name').textContent=R.name;
+  document.getElementById('user-role').textContent=R.label;
+  if((ROUTE==='reports'&&!canSeeReports()))ROUTE='dashboard';
+  go(ROUTE);
+  toast('Viewing as '+R.label);
+}
+function toggleTheme(){
+  const h=document.documentElement;
+  h.setAttribute('data-theme',h.getAttribute('data-theme')==='dark'?'light':'dark');
+  syncThemeBtn();
+}
+function syncThemeBtn(){
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.getElementById('theme-btn').innerHTML=ICON(dark?'sun':'moon');
+}
+
+/* ===== RAIL ===== */
+function renderRail(){
+  const items=[
+    {k:'dashboard',ic:'dashboard',label:'Dashboard',badge:vAttention().length,red:true},
+    {sep:'Carriers'},
+    {k:'accounts',ic:'building',label:'Accounts'},
+    {k:'pursuits',ic:'target',label:'Pursuits'},
+    {k:'contacts',ic:'users',label:'Contacts'},
+    {k:'activities',ic:'activity',label:'Activities'},
+    {sep:'Work'},
+    {k:'tasks',ic:'checks',label:'Work Queue',badge:vTasks().filter(t=>t.due==='overdue'&&!t.done).length,red:true},
+  ];
+  if(canSeeReports()){items.push({sep:ROLE==='owner'?'Owner View':'Management'});items.push({k:'reports',ic:'chart',label:'Reports'})}
+  let h='';let open=false;
+  items.forEach(it=>{
+    if(it.sep){if(open)h+='</div>';h+=`<div class="rail-sec"><div class="rail-lbl">${it.sep}</div>`;open=true;return}
+    if(!open){h+='<div class="rail-sec">';open=true}
+    const active=ROUTE===it.k||(ROUTE==='account-detail'&&it.k==='accounts')||(ROUTE==='bl-detail'&&it.k==='pursuits')||(ROUTE==='contact-detail'&&it.k==='contacts');
+    const badge=it.badge?`<span class="r-badge ${it.red?'rb-red':'rb-lime'}">${it.badge}</span>`:'';
+    h+=`<div class="rail-item ${active?'active':''}" onclick="go('${it.k}')" title="${it.label}">${ICON(it.ic)}<span>${it.label}</span>${badge}</div>`;
+  });
+  if(open)h+='</div>';
+  h=`<div class="rail-sec" style="flex:1">${h}</div>`;
+  h+=`<div class="rail-collapse" onclick="toggleRail()" id="rail-collapse">${ICON('cleft')}<span>Collapse</span></div>`;
+  return h;
+}
+function toggleRail(){
+  const r=document.getElementById('rail');r.classList.toggle('collapsed');
+  document.getElementById('rail-collapse').querySelector('svg').outerHTML=ICON(r.classList.contains('collapsed')?'cright':'cleft');
+}
+
+function renderScreen(){
+  switch(ROUTE){
+    case 'dashboard':return screenDashboard();
+    case 'accounts':return screenAccounts();
+    case 'account-detail':return screenAccountDetail(PARAM);
+    case 'pursuits':return screenPursuits();
+    case 'bl-detail':return screenBLDetail(PARAM);
+    case 'contacts':return screenContacts();
+    case 'contact-detail':return screenContactDetail(PARAM);
+    case 'activities':return screenActivities();
+    case 'tasks':return screenTasks();
+    case 'reports':return canSeeReports()?screenReports():screenDashboard();
+    default:return screenDashboard();
+  }
+}
+
+/* ===== DASHBOARD ===== */
+function attHTML(a){
+  const sc=a.sev==='crit'?'att-crit':a.sev==='warn'?'att-warn':'att-info';
+  const ic=a.sev==='crit'?'att-ic-r':a.sev==='warn'?'att-ic-a':'att-ic-b';
+  const rsLabel=Object.values(RS).find(r=>r.cls===a.rs)?.label||'';
+  return `<div class="att ${sc}" onclick="go('account-detail','${a.acctId}')">
+    <div class="att-ic ${ic}">${ICON(a.ic)}</div>
+    <div class="att-body">
+      <div class="att-carrier">${esc(a.carrier)}</div>
+      <div class="att-line">${esc(a.line)}</div>
+      <div class="att-cond">${esc(a.cond)}</div>
+      <div class="att-dur">${esc(a.dur)}</div>
+    </div>
+    <div class="att-right">
+      <span class="rs ${a.rs}">${rsLabel}</span>
+      <div class="owner-chip"><div class="owner-av" style="background:var(--tsu)">${initials(a.owner)}</div>${esc(a.owner)}</div>
+    </div>
+  </div>`;
+}
+function taskHTML(t){
+  return `<div class="task ${t.due==='overdue'?'t-over':'t-today'} ${t.isTrigger?'t-trigger':''} ${t.done?'done':''}" id="task-${t.id}">
+    <div class="task-check ${t.done?'on':''}" onclick="toggleTask('${t.id}')">${t.done?ICON('check'):''}</div>
+    <div class="task-body" onclick="go('account-detail','${t.acctId}')" style="cursor:pointer">
+      <div class="task-title">${esc(t.title)}</div>
+      <div class="task-meta">
+        ${t.isTrigger?`<span class="t-trigger-tag">⚡ Trigger · ${esc(t.triggerLabel||'')}</span>`:`<span class="t-mod">Manual</span>`}
+        <span class="${t.due==='overdue'?'t-due-over':'t-due-today'}">${t.due==='overdue'?t.daysOver+'d overdue':'Due today'}</span>
+        <span style="color:var(--tsu)">${esc(t.carrier)}</span>
+      </div>
+    </div>
+  </div>`;
+}
+function toggleTask(id){const t=TASKS.find(x=>x.id===id);if(t){t.done=!t.done;render();toast(t.done?'Task completed':'Task reopened')}}
+
+function screenDashboard(){
+  const R=ROLES[ROLE];
+  const att=vAttention();
+  const pursuit=att.filter(a=>a.cat==='pursuit');
+  const steward=att.filter(a=>a.cat==='stewardship');
+  const tasks=vTasks();
+  const overdue=tasks.filter(t=>t.due==='overdue'&&!t.done).length;
+  const today=tasks.filter(t=>t.due==='today'&&!t.done).length;
+  const openTasks=tasks.filter(t=>!t.done);
+  const risks=vRisks();
+  const greet=ROLE==='manager'?'Good morning':'Good morning, '+R.greet;
+
+  // portfolio scoped: owner/manager see full numbers, sales sees own counts
+  const port = ROLE==='sales'
+    ? PORTFOLIO.map(p=>({...p,val:vAccounts().filter(a=>a.rs===p.key).length}))
+    : PORTFOLIO;
+
+  return `
+  <div class="page-hdr">
+    <div>
+      <div class="page-title">${greet}</div>
+      <div class="page-sub">Thursday, June 12, 2026 · ${att.length} ${att.length===1?'item needs':'items need'} attention</div>
+      <div class="scope">${ICON('pin','ic')}Viewing: <b>${R.scope}</b></div>
+    </div>
+    <button class="btn btn-primary" onclick="openLogActivity()">${ICON('plus')} Log Activity</button>
+  </div>
+  <div class="content-body" style="display:flex;flex-direction:column;gap:22px">
+
+    <div>
+      <div class="sec-lbl">${ICON('alert','ic')} Relationship Attention Needed <span class="pill-count" style="background:var(--critb);color:var(--crit)">${att.length}</span></div>
+      <div style="margin-bottom:14px">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--purple);margin-bottom:6px;display:flex;align-items:center;gap:6px"><span style="width:14px;height:2px;background:var(--purple);border-radius:2px"></span>Pursuit Attention <span class="pill-count" style="background:var(--purpleb);color:var(--purple)">${pursuit.length}</span></div>
+        ${pursuit.map(attHTML).join('')||'<div class="empty">Nothing in pursuit needs attention right now.</div>'}
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--okd);margin-bottom:6px;display:flex;align-items:center;gap:6px"><span style="width:14px;height:2px;background:var(--ok);border-radius:2px"></span>Client Stewardship <span class="pill-count" style="background:var(--okb);color:var(--okd)">${steward.length}</span></div>
+        ${steward.map(attHTML).join('')||'<div class="empty">No active-client stewardship items right now.</div>'}
+      </div>
+    </div>
+
+    <div>
+      <div class="sec-lbl">${ICON('checks','ic')} My Work <span class="pill-count" style="background:var(--critb);color:var(--crit)">${overdue+today}</span><button class="sec-link" onclick="go('tasks')">Work Queue →</button></div>
+      <div class="work-grid">
+        <div class="wcc" onclick="go('tasks')"><div class="wcc-val" style="color:var(--crit)">${overdue}</div><div class="wcc-lbl">Overdue</div></div>
+        <div class="wcc" onclick="go('tasks')"><div class="wcc-val" style="color:var(--warn)">${today}</div><div class="wcc-lbl">Due Today</div></div>
+        <div class="wcc" onclick="go('tasks')"><div class="wcc-val" style="color:var(--okd)">${openTasks.length}</div><div class="wcc-lbl">Total Open</div></div>
+      </div>
+      ${openTasks.slice(0,5).map(taskHTML).join('')||'<div class="empty">No open tasks. Nicely done.</div>'}
+    </div>
+
+    <div>
+      <div class="sec-lbl">${ICON('building','ic')} Carrier Relationship Portfolio <button class="sec-link" onclick="go('accounts')">All Accounts →</button></div>
+      <div class="eco-strip">
+        ${port.map(p=>`<div class="eco-tile" onclick="go('accounts','${p.key}')"><div class="eco-val" style="color:${p.color}">${p.val}</div><div class="eco-lbl">${p.label}</div></div>`).join('')}
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div>
+        <div class="sec-lbl">${ICON('alert','ic')} Active Client Risks <span class="pill-count" style="background:var(--warnb);color:var(--warn)">${risks.length}</span></div>
+        ${risks.map(r=>`<div class="att att-${r.sev==='crit'?'crit':'warn'}" onclick="go('account-detail','${r.acctId}')">
+          <div class="att-ic ${r.sev==='crit'?'att-ic-r':'att-ic-a'}">${ICON(r.ic)}</div>
+          <div class="att-body"><div class="att-carrier">${esc(r.carrier)}</div><div class="att-cond">${esc(r.cond)}</div><div class="att-dur">${esc(r.dur)}</div></div>
+        </div>`).join('')||'<div class="empty">No active-client risks.</div>'}
+      </div>
+      <div>
+        <div class="sec-lbl">${ICON('shield','ic')} Outstanding Carrier Requests <span class="pill-count" style="background:var(--warnb);color:var(--warn)">${CRED.length}</span></div>
+        ${CRED.map(c=>`<div class="row" onclick="toast('Open: ${esc(c.carrier)}')">
+          <span class="rs rs-pa" style="flex-shrink:0">${esc(c.status)}</span>
+          <div class="row-body"><div class="row-name" style="font-size:12px">${esc(c.carrier)}</div><div class="row-meta">${esc(c.item)}</div></div>
+        </div>`).join('')}
+      </div>
+    </div>
+
+  </div>`;
+}
+
+/* ===== ACCOUNTS ===== */
+let acctFilter='';
+function screenAccounts(){
+  if(PARAM){acctFilter=PARAM;PARAM=null;}
+  const all=vAccounts();
+  const counts={};Object.keys(RS).forEach(k=>counts[k]=all.filter(a=>a.rs===k).length);
+  const fb=Object.entries(RS).filter(([k])=>counts[k]>0).map(([k,v])=>`<div class="filt ${acctFilter===k?'on':''}" onclick="setAcctFilter('${k}')">${v.label} <b style="margin-left:3px">${counts[k]}</b></div>`).join('');
+  let rows=all;
+  if(acctFilter)rows=rows.filter(a=>a.rs===acctFilter);
+  const rowHTML=rows.map(a=>{
+    const lmcDays=a.lmc?Math.floor((TODAY-new Date(a.lmc))/864e5):null;
+    const lmcCls=lmcDays===null?'lmc-red':lmcDays>60?'lmc-red':lmcDays>30?'lmc-amber':'lmc-green';
+    const lmcLbl=lmcDays===null?'No contact':lmcDays===0?'Today':lmcDays+'d ago';
+    const lc=vLines().filter(l=>l.accountId===a.id).length;
+    return `<div class="row" onclick="go('account-detail','${a.id}')">
+      <div class="av" style="background:${aColor(a.name)}">${initials(a.name)}</div>
+      <div class="row-body">
+        <div class="row-name">${esc(a.name)} ${a.isStrategic?`<span class="strat">${ICON('star','ic')}Strategic</span>`:''} <span class="rs ${RS[a.rs].cls}">${RS[a.rs].label}</span></div>
+        <div class="row-meta">${esc(a.hq)} · ${esc(a.size)} · ${lc} business line${lc!==1?'s':''}</div>
+      </div>
+      <div class="row-right">
+        <div class="lmc ${lmcCls}">${ICON('clock','ic')} ${lmcLbl}${a.lmcWho?' · '+esc(a.lmcWho):''}</div>
+        ${ROLE!=='sales'?`<div class="owner-chip"><div class="owner-av" style="background:${a.ownerColor}">${initials(a.owner)}</div>${esc(a.owner)}${a.prevOwner?` <span style="color:var(--tf)">(from ${esc(a.prevOwner)})</span>`:''}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  return `
+  <div class="page-hdr">
+    <div><div class="page-title">Accounts</div><div class="page-sub">${all.length} carrier${all.length!==1?'s':''} · ${all.filter(a=>a.rs==='active-client').length} active client${all.filter(a=>a.rs==='active-client').length!==1?'s':''} · ${ROLES[ROLE].scope}</div></div>
+    <button class="btn btn-primary" onclick="openNewAccount()">${ICON('plus')} New Account</button>
+  </div>
+  <div class="filter-bar">
+    <div class="lsearch-wrap">${ICON('search')}<input class="lsearch" placeholder="Search accounts…" oninput="liveFilter(this,'.row')"></div>
+    <div class="filt ${!acctFilter?'on':''}" onclick="setAcctFilter('')">All</div>
+    ${fb}<span class="filt-right">${rows.length} shown</span>
+  </div>
+  <div class="content-body">${rowHTML||'<div class="empty"><strong>No accounts in this view.</strong></div>'}</div>`;
+}
+function setAcctFilter(k){acctFilter=k;document.getElementById('main').innerHTML=screenAccounts()}
+
+/* ===== ACCOUNT DETAIL ===== */
+function screenAccountDetail(id){
+  const a=ACCOUNTS.find(x=>x.id===id);if(!a)return screenAccounts();
+  const lines=LINES.filter(l=>l.accountId===a.id);
+  const contacts=CONTACTS.filter(c=>c.accountId===a.id);
+  const acts=ACTIVITIES.filter(x=>x.accountId===a.id);
+  const tasks=TASKS.filter(t=>t.acctId===a.id&&!t.done);
+  const lmcDays=a.lmc?Math.floor((TODAY-new Date(a.lmc))/864e5):null;
+  return `
+  <div class="bc"><a onclick="go('accounts')">Accounts</a><span class="sep">›</span><span style="font-weight:600">${esc(a.name)}</span><span class="rs ${RS[a.rs].cls}" style="margin-left:6px">${RS[a.rs].label}</span></div>
+  <div class="hero">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div class="hero-title">${esc(a.name)} ${a.isStrategic?`<span class="strat" style="vertical-align:middle">${ICON('star','ic')}Strategic</span>`:''}</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#c8d8e8" onclick="openLogActivity('${a.id}')">${ICON('plus')} Log Activity</button>
+        <button class="btn" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#c8d8e8" onclick="openAddTask('${a.id}')">${ICON('plus')} Add Task</button>
+        <button class="btn" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#c8d8e8" onclick="openNewBusinessLine('${a.id}')">${ICON('plus')} New Line</button>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div><div class="hero-k">Relationship Owner</div><div class="hero-v"><div class="owner-av" style="background:${a.ownerColor}">${initials(a.owner)}</div>${esc(a.owner)}</div></div>
+      <div><div class="hero-k">Last Meaningful Contact</div><div class="hero-v" style="color:${lmcDays!==null&&lmcDays<30?'#86efac':'#fde68a'}">${lmcDays===null?'No contact yet':lmcDays+' days ago'}${a.lmcWho?' · '+esc(a.lmcWho):''}</div></div>
+      <div><div class="hero-k">HQ</div><div class="hero-v">${esc(a.hq)}</div></div>
+      <div><div class="hero-k">Size</div><div class="hero-v">${esc(a.size)}</div></div>
+    </div>
+  </div>
+  <div class="content-body">
+    ${tasks.length?`<div class="card" style="border-left:3px solid var(--warn)">
+      <div class="sec-lbl" style="margin-bottom:8px">${ICON('clock','ic')} Next actions on this carrier <span class="pill-count" style="background:var(--warnb);color:var(--warn)">${tasks.length}</span></div>
+      ${tasks.map(taskHTML).join('')}
+    </div>`:''}
+    <div class="detail-grid">
+      <div>
+        <div class="sec-lbl">${ICON('target','ic')} Business Lines <span class="pill-count" style="background:var(--purpleb);color:var(--purple)">${lines.length}</span></div>
+        ${lines.map(l=>`<div class="row" onclick="go('bl-detail','${l.id}')">
+          <div class="row-body"><div class="row-name">${esc(l.name)}</div><div class="row-meta">Last meaningful: ${fmtRel(l.lmc)}${l.lmcWho?' · '+esc(l.lmcWho):''} · Owner: ${esc(l.owner)}</div></div>
+          <div class="row-right"><span class="health ${l.health==='ok'?'hc-ok':'hc-att'}">${l.health==='ok'?'On Track':'Needs Attention'}</span><span class="stage sb-${l.stage}">${cap(l.stage)}</span></div>
+        </div>`).join('')||'<div class="empty"><strong>No business lines.</strong>Create one to start tracking a pursuit.</div>'}
+        <div class="sec-lbl" style="margin-top:18px">${ICON('activity','ic')} Recent Activity <button class="sec-link" onclick="go('activities')">All →</button></div>
+        ${acts.slice(0,5).map(actHTML).join('')||'<div class="empty">No activity recorded.</div>'}
+      </div>
+      <div>
+        <div class="sec-lbl">${ICON('users','ic')} Contacts <span class="pill-count" style="background:var(--infob);color:var(--info)">${contacts.length}</span></div>
+        ${contacts.map(c=>`<div class="row" onclick="go('contact-detail','${c.id}')">
+          <div class="av av-rd" style="background:${c.color};width:32px;height:32px;font-size:10px">${initials(c.name)}</div>
+          <div class="row-body"><div class="row-name" style="font-size:12px">${esc(c.name)} ${dmChip(c.dm)}</div><div class="row-meta">${esc(c.title)} · ${esc(c.lmc)}</div></div>
+        </div>`).join('')||'<div class="empty">No contacts.</div>'}
+      </div>
+    </div>
+  </div>`;
+}
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const dmChip=dm=>dm==='engaged'?'<span class="dm-chip dm-e">DM Engaged</span>':dm==='identified'?'<span class="dm-chip dm-i">DM Identified</span>':'';
+function actHTML(x){const acct=ACCOUNTS.find(a=>a.id===x.accountId);return `<div class="act ${x.meaningful?'mc':''}" onclick="toast('Activity · ${esc(x.subject)}')">
+  <div class="act-ic ${x.cls}">${ICON(x.ic)}</div>
+  <div class="act-body"><div class="act-subj">${esc(x.subject)}</div><div class="act-meta"><span style="font-weight:600;color:var(--tb)">${esc(acct?.name||'')}</span> · ${esc(x.contact)} · ${fmtRel(x.at)} ${x.meaningful?'<span class="mc-badge">✓ Meaningful</span>':''}</div></div>
+</div>`}
+
+/* ===== PURSUITS ===== */
+function screenPursuits(){
+  const lines=vLines();
+  const pursuit=lines.filter(l=>l.stage!=='won');
+  const won=lines.filter(l=>l.stage==='won');
+  const rowHTML=l=>{const a=ACCOUNTS.find(x=>x.id===l.accountId);return `<div class="row" onclick="go('bl-detail','${l.id}')">
+    <div class="av" style="background:${aColor(a?.name||'?')};width:32px;height:32px;font-size:10px">${initials(a?.name||'?')}</div>
+    <div class="row-body"><div class="row-name">${esc(a?.name||'')} · ${esc(l.name)}</div><div class="row-meta">LMC ${fmtRel(l.lmc)}${l.lmcWho?' · '+esc(l.lmcWho):''} · Owner: ${esc(l.owner)}</div></div>
+    <div class="row-right"><span class="health ${l.health==='ok'?'hc-ok':'hc-att'}">${l.health==='ok'?'On Track':'Needs Attn'}</span><span class="stage sb-${l.stage}">${cap(l.stage)}</span></div>
+  </div>`};
+  return `
+  <div class="page-hdr">
+    <div><div class="page-title">Pursuits</div><div class="page-sub">${pursuit.length} active pursuit${pursuit.length!==1?'s':''} · ${won.length} active client line${won.length!==1?'s':''} · ${ROLES[ROLE].scope}</div></div>
+    <button class="btn btn-primary" onclick="openNewBusinessLine()">${ICON('plus')} New Business Line</button>
+  </div>
+  <div class="filter-bar">
+    <div class="lsearch-wrap">${ICON('search')}<input class="lsearch" placeholder="Search pursuits…" oninput="liveFilter(this,'.row')"></div>
+    <span class="filt-right">${lines.length} total</span>
+  </div>
+  <div class="content-body">
+    <div class="sec-lbl">${ICON('target','ic')} Active Pursuits <span class="pill-count" style="background:var(--purpleb);color:var(--purple)">${pursuit.length}</span></div>
+    ${pursuit.map(rowHTML).join('')||'<div class="empty">No active pursuits.</div>'}
+    <div class="sec-lbl" style="margin-top:18px">${ICON('check','ic')} Active Clients (Won) <span class="pill-count" style="background:var(--okb);color:var(--okd)">${won.length}</span></div>
+    ${won.map(rowHTML).join('')||'<div class="empty">No active client lines.</div>'}
+  </div>`;
+}
+
+/* ===== BL DETAIL ===== */
+function screenBLDetail(id){
+  const l=LINES.find(x=>x.id===id);if(!l)return screenPursuits();
+  const a=ACCOUNTS.find(x=>x.id===l.accountId);
+  const contacts=CONTACTS.filter(c=>c.accountId===l.accountId);
+  const dm=contacts.find(c=>c.dm==='engaged');
+  const acts=ACTIVITIES.filter(x=>x.accountId===l.accountId);
+  const other=LINES.filter(x=>x.accountId===l.accountId&&x.id!==l.id);
+  const stages=['prospect','engaged','discovery','proposal','pending','onboarding','won'];
+  const si=stages.indexOf(l.stage);
+  const summary={tCAT:'Travelers is evaluating CAT panel vendors for Q3 storm season allocation. Sarah Chen is the confirmed decision maker. Scale capability — 40+ adjusters within 72 hours — is the deciding factor. Panel decision expected by June 20.',natCm:'Nationwide commercial property pursuit tied to their Sep 15 RFP window. Rachel Hughes is engaged. Currently sitting in Proposal longer than target — needs a re-engagement push before the RFP opens.'}[l.id];
+  return `
+  <div class="bc"><a onclick="go('accounts')">Accounts</a><span class="sep">›</span><a onclick="go('account-detail','${a?.id}')">${esc(a?.name||'')}</a><span class="sep">›</span><span style="font-weight:600">${esc(l.name)}</span></div>
+  <div class="hero">
+    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.5px">${esc(a?.name||'')} · ${esc(a?.size||'')}</div>
+    <div class="hero-title" style="margin-top:2px">${esc(l.name)}</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <span class="health ${l.health==='ok'?'hc-ok':'hc-att'}">${l.health==='ok'?'On Track':'Needs Attention'}</span>
+      <span style="font-size:10px;color:#94a3b8;background:rgba(255,255,255,.08);padding:3px 9px;border-radius:20px">Owner: ${esc(l.owner)}</span>
+      <span style="font-size:10px;color:#94a3b8;background:rgba(255,255,255,.08);padding:3px 9px;border-radius:20px">LMC ${fmtRel(l.lmc)}</span>
+    </div>
+    <div style="display:flex;gap:3px;margin-top:14px;flex-wrap:wrap">
+      ${stages.map((s,i)=>`<div style="flex:1;min-width:60px;text-align:center;padding:6px 4px;border-radius:5px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;${i===si?'background:var(--lime);color:#fff':i<si?'background:rgba(124,184,0,.18);color:#a3e635':'background:rgba(255,255,255,.06);color:#5a7088'}">${s==='pending'?'Pending':cap(s)}</div>`).join('')}
+    </div>
+    ${summary?`<div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;margin-top:12px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#94a3b8;margin-bottom:4px">Pursuit Summary</div><div style="font-size:12px;color:#e2e8f0;line-height:1.6">${esc(summary)}</div></div>`:''}
+  </div>
+  <div class="content-body">
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="toast('Stage advanced')">${ICON('arr')} Advance Stage</button>
+      <button class="btn" onclick="openLogActivity('${a?.id}')">${ICON('plus')} Log Activity</button>
+      <button class="btn" onclick="openAddTask('${a?.id}')">${ICON('plus')} Add Task</button>
+    </div>
+    <div class="detail-grid">
+      <div>
+        ${dm?`<div class="card"><div class="sec-lbl">${ICON('users','ic')} Decision Maker</div>
+          <div class="row" style="margin:0;cursor:pointer" onclick="go('contact-detail','${dm.id}')">
+            <div class="av av-rd" style="background:${dm.color}">${initials(dm.name)}</div>
+            <div class="row-body"><div class="row-name">${esc(dm.name)} ${dmChip(dm.dm)}</div><div class="row-meta">${esc(dm.title)} · Last contact ${esc(dm.lmc)}</div></div>
+          </div></div>`:''}
+        <div class="sec-lbl" style="margin-top:6px">${ICON('activity','ic')} Recent Activity <button class="sec-link" onclick="go('activities')">All →</button></div>
+        ${acts.slice(0,4).map(actHTML).join('')}
+      </div>
+      <div>
+        <div class="sec-lbl">${ICON('users','ic')} Contacts <span class="pill-count" style="background:var(--infob);color:var(--info)">${contacts.length}</span></div>
+        ${contacts.map(c=>`<div class="row" style="padding:9px 12px" onclick="go('contact-detail','${c.id}')"><div class="av av-rd" style="background:${c.color};width:28px;height:28px;font-size:9px">${initials(c.name)}</div><div class="row-body"><div class="row-name" style="font-size:12px">${esc(c.name)} ${dmChip(c.dm)}</div><div class="row-meta">${esc(c.title)}</div></div></div>`).join('')}
+        ${other.length?`<div class="sec-lbl" style="margin-top:16px">${ICON('target','ic')} Other Lines · ${esc(a?.name||'')}</div>
+          ${other.map(o=>`<div class="row" style="padding:9px 12px" onclick="go('bl-detail','${o.id}')"><div class="row-body"><div class="row-name" style="font-size:12px">${esc(o.name)}</div></div><span class="stage sb-${o.stage}">${cap(o.stage)}</span></div>`).join('')}`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ===== CONTACTS ===== */
+let ctFilter='all';
+function screenContacts(){
+  const all=vContacts();
+  const counts={engaged:all.filter(c=>c.dm==='engaged').length,identified:all.filter(c=>c.dm==='identified').length,none:all.filter(c=>!c.dm).length};
+  let rows=all;
+  if(ctFilter==='engaged')rows=all.filter(c=>c.dm==='engaged');
+  else if(ctFilter==='identified')rows=all.filter(c=>c.dm==='identified');
+  else if(ctFilter==='none')rows=all.filter(c=>!c.dm);
+  return `
+  <div class="page-hdr">
+    <div><div class="page-title">Contacts</div><div class="page-sub">${all.length} contact${all.length!==1?'s':''} across ${vAccounts().length} account${vAccounts().length!==1?'s':''} · ${ROLES[ROLE].scope}</div></div>
+    <button class="btn btn-primary" onclick="openNewContact()">${ICON('plus')} New Contact</button>
+  </div>
+  <div class="filter-bar">
+    <div class="lsearch-wrap">${ICON('search')}<input class="lsearch" placeholder="Search contacts…" oninput="liveFilter(this,'.row')"></div>
+    <div class="filt ${ctFilter==='all'?'on':''}" onclick="setCtFilter('all')">All</div>
+    <div class="filt ${ctFilter==='engaged'?'on':''}" onclick="setCtFilter('engaged')">DM Engaged <b>${counts.engaged}</b></div>
+    <div class="filt ${ctFilter==='identified'?'on':''}" onclick="setCtFilter('identified')">DM Identified <b>${counts.identified}</b></div>
+    <div class="filt ${ctFilter==='none'?'on':''}" onclick="setCtFilter('none')">No DM <b>${counts.none}</b></div>
+    <span class="filt-right">${rows.length} shown</span>
+  </div>
+  <div class="content-body">
+    ${rows.map(c=>{const a=ACCOUNTS.find(x=>x.id===c.accountId);const ln=LINES.filter(l=>l.accountId===c.accountId).map(l=>l.name).join(', ');return `<div class="row" onclick="go('contact-detail','${c.id}')">
+      <div class="av av-rd" style="background:${c.color}">${initials(c.name)}</div>
+      <div class="row-body"><div class="row-name">${esc(c.name)} ${dmChip(c.dm)}</div><div class="row-meta">${esc(c.title)} · ${esc(a?.name||'')}${ln?' · '+esc(ln):''}</div></div>
+      <div class="row-right"><div class="lmc lmc-green" style="color:var(--tsu)">${ICON('clock','ic')} ${esc(c.lmc)}</div></div>
+    </div>`}).join('')||'<div class="empty"><strong>No contacts in this view.</strong></div>'}
+  </div>`;
+}
+function setCtFilter(f){ctFilter=f;document.getElementById('main').innerHTML=screenContacts()}
+
+/* ===== CONTACT DETAIL ===== */
+function screenContactDetail(id){
+  const c=CONTACTS.find(x=>x.id===id);if(!c)return screenContacts();
+  const a=ACCOUNTS.find(x=>x.id===c.accountId);
+  const lines=LINES.filter(l=>l.accountId===c.accountId);
+  const acts=ACTIVITIES.filter(x=>x.accountId===c.accountId&&x.contact===c.name);
+  const related=CONTACTS.filter(x=>x.accountId===c.accountId&&x.id!==c.id);
+  return `
+  <div class="bc"><a onclick="go('contacts')">Contacts</a><span class="sep">›</span><a onclick="go('account-detail','${a?.id}')">${esc(a?.name||'')}</a><span class="sep">›</span><span style="font-weight:600">${esc(c.name)}</span></div>
+  <div class="hero">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="av av-rd" style="background:${c.color};width:52px;height:52px;font-size:18px">${initials(c.name)}</div>
+      <div><div class="hero-title">${esc(c.name)}</div><div style="font-size:13px;color:#c8d8e8;margin-top:2px">${esc(c.title)} · ${esc(a?.name||'')}</div>
+      <div style="margin-top:6px;display:flex;align-items:center;gap:8px">${dmChip(c.dm)||'<span style="font-size:10px;color:#94a3b8">No DM designation</span>'}<span style="font-size:10px;color:#94a3b8">Last contact ${esc(c.lmc)}</span></div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#c8d8e8" onclick="toast('Compose email to ${esc(c.name)}')">${ICON('mail')} Email</button>
+      <button class="btn" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#c8d8e8" onclick="toast('Call ${esc(c.name)}')">${ICON('phone')} Call</button>
+      <button class="btn" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#c8d8e8" onclick="openLogActivity('${c.accountId}')">${ICON('plus')} Log Activity</button>
+    </div>
+  </div>
+  <div class="content-body">
+    <div class="detail-grid">
+      <div>
+        <div class="card"><div class="sec-lbl">Contact Information</div>
+          <div style="display:grid;grid-template-columns:110px 1fr;gap:9px;font-size:12px">
+            <div style="color:var(--tsu);font-weight:600">Title</div><div>${esc(c.title)}</div>
+            <div style="color:var(--tsu);font-weight:600">Account</div><div><a style="color:var(--info);cursor:pointer" onclick="go('account-detail','${a?.id}')">${esc(a?.name||'')}</a></div>
+            <div style="color:var(--tsu);font-weight:600">DM Status</div><div>${c.dm==='engaged'?'Decision Maker — Engaged':c.dm==='identified'?'Decision Maker — Identified':'Not designated'}</div>
+            <div style="color:var(--tsu);font-weight:600">Last Contact</div><div>${esc(c.lmc)}</div>
+          </div>
+        </div>
+        <div class="sec-lbl" style="margin-top:6px">${ICON('activity','ic')} Activity with ${esc(c.name)} <button class="sec-link" onclick="go('activities')">All →</button></div>
+        ${acts.length?acts.map(actHTML).join(''):'<div class="empty">No activities logged with this contact yet.</div>'}
+      </div>
+      <div>
+        <div class="card"><div class="sec-lbl">${ICON('target','ic')} Business Lines at ${esc(a?.name||'')}</div>
+          ${lines.map(l=>`<div class="row" style="padding:9px 12px" onclick="go('bl-detail','${l.id}')"><div class="row-body"><div class="row-name" style="font-size:12px">${esc(l.name)}</div></div><span class="stage sb-${l.stage}">${cap(l.stage)}</span></div>`).join('')||'<div style="font-size:11px;color:var(--tsu)">No business lines.</div>'}
+        </div>
+        <div class="card"><div class="sec-lbl">${ICON('users','ic')} Other Contacts</div>
+          ${related.length?related.map(r=>`<div class="row" style="padding:9px 12px" onclick="go('contact-detail','${r.id}')"><div class="av av-rd" style="background:${r.color};width:26px;height:26px;font-size:9px">${initials(r.name)}</div><div class="row-body"><div class="row-name" style="font-size:12px">${esc(r.name)} ${dmChip(r.dm)}</div><div class="row-meta">${esc(r.title)}</div></div></div>`).join(''):'<div style="font-size:11px;color:var(--tsu)">No other contacts.</div>'}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ===== ACTIVITIES ===== */
+let actFilter='all';
+function screenActivities(){
+  const all=vActivities();
+  const meaningful=all.filter(a=>a.meaningful).length;
+  let rows=all;
+  if(actFilter==='email')rows=all.filter(a=>a.type.startsWith('email'));
+  else if(actFilter==='call')rows=all.filter(a=>a.type.startsWith('call'));
+  else if(actFilter==='meeting')rows=all.filter(a=>a.type==='meeting');
+  return `
+  <div class="page-hdr">
+    <div><div class="page-title">Activities</div><div class="page-sub">${all.length} total · <span style="color:var(--okd);font-weight:600">${meaningful} meaningful contacts</span> · ${ROLES[ROLE].scope}</div></div>
+    <button class="btn btn-primary" onclick="openLogActivity()">${ICON('plus')} Log Activity</button>
+  </div>
+  <div class="filter-bar">
+    <div class="lsearch-wrap">${ICON('search')}<input class="lsearch" placeholder="Search activities…" oninput="liveFilter(this,'.act')"></div>
+    <div class="filt ${actFilter==='all'?'on':''}" onclick="setActFilter('all')">All</div>
+    <div class="filt ${actFilter==='email'?'on':''}" onclick="setActFilter('email')">Email</div>
+    <div class="filt ${actFilter==='call'?'on':''}" onclick="setActFilter('call')">Calls</div>
+    <div class="filt ${actFilter==='meeting'?'on':''}" onclick="setActFilter('meeting')">Meetings</div>
+    <span class="filt-right">${rows.length} shown</span>
+  </div>
+  <div class="content-body">${rows.map(actHTML).join('')||'<div class="empty">No activities.</div>'}</div>`;
+}
+function setActFilter(f){actFilter=f;document.getElementById('main').innerHTML=screenActivities()}
+
+/* ===== WORK QUEUE ===== */
+function screenTasks(){
+  const tasks=vTasks();
+  const overdue=tasks.filter(t=>t.due==='overdue'&&!t.done);
+  const today=tasks.filter(t=>t.due==='today'&&!t.done);
+  const done=tasks.filter(t=>t.done);
+  return `
+  <div class="page-hdr">
+    <div><div class="page-title">Work Queue</div><div class="page-sub">${tasks.filter(t=>!t.done).length} open · ${overdue.length} overdue · ${ROLES[ROLE].scope}</div></div>
+    <button class="btn btn-primary" onclick="openAddTask()">${ICON('plus')} Add Task</button>
+  </div>
+  <div class="content-body">
+    <div class="work-grid">
+      <div class="wcc"><div class="wcc-val" style="color:var(--crit)">${overdue.length}</div><div class="wcc-lbl">Overdue</div></div>
+      <div class="wcc"><div class="wcc-val" style="color:var(--warn)">${today.length}</div><div class="wcc-lbl">Due Today</div></div>
+      <div class="wcc"><div class="wcc-val" style="color:var(--okd)">${tasks.filter(t=>!t.done).length}</div><div class="wcc-lbl">Total Open</div></div>
+    </div>
+    <div class="sec-lbl" style="margin-top:8px">${ICON('alert','ic')} Overdue <span class="pill-count" style="background:var(--critb);color:var(--crit)">${overdue.length}</span></div>
+    ${overdue.map(taskHTML).join('')||'<div class="empty">Nothing overdue.</div>'}
+    <div class="sec-lbl" style="margin-top:16px">${ICON('clock','ic')} Due Today <span class="pill-count" style="background:var(--warnb);color:var(--warn)">${today.length}</span></div>
+    ${today.map(taskHTML).join('')||'<div class="empty">Nothing due today.</div>'}
+    ${done.length?`<div class="sec-lbl" style="margin-top:16px">${ICON('check','ic')} Completed <span class="pill-count" style="background:var(--okb);color:var(--okd)">${done.length}</span></div>${done.map(taskHTML).join('')}`:''}
+  </div>`;
+}
+
+/* ===== REPORTS (Owner / Manager) ===== */
+function screenReports(){
+  const lines=vLines();const accts=vAccounts();
+  const portRows=PORTFOLIO.map(p=>{const named=ACCOUNTS.filter(a=>a.rs===p.key);const sample=named.slice(0,4).map(a=>a.name).join(', ');return `<tr><td class="num">${p.val}</td><td style="font-weight:600;color:var(--ts)">${p.label}</td><td style="color:var(--tm)">${sample||'—'}${named.length>4?` +${named.length-4} more`:''}</td></tr>`}).join('');
+  const stageOrder=['prospect','engaged','discovery','proposal','pending','onboarding','won'];
+  const stageRows=stageOrder.map(s=>{const ls=lines.filter(l=>l.stage===s);if(!ls.length)return'';return `<tr class="clk" onclick="go('bl-detail','${ls[0].id}')"><td style="font-weight:600;color:var(--ts)">${cap(s)}</td><td class="num">${ls.length}</td><td style="color:var(--tm)">${ls.map(l=>{const a=ACCOUNTS.find(x=>x.id===l.accountId);return (a?a.name:'')+' · '+l.name}).join(' · ')}</td></tr>`}).join('');
+  const activeClients=lines.filter(l=>l.stage==='won');
+  const acRows=activeClients.map(l=>{const a=ACCOUNTS.find(x=>x.id===l.accountId);return `<tr class="clk" onclick="go('bl-detail','${l.id}')"><td style="font-weight:600;color:var(--ts)">${esc(a?.name||'')}</td><td>${esc(l.name)}</td><td>${esc(l.owner)}</td><td><span class="health ${l.health==='ok'?'hc-ok':'hc-att'}">${l.health==='ok'?'On Track':'Needs Attention'}</span></td><td style="color:var(--tm)">${fmtRel(l.lmc)}</td></tr>`}).join('');
+  const ownerMap={};ACCOUNTS.forEach(a=>{ownerMap[a.owner]=(ownerMap[a.owner]||0)+1});
+  const omRows=Object.entries(ownerMap).map(([o,n])=>`<tr><td style="font-weight:600;color:var(--ts)"><div style="display:flex;align-items:center;gap:7px"><div class="owner-av" style="background:var(--tsu)">${initials(o)}</div>${esc(o)}</div></td><td class="num">${n}</td><td style="color:var(--tm)">${ACCOUNTS.filter(a=>a.owner===o).map(a=>a.name).join(', ')}</td></tr>`).join('');
+  const actRows=vActivities().filter(a=>a.meaningful).map(x=>{const a=ACCOUNTS.find(y=>y.id===x.accountId);return `<tr class="clk" onclick="go('account-detail','${x.accountId}')"><td style="color:var(--tm)">${fmtRel(x.at)}</td><td style="font-weight:600;color:var(--ts)">${esc(a?.name||'')}</td><td>${esc(x.contact)}</td><td style="color:var(--tm)">${esc(x.subject)}</td></tr>`}).join('');
+
+  const rep=(id,ic,title,desc,head,body)=>`<div class="rep-card" id="rep-${id}">
+    <div class="rep-head" onclick="document.getElementById('rep-${id}').classList.toggle('open')">
+      <div class="rep-ic">${ICON(ic)}</div>
+      <div class="rep-info"><div class="rep-title">${title}</div><div class="rep-desc">${desc}</div></div>
+      <span class="rep-toggle">Open ▾</span>
+    </div>
+    <div class="rep-body"><table class="tbl"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>
+  </div>`;
+
+  return `
+  <div class="page-hdr">
+    <div><div class="page-title">Reports</div><div class="page-sub">${ROLE==='owner'?'Owner vantage — full book':'Team vantage'} · organised views of live relationship data · click any to open</div></div>
+  </div>
+  <div class="content-body">
+    ${rep('port','building','Carrier Relationship Portfolio','Every relationship by lifecycle state, with the carriers named','<th>Count</th><th>State</th><th>Carriers</th>',portRows)}
+    ${rep('stage','target','Pursuits by Stage','Where every active pursuit sits in the pipeline','<th>Stage</th><th>Count</th><th>Business lines</th>',stageRows)}
+    ${rep('health','trend','Active Client Health','On-track vs needs-attention across active client lines','<th>Carrier</th><th>Line</th><th>Owner</th><th>Health</th><th>LMC</th>',acRows)}
+    ${rep('owners','users','Ownership Map','Who owns which relationships across the team','<th>Owner</th><th>Accounts</th><th>Carriers</th>',omRows)}
+    ${rep('activity','activity','Meaningful Contact Log','Every meaningful interaction driving relationship health','<th>When</th><th>Carrier</th><th>Contact</th><th>Subject</th>',actRows)}
+    <div class="card" style="border:1px dashed var(--cb);color:var(--tsu);font-size:11px;line-height:1.6;margin-top:6px">
+      <strong style="color:var(--tm)">Note:</strong> These are organised views of data the CRM already holds — relationship states, pursuits, contacts, activity. Revenue/volume trend analytics and forecasting are intentionally deferred (per the Concept Brief) until CMS claim data is connected.
+    </div>
+  </div>`;
+}
+
+/* ===== GLOBAL SEARCH ===== */
+function globalSearch(q){
+  q=(q||'').trim().toLowerCase();
+  if(!q){closeModal();return}
+  const accts=vAccounts().filter(a=>a.name.toLowerCase().includes(q)).slice(0,6);
+  const cts=vContacts().filter(c=>c.name.toLowerCase().includes(q)||c.title.toLowerCase().includes(q)).slice(0,6);
+  const lns=vLines().filter(l=>l.name.toLowerCase().includes(q)).slice(0,4);
+  let h=`<div class="modal-head"><span class="modal-title">Search · "${esc(q)}"</span><button class="modal-close" onclick="closeModal();document.getElementById('global-search').blur()">${ICON('x')}</button></div><div class="modal-body" style="padding:0;gap:0">`;
+  if(!accts.length&&!cts.length&&!lns.length)h+=`<div class="empty">No matches.</div>`;
+  if(accts.length){h+=`<div class="rail-lbl" style="padding:10px 14px 4px">Carriers</div>`;accts.forEach(a=>h+=`<div class="srch-result" onclick="closeModal();go('account-detail','${a.id}')">${ICON('building')}<div><div style="font-weight:600;color:var(--ts)">${esc(a.name)}</div><div style="font-size:10px;color:var(--tsu)">${RS[a.rs].label} · ${esc(a.owner)}</div></div></div>`)}
+  if(cts.length){h+=`<div class="rail-lbl" style="padding:10px 14px 4px">Contacts</div>`;cts.forEach(c=>{const a=ACCOUNTS.find(x=>x.id===c.accountId);h+=`<div class="srch-result" onclick="closeModal();go('contact-detail','${c.id}')">${ICON('users')}<div><div style="font-weight:600;color:var(--ts)">${esc(c.name)}</div><div style="font-size:10px;color:var(--tsu)">${esc(c.title)} · ${esc(a?.name||'')}</div></div></div>`})}
+  if(lns.length){h+=`<div class="rail-lbl" style="padding:10px 14px 4px">Business Lines</div>`;lns.forEach(l=>{const a=ACCOUNTS.find(x=>x.id===l.accountId);h+=`<div class="srch-result" onclick="closeModal();go('bl-detail','${l.id}')">${ICON('target')}<div><div style="font-weight:600;color:var(--ts)">${esc(a?.name||'')} · ${esc(l.name)}</div><div style="font-size:10px;color:var(--tsu)">${cap(l.stage)}</div></div></div>`})}
+  h+=`</div>`;
+  document.getElementById('modal-container').innerHTML=h;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+/* ===== MODALS ===== */
+function openModal(html,wide){document.getElementById('modal-container').className='modal'+(wide?' wide':'');document.getElementById('modal-container').innerHTML=html;document.getElementById('modal-overlay').classList.add('open')}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');document.getElementById('modal-container').className='modal'}
+
+function openNewAccount(){
+  const rsOpts=Object.entries(RS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
+  openModal(`<div class="modal-head"><span class="modal-title">New Account</span><button class="modal-close" onclick="closeModal()">${ICON('x')}</button></div>
+  <div class="modal-body">
+    <div class="field"><label>Account Name <span class="req">*</span></label><input id="f-name" placeholder="e.g. Cincinnati Insurance"></div>
+    <div class="field-row"><div class="field"><label>Relationship Status</label><select id="f-rs">${rsOpts}</select></div><div class="field"><label>Carrier Size</label><select><option>Large (National)</option><option>Regional</option><option>Specialty</option></select></div></div>
+    <div class="field-row"><div class="field"><label>Relationship Owner <span class="req">*</span></label><select><option>Joe Rivera</option><option>Mark Vetrovec</option><option>Brent Hughes</option><option>Alicia Torres</option></select></div><div class="field"><label>Source</label><select><option>Conference / Trade Show</option><option>Referral</option><option>Outbound List</option><option>Inbound Request</option></select></div></div>
+    <div class="field"><label>HQ Location</label><input placeholder="e.g. Hartford, CT"></div>
+    <div class="field"><label>Notes</label><textarea rows="2" placeholder="How did this relationship originate?"></textarea></div>
+  </div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveAccount()">Create Account</button></div>`);
+}
+function saveAccount(){const n=document.getElementById('f-name').value.trim();if(!n){alert('Account name is required.');return}ACCOUNTS.push({id:'a_'+Math.random().toString(36).slice(2,7),name:n,rs:document.getElementById('f-rs').value,owner:ROLE==='sales'?'Joe Rivera':'Joe Rivera',ownerColor:'#0369a1',isStrategic:false,lmc:null,lmcWho:null,hq:'',size:'Regional'});closeModal();toast('Account created: '+n);go('accounts')}
+
+function openNewContact(){
+  const opts=ACCOUNTS.map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('');
+  openModal(`<div class="modal-head"><span class="modal-title">New Contact</span><button class="modal-close" onclick="closeModal()">${ICON('x')}</button></div>
+  <div class="modal-body">
+    <div class="field"><label>Account <span class="req">*</span></label><select id="f-acct"><option value="">— Select —</option>${opts}</select></div>
+    <div class="field-row"><div class="field"><label>First Name <span class="req">*</span></label><input id="f-first"></div><div class="field"><label>Last Name <span class="req">*</span></label><input id="f-last"></div></div>
+    <div class="field"><label>Title</label><input id="f-title" placeholder="VP Claims Operations"></div>
+    <div class="field"><label>DM Status</label><select id="f-dm"><option value="">No DM Status</option><option value="identified">DM Identified</option><option value="engaged">DM Engaged</option></select></div>
+  </div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveContact()">Create Contact</button></div>`);
+}
+function saveContact(){const ac=document.getElementById('f-acct').value,f=document.getElementById('f-first').value.trim(),l=document.getElementById('f-last').value.trim();if(!ac){alert('Account required.');return}if(!f||!l){alert('Name required.');return}CONTACTS.push({id:'c_'+Math.random().toString(36).slice(2,7),accountId:ac,name:f+' '+l,title:document.getElementById('f-title').value||'',dm:document.getElementById('f-dm').value||null,color:'#0369a1',lmc:'New'});closeModal();toast('Contact created: '+f+' '+l);go('contacts')}
+
+let ACT_TYPE='email_out',MC_ON=true;
+function openLogActivity(pre){
+  const opts=ACCOUNTS.map(a=>`<option value="${a.id}" ${a.id===pre?'selected':''}>${esc(a.name)}</option>`).join('');
+  const ty=[['email_out','mail','Email Sent'],['email_in','mail','Email Received'],['call_out','phone','Call Made'],['call_in','phone','Call Received'],['meeting','cal','Meeting'],['note','note','Note']];
+  ACT_TYPE='email_out';MC_ON=true;
+  openModal(`<div class="modal-head"><span class="modal-title">Log Activity</span><button class="modal-close" onclick="closeModal()">${ICON('x')}</button></div>
+  <div class="modal-body">
+    <div class="field"><label>Activity Type <span class="req">*</span></label><div class="type-grid">${ty.map(([t,i,l])=>`<div class="type-opt ${t==='email_out'?'sel':''}" data-t="${t}" onclick="selType('${t}',this)">${ICON(i)}<span>${l}</span></div>`).join('')}</div></div>
+    <div class="field-row"><div class="field"><label>Account <span class="req">*</span></label><select id="f-acct"><option value="">— Select —</option>${opts}</select></div><div class="field"><label>Contact</label><input id="f-contact" placeholder="Contact name"></div></div>
+    <div class="field"><label>Subject <span class="req">*</span></label><input id="f-subj" placeholder="What was this about?"></div>
+    <div class="mc-toggle on" id="mc-t" onclick="toggleMC()"><div class="mc-info"><div class="mc-label">Counts as Meaningful Contact</div><div class="mc-desc">Updates Last Meaningful Contact on the carrier &amp; line</div></div><div class="tog on" id="mc-tog"><div class="tog-knob"></div></div></div>
+  </div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveActivity()">Save Activity</button></div>`);
+}
+function selType(t,el){ACT_TYPE=t;document.querySelectorAll('.type-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');MC_ON=t!=='note';document.getElementById('mc-t').classList.toggle('on',MC_ON);document.getElementById('mc-tog').classList.toggle('on',MC_ON)}
+function toggleMC(){MC_ON=!MC_ON;document.getElementById('mc-t').classList.toggle('on',MC_ON);document.getElementById('mc-tog').classList.toggle('on',MC_ON)}
+function saveActivity(){const ac=document.getElementById('f-acct').value,s=document.getElementById('f-subj').value.trim();if(!ac){alert('Account required.');return}if(!s){alert('Subject required.');return}const cont=document.getElementById('f-contact').value.trim()||'';const map={email_out:'mail',email_in:'mail',call_out:'phone',call_in:'phone',meeting:'cal',note:'note'};const cls={email_out:'ai-email',email_in:'ai-email',call_out:'ai-call',call_in:'ai-call',meeting:'ai-meeting',note:'ai-note'};ACTIVITIES.unshift({type:ACT_TYPE,subject:s,accountId:ac,contact:cont,at:TODAY.toISOString(),meaningful:MC_ON,ic:map[ACT_TYPE],cls:cls[ACT_TYPE]});if(MC_ON){const a=ACCOUNTS.find(x=>x.id===ac);if(a){a.lmc=TODAY.toISOString();a.lmcWho=cont||'Unknown'}}closeModal();toast('Activity logged'+(MC_ON?' · LMC updated':''));render()}
+
+function openAddTask(pre){
+  const opts=ACCOUNTS.map(a=>`<option value="${a.id}" ${a.id===pre?'selected':''}>${esc(a.name)}</option>`).join('');
+  openModal(`<div class="modal-head"><span class="modal-title">Add Task</span><button class="modal-close" onclick="closeModal()">${ICON('x')}</button></div>
+  <div class="modal-body">
+    <div class="field"><label>Task <span class="req">*</span></label><input id="f-title" placeholder="What needs to happen?"></div>
+    <div class="field-row"><div class="field"><label>Account</label><select id="f-acct"><option value="">— Select —</option>${opts}</select></div><div class="field"><label>Due</label><select id="f-due"><option value="today">Today</option><option value="overdue">Overdue</option></select></div></div>
+    <div class="field"><label>Notes</label><textarea rows="2"></textarea></div>
+  </div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveTask()">Create Task</button></div>`);
+}
+function saveTask(){const t=document.getElementById('f-title').value.trim();if(!t){alert('Task required.');return}const ac=document.getElementById('f-acct').value;const a=ACCOUNTS.find(x=>x.id===ac);TASKS.unshift({id:'t_'+Math.random().toString(36).slice(2,7),title:t,carrier:a?a.name:'',acctId:ac,owner:ROLE==='sales'?'Joe Rivera':'Joe Rivera',due:document.getElementById('f-due').value,daysOver:0,isTrigger:false,done:false});closeModal();toast('Task created');render()}
+
+function openNewBusinessLine(pre){
+  const opts=ACCOUNTS.map(a=>`<option value="${a.id}" ${a.id===pre?'selected':''}>${esc(a.name)}</option>`).join('');
+  openModal(`<div class="modal-head"><span class="modal-title">New Business Line</span><button class="modal-close" onclick="closeModal()">${ICON('x')}</button></div>
+  <div class="modal-body">
+    <div class="field"><label>Account <span class="req">*</span></label><select id="f-acct"><option value="">— Select —</option>${opts}</select></div>
+    <div class="field"><label>Business Line Name <span class="req">*</span></label><input id="f-name" placeholder="e.g. CAT / Storm, Commercial Property"></div>
+    <div class="field-row"><div class="field"><label>Starting Stage</label><select id="f-stage"><option value="prospect">Prospect</option><option value="engaged">Engaged</option><option value="discovery">Discovery</option></select></div><div class="field"><label>Owner</label><select><option>Joe Rivera</option><option>Mark Vetrovec</option><option>Brent Hughes</option></select></div></div>
+    <div class="field"><label>Pursuit Summary</label><textarea rows="2" placeholder="3-4 sentences so anyone can understand the opportunity."></textarea></div>
+  </div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveLine()">Create Business Line</button></div>`);
+}
+function saveLine(){const ac=document.getElementById('f-acct').value,n=document.getElementById('f-name').value.trim();if(!ac){alert('Account required.');return}if(!n){alert('Name required.');return}const a=ACCOUNTS.find(x=>x.id===ac);LINES.push({id:'l_'+Math.random().toString(36).slice(2,7),accountId:ac,name:n,stage:document.getElementById('f-stage').value,health:'ok',lmc:null,lmcWho:null,owner:'Joe Rivera'});if(a&&(a.rs==='dormant'||a.rs==='nurture')){a.rs='active-pursuit';toast('Account → Active Pursuit')}closeModal();toast('Business Line created: '+(a?a.name:'')+' · '+n);go('account-detail',ac)}
+
+/* ===== UTIL ===== */
+function liveFilter(input,sel){const q=input.value.toLowerCase();document.querySelectorAll('.content-body '+sel).forEach(el=>{el.style.display=el.textContent.toLowerCase().includes(q)?'':'none'})}
+function toast(msg){const el=document.createElement('div');el.className='toast';el.innerHTML=ICON('check')+esc(msg);document.getElementById('toast-wrap').appendChild(el);setTimeout(()=>el.remove(),2400)}
+
+/* ===== INIT ===== */
+syncThemeBtn();
+render();
+</script>
+</body>
+</html>
