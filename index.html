@@ -303,6 +303,57 @@ svg{display:block}
 .toast .ic{width:15px;height:15px;color:var(--lime)}
 @keyframes tIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
+/* AGING */
+.lmc-orange{color:#b45424}
+/* ASK BAR */
+.ask{background:linear-gradient(135deg,var(--lt),var(--card));border:1px solid var(--lime);border-radius:var(--rlg);padding:13px 15px}
+.ask-head{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ld);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ask-row{display:flex;align-items:center;gap:10px}
+.ask-row>.ic{width:18px;height:18px;color:var(--ld);flex-shrink:0}
+.ask input{flex:1;border:1px solid var(--cb);border-radius:20px;padding:9px 14px;font-size:13px;font-family:var(--font);background:var(--card);color:var(--ts)}
+.ask input:focus{outline:none;border-color:var(--lime);box-shadow:0 0 0 3px rgba(124,184,0,.12)}
+.ask-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.ask-chip{font-size:11px;font-weight:600;color:var(--ld);background:var(--card);border:1px solid var(--lime);border-radius:20px;padding:4px 11px;cursor:pointer}
+.ask-chip:hover{background:var(--lt)}
+.ask-ans{margin-top:11px}
+.ask-ans:empty{margin:0}
+.ask-ans-q{font-size:11px;color:var(--tsu);margin-bottom:7px}
+.ask-ans-h{font-size:13px;font-weight:700;color:var(--ts);margin-bottom:8px}
+.ask-card{background:var(--card);border:1px solid var(--cb);border-radius:var(--rmd);padding:12px 14px}
+/* FOCUS */
+.focus{background:var(--card);border:1px solid var(--cb);border-left:4px solid var(--crit);border-radius:var(--rlg);padding:14px 16px;box-shadow:var(--shm)}
+.focus-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--crit);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.focus-item{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--cbs);cursor:pointer}
+.focus-item:last-child{border-bottom:none}
+.focus-item:hover .focus-carrier{color:var(--ld)}
+.focus-num{width:24px;height:24px;border-radius:50%;background:var(--critb);color:var(--crit);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.focus-num .ic{width:13px;height:13px}
+.focus-carrier{font-size:13px;font-weight:700;color:var(--ts)}
+.focus-cond{font-size:11px;color:var(--tm);margin-top:1px}
+/* RELATIONSHIP MAP */
+.relmap{background:var(--card);border:1px solid var(--cb);border-radius:var(--rlg);padding:14px 16px;margin-bottom:10px;box-shadow:var(--shc)}
+.relmap-lanes{display:flex;align-items:stretch;gap:0}
+.relmap-acct{display:flex;align-items:center;gap:9px;padding-right:18px;flex-shrink:0}
+.relmap-branches{flex:1;display:flex;flex-direction:column;gap:9px;border-left:2px solid var(--cb)}
+.relmap-bl{display:flex;align-items:flex-start;gap:10px;position:relative;padding-left:18px}
+.relmap-bl:before{content:"";position:absolute;left:0;top:11px;width:14px;height:2px;background:var(--cb)}
+.relmap-bl-name{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--tsu);min-width:108px;padding-top:3px}
+.relmap-cts{display:flex;gap:5px;flex-wrap:wrap;flex:1}
+.relmap-ct{font-size:11px;background:var(--cr);border:1px solid var(--cb);border-radius:20px;padding:3px 9px;color:var(--tb);cursor:pointer}
+.relmap-ct:hover{border-color:var(--lime);color:var(--ts)}
+.relmap-cap{font-size:10.5px;color:var(--tsu);margin-top:11px;border-top:1px solid var(--cbs);padding-top:9px;line-height:1.5}
+/* WORTH NOTING */
+.wn{background:linear-gradient(135deg,rgba(124,58,237,.06),var(--card));border:1px solid var(--cb);border-left:3px solid var(--purple);border-radius:var(--rmd);padding:11px 14px;margin-bottom:6px;cursor:pointer}
+.wn:hover{box-shadow:var(--shm)}
+.wn-tag{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--purple);display:flex;align-items:center;gap:5px;margin-bottom:5px}
+.wn-tag .ic{width:11px;height:11px;fill:var(--purple);stroke:var(--purple)}
+.wn-quote{font-size:12.5px;color:var(--ts);font-style:italic;line-height:1.5}
+.wn-meta{font-size:10px;color:var(--tsu);margin-top:5px}
+/* ADVANCED SEARCH AFFORDANCE */
+.search input{padding-right:84px}
+.adv-btn{font-size:9px;font-weight:700;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.22);border-radius:5px;padding:3px 8px;cursor:pointer;background:transparent;position:absolute;right:7px;top:50%;transform:translateY(-50%)}
+.adv-btn:hover{color:#fff;border-color:rgba(255,255,255,.45)}
+
 .screen{display:none}.screen.active{display:block}
 </style>
 </head>
@@ -317,6 +368,7 @@ svg{display:block}
     <div class="search">
       <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
       <input id="global-search" placeholder="Search carriers, contacts, business lines…" oninput="globalSearch(this.value)" onfocus="globalSearch(this.value)">
+      <button class="adv-btn" onclick="openAdvancedSearch()">Advanced</button>
     </div>
     <div class="topnav-right">
       <div class="live"><div class="live-dot"></div>Live</div>
@@ -356,6 +408,8 @@ const initials=n=>n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
 const fmtRel=iso=>{if(!iso)return'';const d=Math.floor((TODAY-new Date(iso))/864e5);if(d===0)return'Today';if(d===1)return'Yesterday';if(d<7)return d+'d ago';if(d<30)return Math.floor(d/7)+'w ago';return Math.floor(d/30)+'mo ago'};
 const dAgo=n=>{const d=new Date(TODAY);d.setDate(d.getDate()-n);return d.toISOString()};
 const aColor=name=>{const c=['#1e3a8a','#0369a1','#7c3aed','#be123c','#15803d','#0891b2','#92400e','#166534','#854d0e','#0f766e'];let h=0;for(let i=0;i<name.length;i++)h=(h*31+name.charCodeAt(i))&0xffffffff;return c[Math.abs(h)%c.length]};
+const lmcDays=a=>a&&a.lmc?Math.floor((TODAY-new Date(a.lmc))/864e5):null;
+const agingClass=d=>d===null?'lmc-red':d>90?'lmc-red':d>60?'lmc-orange':d>30?'lmc-amber':'lmc-green';
 
 /* ICONS — lucide line icons (CMS-aligned) */
 const I={
@@ -472,6 +526,13 @@ const PORTFOLIO=[
  {key:'dormant',label:'Dormant',val:203,color:'var(--tsu)'},
  {key:'archived',label:'Archived',val:18,color:'var(--tf)'},
 ];
+/* curated "worth noting" signals — in production Claude extracts these from threads */
+const SIGNALS=[
+ {acctId:'trav',type:'Buying signal',person:'Sarah Chen',date:'Jun 10',quote:"If your CAT capacity holds through Q3, we'd look at moving the whole Southeast book to you next season."},
+ {acctId:'kins',type:'Commitment · stalled',person:'Linda Park',date:'May 30',quote:"We've signed off internally — just finalising the W-9 and we'll start routing claims."},
+ {acctId:'usaa',type:'Risk · trial',person:'Karen Wu',date:'May 28',quote:"We're sending test claims to two vendors before we commit any real volume."},
+ {acctId:'nat',type:'Timing',person:'Rachel Hughes',date:'Apr 28',quote:"The RFP timing slipped on our end — best to revisit us closer to September."},
+];
 
 /* ===== ROLE MODEL ===== */
 const ROLES={
@@ -524,6 +585,7 @@ function renderRail(){
     {k:'accounts',ic:'building',label:'Accounts'},
     {k:'pursuits',ic:'target',label:'Pursuits'},
     {k:'contacts',ic:'users',label:'Contacts'},
+    {k:'gonecold',ic:'clock',label:'Gone Cold',badge:coldAccounts().length,red:false},
     {k:'activities',ic:'activity',label:'Activities'},
     {sep:'Work'},
     {k:'tasks',ic:'checks',label:'Work Queue',badge:vTasks().filter(t=>t.due==='overdue'&&!t.done).length,red:true},
@@ -556,6 +618,7 @@ function renderScreen(){
     case 'bl-detail':return screenBLDetail(PARAM);
     case 'contacts':return screenContacts();
     case 'contact-detail':return screenContactDetail(PARAM);
+    case 'gonecold':return screenGoneCold();
     case 'activities':return screenActivities();
     case 'tasks':return screenTasks();
     case 'reports':return canSeeReports()?screenReports():screenDashboard();
@@ -614,6 +677,10 @@ function screenDashboard(){
     ? PORTFOLIO.map(p=>({...p,val:vAccounts().filter(a=>a.rs===p.key).length}))
     : PORTFOLIO;
 
+  const focusItems=att.filter(a=>a.sev==='crit').slice(0,3);
+  const acctIds=new Set(vAccounts().map(a=>a.id));
+  const topSig=SIGNALS.find(s=>acctIds.has(s.acctId));
+
   return `
   <div class="page-hdr">
     <div>
@@ -624,6 +691,32 @@ function screenDashboard(){
     <button class="btn btn-primary" onclick="openLogActivity()">${ICON('plus')} Log Activity</button>
   </div>
   <div class="content-body" style="display:flex;flex-direction:column;gap:22px">
+
+    ${focusItems.length||topSig?`<div class="focus">
+      <div class="focus-lbl">${ICON('alert','ic')} Today's Focus — start here</div>
+      ${focusItems.map((a,i)=>`<div class="focus-item" onclick="go('account-detail','${a.acctId}')">
+        <div class="focus-num">${i+1}</div>
+        <div style="flex:1"><div class="focus-carrier">${esc(a.carrier)} · ${esc(a.line)}</div><div class="focus-cond">${esc(a.cond)} — ${esc(a.dur)}</div></div>
+        <span class="rs ${a.rs}">${Object.values(RS).find(r=>r.cls===a.rs)?.label||''}</span>
+      </div>`).join('')}
+      ${topSig?`<div class="focus-item" onclick="go('account-detail','${topSig.acctId}')">
+        <div class="focus-num" style="background:var(--purpleb);color:var(--purple)">${ICON('star','ic')}</div>
+        <div style="flex:1"><div class="focus-carrier">Worth noting · ${esc(ACCOUNTS.find(a=>a.id===topSig.acctId).name)}</div><div class="focus-cond" style="font-style:italic">"${esc(topSig.quote)}"</div></div>
+      </div>`:''}
+    </div>`:''}
+
+    <div class="ask">
+      <div class="ask-head">${ICON('search','ic')} Ask your relationships</div>
+      <div class="ask-row">${ICON('search')}<input id="ask-input" placeholder="e.g. what's gone cold? · what needs me on Travelers? · show overdue tasks" oninput="runAsk(this.value)"></div>
+      <div class="ask-chips">
+        <span class="ask-chip" onclick="ask('What has gone cold?')">What's gone cold?</span>
+        <span class="ask-chip" onclick="ask('What needs attention?')">What needs attention?</span>
+        <span class="ask-chip" onclick="ask('Which strategic carriers are quiet?')">Strategic &amp; quiet</span>
+        <span class="ask-chip" onclick="ask('Show overdue tasks')">Overdue</span>
+        <span class="ask-chip" onclick="ask('Tell me about Travelers')">About Travelers</span>
+      </div>
+      <div class="ask-ans" id="ask-ans"></div>
+    </div>
 
     <div>
       <div class="sec-lbl">${ICON('alert','ic')} Relationship Attention Needed <span class="pill-count" style="background:var(--critb);color:var(--crit)">${att.length}</span></div>
@@ -684,9 +777,9 @@ function screenAccounts(){
   let rows=all;
   if(acctFilter)rows=rows.filter(a=>a.rs===acctFilter);
   const rowHTML=rows.map(a=>{
-    const lmcDays=a.lmc?Math.floor((TODAY-new Date(a.lmc))/864e5):null;
-    const lmcCls=lmcDays===null?'lmc-red':lmcDays>60?'lmc-red':lmcDays>30?'lmc-amber':'lmc-green';
-    const lmcLbl=lmcDays===null?'No contact':lmcDays===0?'Today':lmcDays+'d ago';
+    const ld=lmcDays(a);
+    const lmcCls=agingClass(ld);
+    const lmcLbl=ld===null?'No contact':ld===0?'Today':ld+'d ago';
     const lc=vLines().filter(l=>l.accountId===a.id).length;
     return `<div class="row" onclick="go('account-detail','${a.id}')">
       <div class="av" style="background:${aColor(a.name)}">${initials(a.name)}</div>
@@ -745,6 +838,8 @@ function screenAccountDetail(id){
       <div class="sec-lbl" style="margin-bottom:8px">${ICON('clock','ic')} Next actions on this carrier <span class="pill-count" style="background:var(--warnb);color:var(--warn)">${tasks.length}</span></div>
       ${tasks.map(taskHTML).join('')}
     </div>`:''}
+    ${relMapAccount(a)}
+    ${wnStrip(a.id)}
     <div class="detail-grid">
       <div>
         <div class="sec-lbl">${ICON('target','ic')} Business Lines <span class="pill-count" style="background:var(--purpleb);color:var(--purple)">${lines.length}</span></div>
@@ -905,6 +1000,7 @@ function screenContactDetail(id){
     </div>
   </div>
   <div class="content-body">
+    ${relMapAccount(a)}
     <div class="detail-grid">
       <div>
         <div class="card"><div class="sec-lbl">Contact Information</div>
@@ -1016,6 +1112,107 @@ function screenReports(){
       <strong style="color:var(--tm)">Note:</strong> These are organised views of data the CRM already holds — relationship states, pursuits, contacts, activity. Revenue/volume trend analytics and forecasting are intentionally deferred (per the Concept Brief) until CMS claim data is connected.
     </div>
   </div>`;
+}
+
+/* ===== RELATIONSHIP MAP + SIGNALS ===== */
+function relMapAccount(a){
+  const lines=LINES.filter(l=>l.accountId===a.id);
+  const cts=CONTACTS.filter(c=>c.accountId===a.id);
+  return `<div class="relmap">
+    <div class="sec-lbl">${ICON('target','ic')} How this relationship is structured</div>
+    <div class="relmap-lanes">
+      <div class="relmap-acct"><div class="av" style="background:${aColor(a.name)}">${initials(a.name)}</div><div><div style="font-size:13px;font-weight:800;color:var(--ts)">${esc(a.name)}</div><div style="font-size:10px;color:var(--tsu)">Carrier · ${RS[a.rs].label}</div></div></div>
+      <div class="relmap-branches">
+        <div class="relmap-bl"><div class="relmap-bl-name">Business Lines</div><div class="relmap-cts">${lines.map(l=>`<span class="relmap-ct" onclick="go('bl-detail','${l.id}')">${esc(l.name)} · ${cap(l.stage)}</span>`).join('')||'<span style="font-size:10px;color:var(--tsu)">none yet</span>'}</div></div>
+        <div class="relmap-bl"><div class="relmap-bl-name">Contacts</div><div class="relmap-cts">${cts.map(c=>`<span class="relmap-ct" onclick="go('contact-detail','${c.id}')">${esc(c.name)}${c.dm==='engaged'?' ★':''}</span>`).join('')||'<span style="font-size:10px;color:var(--tsu)">none yet</span>'}</div></div>
+      </div>
+    </div>
+    <div class="relmap-cap">One carrier · <b>${lines.length}</b> business line${lines.length!==1?'s':''} · <b>${cts.length}</b> contact${cts.length!==1?'s':''}. Each business line is a separate pursuit with its own stage, owner and people — that's why a carrier isn't one relationship but several.</div>
+  </div>`;
+}
+function wnStrip(acctId){
+  const sigs=SIGNALS.filter(s=>s.acctId===acctId);
+  if(!sigs.length)return '';
+  return `<div class="sec-lbl" style="margin-bottom:8px">${ICON('star','ic')} Worth Noting <span class="pill-count" style="background:var(--purpleb);color:var(--purple)">${sigs.length}</span></div>`+sigs.map(s=>`<div class="wn" onclick="go('activities')"><div class="wn-tag">${ICON('star','ic')} ${esc(s.type)}</div><div class="wn-quote">"${esc(s.quote)}"</div><div class="wn-meta">${esc(s.person)} · ${esc(s.date)} · surfaced from the thread</div></div>`).join('');
+}
+
+/* ===== GONE COLD ===== */
+function coldAccounts(){return vAccounts().filter(a=>{const d=lmcDays(a);return d===null||d>60}).sort((x,y)=>((lmcDays(y)===null?99999:lmcDays(y))-(lmcDays(x)===null?99999:lmcDays(x))))}
+function screenGoneCold(){
+  const cold=coldAccounts();
+  return `<div class="page-hdr"><div><div class="page-title">Gone Cold</div><div class="page-sub">${cold.length} relationship${cold.length!==1?'s':''} that have gone quiet · ${ROLES[ROLE].scope}</div></div></div>
+  <div class="filter-bar"><div class="lsearch-wrap">${ICON('search')}<input class="lsearch" placeholder="Search…" oninput="liveFilter(this,'.row')"></div><span class="filt-right">Coldest first · no meaningful contact in 60+ days</span></div>
+  <div class="content-body">${cold.map(a=>{const d=lmcDays(a);return `<div class="row" onclick="go('account-detail','${a.id}')">
+    <div class="av" style="background:${aColor(a.name)}">${initials(a.name)}</div>
+    <div class="row-body"><div class="row-name">${esc(a.name)} ${a.isStrategic?`<span class="strat">${ICON('star','ic')}Strategic</span>`:''} <span class="rs ${RS[a.rs].cls}">${RS[a.rs].label}</span></div><div class="row-meta">${esc(a.hq)} · Owner ${esc(a.owner)}${a.lmcWho?' · last: '+esc(a.lmcWho):''}</div></div>
+    <div class="row-right"><div class="lmc ${agingClass(d)}">${ICON('clock','ic')} ${d===null?'No contact logged':d+' days cold'}</div><button class="btn" style="padding:4px 10px" onclick="event.stopPropagation();openLogActivity('${a.id}')">${ICON('plus')} Log</button></div>
+  </div>`}).join('')||'<div class="empty"><strong>Nothing has gone cold.</strong>Every relationship has had meaningful contact recently.</div>'}</div>`;
+}
+
+/* ===== ASK (in-app, scripted — production wires to Claude) ===== */
+function ask(q){const el=document.getElementById('ask-input');if(el)el.value=q;runAsk(q)}
+function ansList(title,rows){
+  if(!rows.length)return `<div class="ask-card"><div class="ask-ans-h">${esc(title)}</div><div style="font-size:12px;color:var(--tm)">Nothing matches — all clear.</div></div>`;
+  return `<div class="ask-card"><div class="ask-ans-h">${esc(title)} · ${rows.length}</div>`+rows.map(r=>`<div class="focus-item" onclick="go('account-detail','${r.acctId}')"><div class="focus-num" style="background:var(--lt);color:var(--ld)">${ICON('arr','ic')}</div><div style="flex:1"><div class="focus-carrier">${esc(r.name)}</div><div class="focus-cond">${esc(r.sub)}</div></div></div>`).join('')+`</div>`;
+}
+function runAsk(q){
+  const out=document.getElementById('ask-ans');if(!out)return;
+  q=(q||'').toLowerCase().trim();
+  if(!q){out.innerHTML='';return}
+  const accts=vAccounts();let h='';
+  if(/cold|quiet|stale|gone|haven|not (talk|contact|spoke|heard)/.test(q)){
+    let list=accts.filter(a=>{const d=lmcDays(a);return d===null||d>60});
+    if(/strateg/.test(q))list=list.filter(a=>a.isStrategic);
+    list.sort((a,b)=>((lmcDays(b)===null?99999:lmcDays(b))-(lmcDays(a)===null?99999:lmcDays(a))));
+    h=ansList('Relationships that have gone quiet'+(/strateg/.test(q)?' (strategic)':''),list.map(a=>({acctId:a.id,name:a.name,sub:(lmcDays(a)===null?'No contact logged':lmcDays(a)+' days since last meaningful contact')+' · '+a.owner})));
+  } else if(/overdue/.test(q)){
+    const t=vTasks().filter(x=>x.due==='overdue'&&!x.done);
+    h=ansList('Overdue tasks',t.map(x=>({acctId:x.acctId,name:x.carrier,sub:x.title})));
+  } else if(/strateg/.test(q)){
+    h=ansList('Strategic carriers',accts.filter(a=>a.isStrategic).map(a=>({acctId:a.id,name:a.name,sub:RS[a.rs].label+' · owner '+a.owner})));
+  } else if(/risk|no claim|active client/.test(q)){
+    h=ansList('Active client risks',vRisks().map(a=>({acctId:a.acctId,name:a.carrier,sub:a.cond})));
+  } else if(/attention|need|urgent|focus|today|what.*do/.test(q)){
+    h=ansList(vAttention().length+' items need attention',vAttention().map(a=>({acctId:a.acctId,name:a.carrier,sub:a.cond})));
+  } else {
+    const a=accts.find(x=>q.includes(x.name.toLowerCase().split(' ')[0]));
+    if(a){const d=lmcDays(a);const ts=vTasks().filter(t=>t.acctId===a.id&&!t.done);const sg=SIGNALS.filter(s=>s.acctId===a.id);
+      h=`<div class="ask-card"><div class="ask-ans-h">${esc(a.name)} — ${RS[a.rs].label}</div>
+      <div style="font-size:12px;color:var(--tb);line-height:1.7">Owner: <b>${esc(a.owner)}</b><br>Last meaningful contact: <b>${d===null?'none logged':d+' days ago'}</b>${a.lmcWho?' ('+esc(a.lmcWho)+')':''}<br>${ts.length?'<b>'+ts.length+'</b> open task'+(ts.length>1?'s':''):'No open tasks'}.${sg.length?'<br>Worth noting: <i>"'+esc(sg[0].quote)+'"</i>':''}</div>
+      <div style="margin-top:9px"><button class="btn btn-primary" onclick="go('account-detail','${a.id}')">${ICON('arr')} Open ${esc(a.name)}</button></div></div>`;
+    } else {
+      h=`<div class="ask-card" style="font-size:12px;color:var(--tm);line-height:1.6">Try: <b>what's gone cold</b>, <b>what needs attention</b>, <b>overdue tasks</b>, <b>strategic carriers</b>, <b>active client risks</b> — or name a carrier (e.g. "Nationwide").</div>`;
+    }
+  }
+  out.innerHTML=`<div class="ask-ans-q">You asked: "${esc(q)}"</div>${h}`;
+}
+
+/* ===== ADVANCED SEARCH (CMS-style) ===== */
+function openAdvancedSearch(){
+  const ownerOpts=[...new Set(ACCOUNTS.map(a=>a.owner))].map(o=>`<option>${esc(o)}</option>`).join('');
+  const rsOpts=Object.entries(RS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
+  openModal(`<div class="modal-head"><span class="modal-title">Advanced Search</span><button class="modal-close" onclick="closeModal()">${ICON('x')}</button></div>
+  <div class="modal-body">
+    <div class="field"><label>Text</label><input id="as-q" placeholder="Carrier name" oninput="runAdvancedSearch()"></div>
+    <div class="field-row"><div class="field"><label>Relationship Status</label><select id="as-rs" onchange="runAdvancedSearch()"><option value="">Any</option>${rsOpts}</select></div><div class="field"><label>Owner</label><select id="as-owner" onchange="runAdvancedSearch()"><option value="">Any</option>${ownerOpts}</select></div></div>
+    <div class="field-row"><div class="field"><label>Strategic only</label><select id="as-strat" onchange="runAdvancedSearch()"><option value="">No</option><option value="1">Yes</option></select></div><div class="field"><label>Contact freshness</label><select id="as-cold" onchange="runAdvancedSearch()"><option value="">Any</option><option value="cold">Gone cold (60d+)</option><option value="fresh">Fresh (under 30d)</option></select></div></div>
+    <div id="as-results" style="border-top:1px solid var(--cbs);padding-top:10px"></div>
+  </div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal()">Close</button></div>`,true);
+  runAdvancedSearch();
+}
+function runAdvancedSearch(){
+  const g=id=>{const e=document.getElementById(id);return e?e.value:''};
+  const q=(g('as-q')||'').toLowerCase(),rs=g('as-rs'),ow=g('as-owner'),st=g('as-strat'),cold=g('as-cold');
+  let res=vAccounts();
+  if(q)res=res.filter(a=>a.name.toLowerCase().includes(q));
+  if(rs)res=res.filter(a=>a.rs===rs);
+  if(ow)res=res.filter(a=>a.owner===ow);
+  if(st)res=res.filter(a=>a.isStrategic);
+  if(cold==='cold')res=res.filter(a=>{const d=lmcDays(a);return d===null||d>60});
+  if(cold==='fresh')res=res.filter(a=>{const d=lmcDays(a);return d!==null&&d<30});
+  const box=document.getElementById('as-results');if(!box)return;
+  box.innerHTML=`<div class="ask-ans-q">${res.length} match${res.length!==1?'es':''}</div>`+(res.map(a=>`<div class="srch-result" onclick="closeModal();go('account-detail','${a.id}')">${ICON('building')}<div><div style="font-weight:600;color:var(--ts)">${esc(a.name)}</div><div style="font-size:10px;color:var(--tsu)">${RS[a.rs].label} · ${esc(a.owner)}</div></div></div>`).join('')||'<div class="empty">No matches.</div>');
 }
 
 /* ===== GLOBAL SEARCH ===== */
