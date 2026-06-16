@@ -361,6 +361,12 @@ svg{display:block}
 .score-strong{background:var(--okb);color:var(--okd)}
 .score-steady{background:var(--warnb);color:var(--warn)}
 .score-risk{background:var(--critb);color:var(--crit)}
+.eng-chip{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;cursor:help}
+.eng-chip .ic{width:11px;height:11px}
+.eng-hot{background:var(--lt);color:var(--ld)}
+.eng-warm{background:#eef6da;color:#5a8a00}
+.eng-cool{background:#f1f5f9;color:#64748b}
+.eng-sig{font-size:10px;color:var(--tsu);margin-top:3px;font-weight:500}
 .has-tip{cursor:help}
 #tooltip{position:fixed;z-index:1000;width:300px;background:var(--nav);color:#fff;border-radius:9px;padding:11px 13px;font-size:11px;line-height:1.55;box-shadow:var(--shl);opacity:0;visibility:hidden;transition:opacity .1s;pointer-events:none;border:1px solid rgba(255,255,255,.1)}
 #tooltip.show{opacity:1;visibility:visible}
@@ -432,46 +438,30 @@ const agingClass=d=>d===null?'lmc-red':d>90?'lmc-red':d>60?'lmc-orange':d>30?'lm
 let TIPS=[];
 function tip(html){TIPS.push(html);return TIPS.length-1}
 
-/* (A) Meaningful-contact quality — tooltip showing what the contact was + why it qualifies */
+/* Meaningful Contact — binary, per Mark's model. The hover makes his LMC transparent: what the touch was, and why it counts. No rating. */
 function mcTip(x){
-  const c=x.conf||'high';const label=c==='high'?'High confidence':c==='med'?'Medium confidence':'Low confidence';
-  const col=c==='high'?'#4ade80':c==='med'?'#fbbf24':'#f87171';
   const tl={email_out:'Email sent',email_in:'Email received',call_out:'Call made',call_in:'Call received',meeting:'Meeting',note:'Note'}[x.type]||x.type;
-  return `<div class="tip-h" style="color:${col}">Meaningful contact · ${label}</div>`
+  return `<div class="tip-h" style="color:#4ade80">✓ Meaningful contact</div>`
    +`<div class="tip-row"><span>What</span><b>${esc(x.subject)}</b></div>`
    +`<div class="tip-row"><span>Type</span><b>${tl}</b></div>`
    +`<div class="tip-row"><span>With</span><b>${esc(x.contact||'—')}</b></div>`
    +`<div class="tip-row"><span>When</span><b>${fmtRel(x.at)}</b></div>`
-   +(x.why?`<div class="tip-q" style="font-style:normal;color:#c8d8e8">${esc(x.why)}</div>`:'')
+   +(x.why?`<div class="tip-q" style="font-style:normal;color:#c8d8e8"><b style="color:#fff">Why it counts: </b>${esc(x.why)}</div>`:'')
    +(x.line?`<div class="tip-q">"${esc(x.line)}"</div>`:'');
 }
-function mcBadge(x){const c=x.conf||'high';const lab=c==='high'?'High':c==='med'?'Med':'Low';const cls=c==='high'?'':c==='med'?'mc-m':'mc-l';return `<span class="mc-badge ${cls} has-tip" data-tip="${tip(mcTip(x))}">✓ Meaningful · ${lab}</span>`}
+function mcBadge(x){return `<span class="mc-badge has-tip" data-tip="${tip(mcTip(x))}">✓ Meaningful</span>`}
 
-/* (B) Behavioural relationship score — grounded in observable signals, never a subjective guess */
-function relScore(a){
-  let s=50;const parts=[];const d=lmcDays(a);
-  if(d===null){s-=20;parts.push(['No contact logged',-20]);}
-  else if(d<7){s+=25;parts.push(['Contacted in last week',25]);}
-  else if(d<30){s+=15;parts.push(['Contacted within 30 days',15]);}
-  else if(d<60){s+=5;parts.push(['Contact within 60 days',5]);}
-  else if(d<90){s-=8;parts.push(['No contact 60–90 days',-8]);}
-  else{s-=20;parts.push(['No contact 90+ days',-20]);}
-  const acts=ACTIVITIES.filter(x=>x.accountId===a.id);
-  if(acts.some(x=>(x.type||'').indexOf('_in')>0)){s+=12;parts.push(['Carrier engaged back (two-way)',12]);}
-  if(acts.some(x=>x.conf==='high')){s+=8;parts.push(['Recent high-quality contact',8]);}
-  if(SIGNALS.some(x=>x.acctId===a.id&&/buying/i.test(x.type))){s+=10;parts.push(['Buying signal in thread',10]);}
-  const risk=ATTENTION.filter(x=>x.acctId===a.id).length;
-  if(risk){const p=-8*Math.min(risk,2);s+=p;parts.push(['Open attention items',p]);}
-  s=Math.max(3,Math.min(98,s));
-  const band=s>=70?'strong':s>=40?'steady':'risk';
-  return {score:s,band,parts,label:band==='strong'?'Strong':band==='steady'?'Steady':'At risk'};
-}
-function scoreTip(a){
-  const r=relScore(a);const col=r.band==='strong'?'#4ade80':r.band==='steady'?'#fbbf24':'#f87171';
-  return `<div class="tip-h">Relationship score · ${r.score}/100 — ${r.label}</div>`
-   +r.parts.map(p=>`<div class="tip-row"><span>${esc(p[0])}</span><b style="color:${p[1]>=0?'#a0e0b0':'#fca5a5'}">${p[1]>=0?'+':''}${p[1]}</b></div>`).join('')
-   +`<div class="tip-bar"><div style="width:${r.score}%;background:${col}"></div></div>`
-   +`<div class="tip-q">Built from observable behaviour — recency, two-way engagement, contact quality, signals. Not a subjective estimate.</div>`;
+/* ENGAGEMENT SCORING — objective + behavioural (Brief v2_3 §3A/§4). Points accrue on a contact from observed signals; crossing the threshold surfaces them for personal outreach. */
+const ENG_THRESHOLD=50;
+function engScore(c){const e=c.eng;if(!e)return null;return e.opens*1+e.clicks*4+e.visits*6+e.downloads*10}
+function engBand(s){return s>=80?'hot':s>=ENG_THRESHOLD?'warm':'cool'}
+function warmContacts(){return CONTACTS.filter(c=>{const a=ACCOUNTS.find(x=>x.id===c.accountId);const s=engScore(c);return s!==null&&s>=ENG_THRESHOLD&&a&&(a.rs==='nurture'||a.rs==='dormant')}).sort((x,y)=>engScore(y)-engScore(x))}
+function engTip(c){const e=c.eng;const s=engScore(c);if(s===null)return '';
+  const rows=[['Email opens',e.opens,e.opens*1],['Link clicks',e.clicks,e.clicks*4],['Website visits',e.visits,e.visits*6],['Content downloads',e.downloads,e.downloads*10]];
+  return `<div class="tip-h">Engagement · ${s} pts — ${cap(engBand(s))}</div>`
+   +rows.map(r=>`<div class="tip-row"><span>${r[0]} <b style="color:#94a3b8;font-weight:600">×${r[1]}</b></span><b style="color:#a0e0b0">+${r[2]}</b></div>`).join('')
+   +`<div class="tip-bar"><div style="width:${Math.min(100,s)}%;background:#7cb800"></div></div>`
+   +`<div class="tip-q">Observed behaviour from drip campaigns + website — opens, clicks, visits, downloads. Crosses ${ENG_THRESHOLD} pts → surfaced for a personal outreach call. Behaviour, not opinion.</div>`;
 }
 function lastMC(a){return ACTIVITIES.filter(x=>x.accountId===a.id&&x.meaningful).sort((p,q)=>new Date(q.at)-new Date(p.at))[0]}
 
@@ -544,7 +534,10 @@ const CONTACTS=[
  {id:'rgreer',accountId:'chubb',name:'Rachel Greer',title:'EVP Claims',dm:'engaged',color:'#15803d',lmc:'11d ago'},
  {id:'david',accountId:'lib',name:'David Kim',title:'Catastrophe Director',dm:'identified',color:'#0369a1',lmc:'13d ago'},
  {id:'rick',accountId:'rli',name:'Rick James',title:'VP Claims',dm:'engaged',color:'#dc2626',lmc:'298d ago'},
- {id:'robert',accountId:'sf',name:'Robert Hayes',title:'Claims Manager',dm:null,color:'#7c3aed',lmc:'—'},
+ {id:'robert',accountId:'sf',name:'Robert Hayes',title:'Claims Manager',dm:null,color:'#7c3aed',lmc:'—',eng:{opens:9,clicks:5,visits:2,downloads:1}},
+ {id:'mcole',accountId:'erie',name:'Megan Cole',title:'Claims Director',dm:null,color:'#0891b2',lmc:'—',eng:{opens:14,clicks:8,visits:4,downloads:2}},
+ {id:'pwest',accountId:'sf',name:'Paula West',title:'Claims Operations Lead',dm:null,color:'#15803d',lmc:'—',eng:{opens:11,clicks:6,visits:5,downloads:0}},
+ {id:'cstev',accountId:'hart',name:'Carl Stevens',title:'VP Claims',dm:null,color:'#854d0e',lmc:'72d ago',eng:{opens:8,clicks:4,visits:3,downloads:2}},
 ];
 const ACTIVITIES=[
  {type:'email_out',subject:'CAT capacity confirmation — Q3 allocation',accountId:'trav',contact:'Sarah Chen',at:dAgo(2),meaningful:true,ic:'mail',cls:'ai-email',conf:'high',why:'Substantive — confirms Q3 CAT capacity and fee terms, inside an active two-way thread.',line:'Confirming we can hold 40+ adjusters for your Southeast CAT allocation through Q3.'},
@@ -557,7 +550,7 @@ const ACTIVITIES=[
  {type:'meeting',subject:'Intro meeting — Commercial Specialty',accountId:'chubb',contact:'Rachel Greer',at:dAgo(11),meaningful:true,ic:'cal',cls:'ai-meeting',conf:'high',why:'Attended intro meeting with the EVP of Claims.',line:''},
  {type:'call_out',subject:'RFP timeline call',accountId:'nat',contact:'Rachel Hughes',at:dAgo(45),meaningful:true,ic:'phone',cls:'ai-call',conf:'med',why:'Connected — but 45 days ago, and timing slipped on their end.',line:'RFP timing slipped — revisit closer to September.'},
  {type:'call_out',subject:'Intro call — CAT vendor qualification',accountId:'lib',contact:'David Kim',at:dAgo(13),meaningful:true,ic:'phone',cls:'ai-call',conf:'med',why:'Connected qualification call; decision maker not yet confirmed.',line:''},
- {type:'email_out',subject:'Follow-up — daily property claims',accountId:'rli',contact:'Rick James',at:dAgo(298),meaningful:true,ic:'mail',cls:'ai-email',conf:'low',why:'One-way — sent 298 days ago, no reply. Low-confidence; the relationship has effectively gone silent.',line:''},
+ {type:'email_out',subject:'Follow-up — daily property claims',accountId:'rli',contact:'Rick James',at:dAgo(298),meaningful:true,ic:'mail',cls:'ai-email',conf:'low',why:'One-way follow-up — sent 298 days ago, no reply since. It is the last logged touch, which is why this relationship now surfaces as gone cold.',line:''},
 ];
 let TASKS=[
  {id:'t1',title:'Send CAT capacity confirmation letter — Sarah waiting on Q3 allocation',carrier:'Travelers',acctId:'trav',owner:'Joe Rivera',due:'overdue',daysOver:1,isTrigger:true,triggerLabel:'No follow-up after proposal',done:false},
@@ -645,6 +638,8 @@ function syncThemeBtn(){
 function renderRail(){
   const items=[
     {k:'dashboard',ic:'dashboard',label:'Dashboard',badge:vAttention().length,red:true},
+    {sep:'Prospecting'},
+    {k:'qualify',ic:'trend',label:'Qualification Queue',badge:warmContacts().length,red:false},
     {sep:'Carriers'},
     {k:'accounts',ic:'building',label:'Accounts'},
     {k:'pursuits',ic:'target',label:'Pursuits'},
@@ -676,6 +671,7 @@ function toggleRail(){
 function renderScreen(){
   switch(ROUTE){
     case 'dashboard':return screenDashboard();
+    case 'qualify':return screenQualify();
     case 'accounts':return screenAccounts();
     case 'account-detail':return screenAccountDetail(PARAM);
     case 'pursuits':return screenPursuits();
@@ -845,7 +841,6 @@ function screenAccounts(){
     const lmcCls=agingClass(ld);
     const lmcLbl=ld===null?'No contact':ld===0?'Today':ld+'d ago';
     const lc=vLines().filter(l=>l.accountId===a.id).length;
-    const rs=relScore(a);
     return `<div class="row" onclick="go('account-detail','${a.id}')">
       <div class="av" style="background:${aColor(a.name)}">${initials(a.name)}</div>
       <div class="row-body">
@@ -853,7 +848,7 @@ function screenAccounts(){
         <div class="row-meta">${esc(a.hq)} · ${esc(a.size)} · ${lc} business line${lc!==1?'s':''}</div>
       </div>
       <div class="row-right">
-        <div style="display:flex;align-items:center;gap:6px"><span class="score score-${rs.band} has-tip" data-tip="${tip(scoreTip(a))}">${rs.score}</span><div class="lmc ${lmcCls}">${ICON('clock','ic')} ${lmcLbl}${a.lmcWho?' · '+esc(a.lmcWho):''}</div></div>
+        <div class="lmc ${lmcCls}">${ICON('clock','ic')} ${lmcLbl}${a.lmcWho?' · '+esc(a.lmcWho):''}</div>
         ${ROLE!=='sales'?`<div class="owner-chip"><div class="owner-av" style="background:${a.ownerColor}">${initials(a.owner)}</div>${esc(a.owner)}${a.prevOwner?` <span style="color:var(--tf)">(from ${esc(a.prevOwner)})</span>`:''}</div>`:''}
       </div>
     </div>`;
@@ -880,8 +875,7 @@ function screenAccountDetail(id){
   const acts=ACTIVITIES.filter(x=>x.accountId===a.id);
   const tasks=TASKS.filter(t=>t.acctId===a.id&&!t.done);
   const lmcDays=a.lmc?Math.floor((TODAY-new Date(a.lmc))/864e5):null;
-  const rsA=relScore(a);const lastMcA=lastMC(a);
-  const rsCol=rsA.band==='strong'?'#86efac':rsA.band==='steady'?'#fde68a':'#fca5a5';
+  const lastMcA=lastMC(a);
   return `
   <div class="bc"><a onclick="go('accounts')">Accounts</a><span class="sep">›</span><span style="font-weight:600">${esc(a.name)}</span><span class="rs ${RS[a.rs].cls}" style="margin-left:6px">${RS[a.rs].label}</span></div>
   <div class="hero">
@@ -896,7 +890,6 @@ function screenAccountDetail(id){
     <div class="hero-meta">
       <div><div class="hero-k">Relationship Owner</div><div class="hero-v"><div class="owner-av" style="background:${a.ownerColor}">${initials(a.owner)}</div>${esc(a.owner)}</div></div>
       <div><div class="hero-k">Last Meaningful Contact</div><div class="hero-v" style="color:${lmcDays!==null&&lmcDays<30?'#86efac':'#fde68a'}">${lastMcA?`<span class="has-tip" data-tip="${tip(mcTip(lastMcA))}" style="cursor:help;border-bottom:1px dotted rgba(255,255,255,.4)">${lmcDays===null?'No contact yet':lmcDays+' days ago'}${a.lmcWho?' · '+esc(a.lmcWho):''}</span>`:(lmcDays===null?'No contact yet':lmcDays+' days ago')}</div></div>
-      <div><div class="hero-k">Relationship Score</div><div class="hero-v"><span class="has-tip" data-tip="${tip(scoreTip(a))}" style="cursor:help;color:${rsCol};border-bottom:1px dotted rgba(255,255,255,.4)">${rsA.score} · ${rsA.label}</span></div></div>
       <div><div class="hero-k">HQ</div><div class="hero-v">${esc(a.hq)}</div></div>
       <div><div class="hero-k">Size</div><div class="hero-v">${esc(a.size)}</div></div>
     </div>
@@ -1016,6 +1009,34 @@ function screenBLDetail(id){
 
 /* ===== CONTACTS ===== */
 let ctFilter='all';
+/* ===== QUALIFICATION QUEUE (prospect side, Brief v2_3) ===== */
+function screenQualify(){
+  const warm=warmContacts();
+  return `
+  <div class="page-hdr">
+    <div><div class="page-title">Qualification Queue</div><div class="page-sub">${warm.length} contact${warm.length!==1?'s':''} warming up — crossed the engagement threshold, ready for a personal outreach call</div></div>
+  </div>
+  <div class="content-body">
+    <div class="card" style="background:var(--lt);border-color:#cfe39a;margin-bottom:14px">
+      <div style="font-size:12px;color:var(--ld);line-height:1.6"><b>How this works.</b> Contacts in Aspen's nurture universe accumulate engagement points from observed behaviour — email opens, clicks, website visits, content downloads. When a contact crosses <b>${ENG_THRESHOLD} points</b>, they surface here for a qualifying conversation. After the call, create a Business Line and they enter the pursuit pipeline.</div>
+    </div>
+    ${warm.map(c=>{const a=ACCOUNTS.find(x=>x.id===c.accountId);const s=engScore(c);const e=c.eng;const band=engBand(s);
+      return `<div class="row" onclick="go('contact-detail','${c.id}')">
+        <div class="av av-rd" style="background:${c.color}">${initials(c.name)}</div>
+        <div class="row-body">
+          <div class="row-name">${esc(c.name)} <span class="eng-chip eng-${band} has-tip" data-tip="${tip(engTip(c))}">${ICON('trend','ic')} ${s} pts · ${cap(band)}</span></div>
+          <div class="row-meta">${esc(c.title)} · ${esc(a?.name||'')} <span class="rs ${RS[a.rs].cls}" style="margin-left:4px">${RS[a.rs].label}</span></div>
+          <div class="eng-sig">${e.opens} opens · ${e.clicks} clicks · ${e.visits} site visits · ${e.downloads} download${e.downloads!==1?'s':''}</div>
+        </div>
+        <div class="row-right">
+          <button class="btn btn-primary" onclick="event.stopPropagation();qualifyContact('${c.id}')">${ICON('phone')} Qualifying Call</button>
+        </div>
+      </div>`;
+    }).join('')||'<div class="empty"><strong>No contacts have crossed the threshold yet.</strong>As nurture contacts engage with campaigns and the site, they will appear here.</div>'}
+  </div>`;
+}
+function qualifyContact(id){const c=CONTACTS.find(x=>x.id===id);openLogActivity(c?c.accountId:null);toast('Log the qualifying call — then create a Business Line to start the pursuit')}
+
 function screenContacts(){
   const all=vContacts();
   const counts={engaged:all.filter(c=>c.dm==='engaged').length,identified:all.filter(c=>c.dm==='identified').length,none:all.filter(c=>!c.dm).length};
@@ -1039,7 +1060,7 @@ function screenContacts(){
   <div class="content-body">
     ${rows.map(c=>{const a=ACCOUNTS.find(x=>x.id===c.accountId);const ln=LINES.filter(l=>l.accountId===c.accountId).map(l=>l.name).join(', ');return `<div class="row" onclick="go('contact-detail','${c.id}')">
       <div class="av av-rd" style="background:${c.color}">${initials(c.name)}</div>
-      <div class="row-body"><div class="row-name">${esc(c.name)} ${dmChip(c.dm)}</div><div class="row-meta">${esc(c.title)} · ${esc(a?.name||'')}${ln?' · '+esc(ln):''}</div></div>
+      <div class="row-body"><div class="row-name">${esc(c.name)} ${dmChip(c.dm)} ${c.eng&&engScore(c)>=ENG_THRESHOLD?`<span class="eng-chip eng-${engBand(engScore(c))} has-tip" data-tip="${tip(engTip(c))}">${ICON('trend','ic')} ${engScore(c)}</span>`:''}</div><div class="row-meta">${esc(c.title)} · ${esc(a?.name||'')}${ln?' · '+esc(ln):''}</div></div>
       <div class="row-right"><div class="lmc lmc-green" style="color:var(--tsu)">${ICON('clock','ic')} ${esc(c.lmc)}</div></div>
     </div>`}).join('')||'<div class="empty"><strong>No contacts in this view.</strong></div>'}
   </div>`;
@@ -1079,6 +1100,7 @@ function screenContactDetail(id){
             <div style="color:var(--tsu);font-weight:600">Last Contact</div><div>${esc(c.lmc)}</div>
           </div>
         </div>
+        ${c.eng?`<div class="card" style="border-left:3px solid var(--lime)"><div class="sec-lbl" style="margin-bottom:8px">${ICON('trend','ic')} Engagement <span class="eng-chip eng-${engBand(engScore(c))} has-tip" data-tip="${tip(engTip(c))}" style="margin-left:4px">${engScore(c)} pts · ${cap(engBand(engScore(c)))}</span></div><div style="font-size:11px;color:var(--tm);line-height:1.6">${c.eng.opens} email opens · ${c.eng.clicks} clicks · ${c.eng.visits} website visits · ${c.eng.downloads} download${c.eng.downloads!==1?'s':''}.${engScore(c)>=ENG_THRESHOLD?` <b style="color:var(--ld)">Crossed the ${ENG_THRESHOLD}-pt threshold — surfaced in the Qualification Queue for a personal outreach call.</b>`:' Building, not yet at threshold.'}</div></div>`:''}
         <div class="sec-lbl" style="margin-top:6px">${ICON('activity','ic')} Activity with ${esc(c.name)} <button class="sec-link" onclick="go('activities')">All →</button></div>
         ${acts.length?acts.map(actHTML).join(''):'<div class="empty">No activities logged with this contact yet.</div>'}
       </div>
