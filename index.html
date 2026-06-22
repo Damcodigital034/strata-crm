@@ -368,6 +368,44 @@ svg{display:block}
 .eng-cool{background:#f1f5f9;color:#64748b}
 .eng-sig{font-size:10px;color:var(--tsu);margin-top:3px;font-weight:500}
 .has-tip{cursor:help}
+/* role/pipe toggles */
+.vtoggle{display:inline-flex;align-items:center;background:var(--cbs);border:1px solid var(--cb);border-radius:7px;padding:2px;gap:2px}
+.vtoggle .ic{margin:0 4px 0 6px;color:var(--tsu)}
+.vtg{font-family:var(--font);font-size:11px;font-weight:600;color:var(--tm);background:none;border:none;padding:5px 13px;border-radius:5px;cursor:pointer}
+.vtg.on{background:var(--card);color:var(--ts);box-shadow:var(--shc)}
+/* kanban */
+.kboard{display:flex;gap:12px;overflow-x:auto;padding-bottom:10px}
+.kcol{flex:0 0 218px;background:var(--cr);border:1px solid var(--cb);border-radius:10px;padding:10px;min-height:140px}
+.khead{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--tm);padding:2px 4px 10px}
+.kcount{background:var(--cbs);color:var(--tm);border-radius:20px;padding:1px 7px;font-size:10px}
+.kcard{background:var(--card);border:1px solid var(--cb);border-radius:8px;padding:11px;margin-bottom:8px;cursor:grab;transition:box-shadow .15s,transform .08s}
+.kcard:hover{box-shadow:var(--shm)}
+.kcard:active{cursor:grabbing;transform:scale(.99)}
+.kcard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.kav{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff}
+.kcard-name{font-size:12px;font-weight:700;color:var(--ts)}
+.kcard-line{font-size:11px;color:var(--tm);margin-top:1px}
+.kcard-meta{font-size:10px;color:var(--tsu);margin-top:8px;display:flex;align-items:center;gap:4px}
+.kempty{font-size:11px;color:var(--tf);text-align:center;padding:8px 0}
+.kanban-hint{font-size:11px;color:var(--tsu);margin-top:12px}
+/* pursuits table */
+.ptable{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--cb);border-radius:10px;overflow:hidden;font-size:13px}
+.ptable th{text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--tsu);padding:11px 14px;background:var(--cr);border-bottom:1px solid var(--cb)}
+.ptable td{padding:11px 14px;border-bottom:1px solid var(--cbs);color:var(--tb)}
+.ptable tbody tr{cursor:pointer}
+.ptable tbody tr:hover{background:var(--cr)}
+/* client / trial markers */
+.cm{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px;white-space:nowrap;letter-spacing:.02em}
+.cm-client{background:var(--okb);color:var(--okd)}
+.cm-trial{background:var(--warnb);color:var(--warn)}
+.trial-card{border-left:3px solid var(--warn)}
+.trial-rows{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.trial-row{display:flex;justify-content:space-between;font-size:12px;color:var(--tb)}
+.trial-row b{color:var(--ts)}
+.tbar{height:6px;background:var(--cbs);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.tbar>div{height:100%;background:var(--warn);border-radius:3px}
+.trial-note{font-size:12px;color:var(--tm);line-height:1.6;border-top:1px solid var(--cbs);padding-top:10px}
+.trial-note b{color:var(--ts)}
 #tooltip{position:fixed;z-index:1000;width:300px;background:var(--nav);color:#fff;border-radius:9px;padding:11px 13px;font-size:11px;line-height:1.55;box-shadow:var(--shl);opacity:0;visibility:hidden;transition:opacity .1s;pointer-events:none;border:1px solid rgba(255,255,255,.1)}
 #tooltip.show{opacity:1;visibility:visible}
 .tip-h{font-weight:700;color:#fff;margin-bottom:6px}
@@ -400,8 +438,8 @@ svg{display:block}
       <div class="tnav-div"></div>
       <button class="icon-btn" onclick="toggleTheme()" id="theme-btn" title="Toggle light/dark"></button>
       <div class="user-chip">
-        <div class="user-av" id="user-av">MV</div>
-        <div class="user-meta"><b id="user-name">Mark Vetrovec</b><span id="user-role">Owner</span></div>
+        <div class="user-av" id="user-av">SM</div>
+        <div class="user-meta"><b id="user-name">Sales Manager</b><span id="user-role">Manager</span></div>
       </div>
     </div>
   </div>
@@ -409,9 +447,8 @@ svg{display:block}
   <div class="rolebar">
     <span class="role-lbl">View as</span>
     <button class="role-btn" data-role="sales" onclick="setRole('sales')">Sales Rep</button>
-    <button class="role-btn" data-role="manager" onclick="setRole('manager')">Manager</button>
-    <button class="role-btn active" data-role="owner" onclick="setRole('owner')">Owner</button>
-    <span class="rolebar-note">Same system · scope &amp; permissions change by role</span>
+    <button class="role-btn active" data-role="manager" onclick="setRole('manager')">Manager</button>
+    <span class="rolebar-note">Two roles · Sales Rep sees their own book · Manager sees everything</span>
   </div>
 
   <div class="body-row">
@@ -499,9 +536,9 @@ const RS={'active-client':{label:'Active Client',cls:'rs-ac'},'pending-assign':{
 
 /* ===== DATA (verbatim from Mark's v4) ===== */
 const ACCOUNTS=[
- {id:'trav',name:'Travelers Insurance',rs:'active-client',owner:'Alicia Torres',ownerColor:'#be123c',isStrategic:true,prevOwner:'Joe Rivera',lmc:dAgo(2),lmcWho:'Sarah Chen',hq:'Hartford, CT',size:'Large (National)'},
- {id:'all',name:'Allstate',rs:'active-client',owner:'Brent Hughes',ownerColor:'#0891b2',isStrategic:false,prevOwner:'Joe Rivera',lmc:dAgo(6),lmcWho:'James Mitchell',hq:'Northbrook, IL',size:'Large (National)'},
- {id:'usaa',name:'USAA Property Claims',rs:'active-client',owner:'Joe Rivera',ownerColor:'#0369a1',isStrategic:false,lmc:dAgo(3),lmcWho:'Karen Wu',hq:'San Antonio, TX',size:'Large (National)'},
+ {id:'trav',name:'Travelers Insurance',rs:'active-client',owner:'Alicia Torres',ownerColor:'#be123c',isStrategic:true,prevOwner:'Joe Rivera',lmc:dAgo(2),lmcWho:'Sarah Chen',hq:'Hartford, CT',size:'Large (National)',claims:64,firstClaim:dAgo(420),steward:'Alicia Torres'},
+ {id:'all',name:'Allstate',rs:'active-client',owner:'Brent Hughes',ownerColor:'#0891b2',isStrategic:false,prevOwner:'Joe Rivera',lmc:dAgo(6),lmcWho:'James Mitchell',hq:'Northbrook, IL',size:'Large (National)',claims:31,firstClaim:dAgo(300),steward:'Brent Hughes'},
+ {id:'usaa',name:'USAA Property Claims',rs:'active-client',owner:'Joe Rivera',ownerColor:'#0369a1',isStrategic:false,lmc:dAgo(3),lmcWho:'Karen Wu',hq:'San Antonio, TX',size:'Large (National)',claims:2,firstClaim:dAgo(22),steward:'Alicia Torres'},
  {id:'kins',name:'Kinsale Insurance',rs:'pending-assign',owner:'Joe Rivera',ownerColor:'#0369a1',isStrategic:false,lmc:dAgo(0),lmcWho:'Linda Park',hq:'Richmond, VA',size:'Regional'},
  {id:'nat',name:'Nationwide P&C',rs:'active-pursuit',owner:'Joe Rivera',ownerColor:'#0369a1',isStrategic:true,lmc:dAgo(45),lmcWho:'Rachel Hughes',hq:'Columbus, OH',size:'Large (National)'},
  {id:'chubb',name:'Chubb Commercial',rs:'active-pursuit',owner:'Mark Vetrovec',ownerColor:'#7c3aed',isStrategic:true,lmc:dAgo(11),lmcWho:'Rachel Greer',hq:'Warren, NJ',size:'Large (National)'},
@@ -594,11 +631,13 @@ const SIGNALS=[
 /* ===== ROLE MODEL ===== */
 const ROLES={
   sales:{name:'Joe Rivera',init:'JR',label:'Sales Rep',greet:'Joe',scope:'My book',me:'Joe Rivera'},
-  manager:{name:'Sales Manager',init:'SM',label:'Manager',greet:'team',scope:'My team',me:null},
-  owner:{name:'Mark Vetrovec',init:'MV',label:'Owner',greet:'Mark',scope:'Full portfolio',me:null},
+  manager:{name:'Sales Manager',init:'SM',label:'Manager',greet:'team',scope:'Full visibility',me:null},
 };
-let ROLE='owner';
-const canSeeReports=()=>ROLE==='owner'||ROLE==='manager';
+let ROLE='manager';
+let SALESMODE='clients';   /* manager Sales⇄Clients focus */
+let PIPEVIEW='kanban';     /* pursuits Kanban|Table */
+let DRAGID=null;
+const canSeeReports=()=>ROLE==='manager';
 const isMine=ownerName=>ROLE!=='sales'||ownerName===ROLES.sales.me;
 const vAccounts=()=>ACCOUNTS.filter(a=>isMine(a.owner));
 const vLines=()=>LINES.filter(l=>isMine(l.owner));
@@ -649,7 +688,7 @@ function renderRail(){
     {sep:'Work'},
     {k:'tasks',ic:'checks',label:'Work Queue',badge:vTasks().filter(t=>t.due==='overdue'&&!t.done).length,red:true},
   ];
-  if(canSeeReports()){items.push({sep:ROLE==='owner'?'Owner View':'Management'});items.push({k:'reports',ic:'chart',label:'Reports'})}
+  if(canSeeReports()){items.push({sep:'Management'});items.push({k:'reports',ic:'chart',label:'Reports'})}
   let h='';let open=false;
   items.forEach(it=>{
     if(it.sep){if(open)h+='</div>';h+=`<div class="rail-sec"><div class="rail-lbl">${it.sep}</div>`;open=true;return}
@@ -667,6 +706,16 @@ function toggleRail(){
   const r=document.getElementById('rail');r.classList.toggle('collapsed');
   document.getElementById('rail-collapse').querySelector('svg').outerHTML=ICON(r.classList.contains('collapsed')?'cright':'cleft');
 }
+/* manager Sales⇄Clients focus toggle */
+function setSalesMode(m){SALESMODE=m;render()}
+/* pursuits Kanban|Table toggle */
+function setPipeView(v){PIPEVIEW=v;document.getElementById('main').innerHTML=screenPursuits()}
+/* Kanban drag-to-move (pursuit through pipeline) */
+function dragLine(e,id){DRAGID=id;e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',id)}catch(_){}}
+function dropLine(e,stage){e.preventDefault();const id=DRAGID||(e.dataTransfer&&e.dataTransfer.getData('text/plain'));const l=LINES.find(x=>x.id===id);if(l&&l.stage!==stage){l.stage=stage;toast(esc((ACCOUNTS.find(a=>a.id===l.accountId)||{}).name||'')+' · '+esc(l.name)+' → '+cap(stage))}DRAGID=null;document.getElementById('main').innerHTML=screenPursuits()}
+/* Client = received-a-claim; 90-day / 20-claim trial */
+function trialState(a){if(a.rs!=='active-client'||!a.firstClaim)return null;const days=Math.floor((TODAY-new Date(a.firstClaim))/864e5);const claims=a.claims||0;return {inTrial:claims<20&&days<90,claims,days,steward:a.steward};}
+function clientMarker(a){const c=a.claims||0;if(!c)return '';const ts=trialState(a);if(ts&&ts.inTrial)return `<span class="cm cm-trial" title="Early Active Client — trial period">Trial · ${ts.claims}/20</span>`;return `<span class="cm cm-client" title="Received ${c} claims">Client · ${c} claims</span>`;}
 
 function renderScreen(){
   switch(ROUTE){
@@ -722,6 +771,8 @@ function toggleTask(id){const t=TASKS.find(x=>x.id===id);if(t){t.done=!t.done;re
 
 function screenDashboard(){
   const R=ROLES[ROLE];
+  const isMgr=ROLE==='manager';
+  const mode=isMgr?SALESMODE:'sales';   /* sales rep is always sales-focused on their own book */
   const att=vAttention();
   const pursuit=att.filter(a=>a.cat==='pursuit');
   const steward=att.filter(a=>a.cat==='stewardship');
@@ -730,30 +781,43 @@ function screenDashboard(){
   const today=tasks.filter(t=>t.due==='today'&&!t.done).length;
   const openTasks=tasks.filter(t=>!t.done);
   const risks=vRisks();
-  const greet=ROLE==='manager'?'Good morning':'Good morning, '+R.greet;
+  const greet=isMgr?'Good morning':'Good morning, '+R.greet;
 
-  // portfolio scoped: owner/manager see full numbers, sales sees own counts
+  // portfolio scoped: manager sees full numbers, sales sees own counts
   const port = ROLE==='sales'
     ? PORTFOLIO.map(p=>({...p,val:vAccounts().filter(a=>a.rs===p.key).length}))
     : PORTFOLIO;
 
-  const focusItems=att.filter(a=>a.sev==='crit').slice(0,3);
+  // Today's Focus follows the active mode: Clients → stewardship; Sales → pursuit
+  const focusPool=mode==='clients'?steward:pursuit;
+  const focusItems=focusPool.filter(a=>a.sev==='crit').concat(focusPool.filter(a=>a.sev!=='crit')).slice(0,3);
   const acctIds=new Set(vAccounts().map(a=>a.id));
   const topSig=SIGNALS.find(s=>acctIds.has(s.acctId));
+
+  const toggle=isMgr?`<div class="vtoggle">${ICON('pin','ic')}<button class="vtg ${mode==='clients'?'on':''}" onclick="setSalesMode('clients')">Clients</button><button class="vtg ${mode==='sales'?'on':''}" onclick="setSalesMode('sales')">Sales</button></div>`:'';
+
+  const pursuitBlock=`<div style="margin-bottom:14px">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--purple);margin-bottom:6px;display:flex;align-items:center;gap:6px"><span style="width:14px;height:2px;background:var(--purple);border-radius:2px"></span>Pursuit Attention <span class="pill-count" style="background:var(--purpleb);color:var(--purple)">${pursuit.length}</span></div>
+    ${pursuit.map(attHTML).join('')||'<div class="empty">Nothing in pursuit needs attention right now.</div>'}
+  </div>`;
+  const stewardBlock=`<div style="margin-bottom:14px">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--okd);margin-bottom:6px;display:flex;align-items:center;gap:6px"><span style="width:14px;height:2px;background:var(--ok);border-radius:2px"></span>Client Stewardship <span class="pill-count" style="background:var(--okb);color:var(--okd)">${steward.length}</span></div>
+    ${steward.map(attHTML).join('')||'<div class="empty">No active-client stewardship items right now.</div>'}
+  </div>`;
 
   return `
   <div class="page-hdr">
     <div>
       <div class="page-title">${greet}</div>
       <div class="page-sub">Thursday, June 12, 2026 · ${att.length} ${att.length===1?'item needs':'items need'} attention</div>
-      <div class="scope">${ICON('pin','ic')}Viewing: <b>${R.scope}</b></div>
+      <div class="scope">${ICON('pin','ic')}Viewing: <b>${R.scope}</b>${isMgr?` · focused on <b>${mode==='clients'?'current clients':'sales pursuits'}</b>`:''}</div>
     </div>
-    <button class="btn btn-primary" onclick="openLogActivity()">${ICON('plus')} Log Activity</button>
+    <div style="display:flex;align-items:center;gap:12px">${toggle}<button class="btn btn-primary" onclick="openLogActivity()">${ICON('plus')} Log Activity</button></div>
   </div>
   <div class="content-body" style="display:flex;flex-direction:column;gap:22px">
 
     ${focusItems.length||topSig?`<div class="focus">
-      <div class="focus-lbl">${ICON('alert','ic')} Today's Focus — start here</div>
+      <div class="focus-lbl">${ICON('alert','ic')} Today's Focus — ${mode==='clients'?'client stewardship':'sales pursuits'}</div>
       ${focusItems.map((a,i)=>`<div class="focus-item" onclick="go('account-detail','${a.acctId}')">
         <div class="focus-num">${i+1}</div>
         <div style="flex:1"><div class="focus-carrier">${esc(a.carrier)} · ${esc(a.line)}</div><div class="focus-cond">${esc(a.cond)} — ${esc(a.dur)}</div></div>
@@ -780,14 +844,7 @@ function screenDashboard(){
 
     <div>
       <div class="sec-lbl">${ICON('alert','ic')} Relationship Attention Needed <span class="pill-count" style="background:var(--critb);color:var(--crit)">${att.length}</span></div>
-      <div style="margin-bottom:14px">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--purple);margin-bottom:6px;display:flex;align-items:center;gap:6px"><span style="width:14px;height:2px;background:var(--purple);border-radius:2px"></span>Pursuit Attention <span class="pill-count" style="background:var(--purpleb);color:var(--purple)">${pursuit.length}</span></div>
-        ${pursuit.map(attHTML).join('')||'<div class="empty">Nothing in pursuit needs attention right now.</div>'}
-      </div>
-      <div>
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--okd);margin-bottom:6px;display:flex;align-items:center;gap:6px"><span style="width:14px;height:2px;background:var(--ok);border-radius:2px"></span>Client Stewardship <span class="pill-count" style="background:var(--okb);color:var(--okd)">${steward.length}</span></div>
-        ${steward.map(attHTML).join('')||'<div class="empty">No active-client stewardship items right now.</div>'}
-      </div>
+      ${mode==='clients'?stewardBlock+pursuitBlock:pursuitBlock+stewardBlock}
     </div>
 
     <div>
@@ -844,7 +901,7 @@ function screenAccounts(){
     return `<div class="row" onclick="go('account-detail','${a.id}')">
       <div class="av" style="background:${aColor(a.name)}">${initials(a.name)}</div>
       <div class="row-body">
-        <div class="row-name">${esc(a.name)} ${a.isStrategic?`<span class="strat">${ICON('star','ic')}Strategic</span>`:''} <span class="rs ${RS[a.rs].cls}">${RS[a.rs].label}</span></div>
+        <div class="row-name">${esc(a.name)} ${a.isStrategic?`<span class="strat">${ICON('star','ic')}Strategic</span>`:''} <span class="rs ${RS[a.rs].cls}">${RS[a.rs].label}</span>${clientMarker(a)}</div>
         <div class="row-meta">${esc(a.hq)} · ${esc(a.size)} · ${lc} business line${lc!==1?'s':''}</div>
       </div>
       <div class="row-right">
@@ -899,6 +956,13 @@ function screenAccountDetail(id){
       <div class="sec-lbl" style="margin-bottom:8px">${ICON('clock','ic')} Next actions on this carrier <span class="pill-count" style="background:var(--warnb);color:var(--warn)">${tasks.length}</span></div>
       ${tasks.map(taskHTML).join('')}
     </div>`:''}
+    ${(function(){const ts=trialState(a);if(!ts){return a.rs==='active-client'&&a.claims?`<div class="card" style="border-left:3px solid var(--ok)"><div class="sec-lbl" style="margin-bottom:6px">${ICON('check','ic')} Established Active Client</div><div style="font-size:13px;color:var(--tb);line-height:1.6">${a.claims} claims received · stewardship owned by <b>${esc(a.owner)}</b>${a.prevOwner?` (transferred from ${esc(a.prevOwner)}, who keeps visibility)`:''}.</div></div>`:'';}
+      const cp=Math.min(100,Math.round(ts.claims/20*100)),dp=Math.min(100,Math.round(ts.days/90*100));
+      return `<div class="card trial-card"><div class="sec-lbl" style="margin-bottom:10px">${ICON('clock','ic')} Early Active Client · Trial Period <span class="cm cm-trial">Rep keeps ownership</span></div>
+      <div class="trial-rows"><div class="trial-row"><span>Claims received</span><b>${ts.claims} / 20</b></div><div class="tbar"><div style="width:${cp}%"></div></div>
+      <div class="trial-row"><span>Days since first claim</span><b>${ts.days} / 90</b></div><div class="tbar"><div style="width:${dp}%"></div></div></div>
+      <div class="trial-note">Rep <b>${esc(a.owner)}</b> keeps ownership until <b>90 days or 20 claims, whichever comes first</b>. On threshold, ownership transfers to <b>${esc(ts.steward||'an operations relationship manager')}</b> for stewardship — and management confirms. The rep keeps visibility either way.</div></div>`;
+    })()}
     ${relMapAccount(a)}
     ${wnStrip(a.id)}
     <div class="detail-grid">
@@ -931,27 +995,34 @@ function actHTML(x){const acct=ACCOUNTS.find(a=>a.id===x.accountId);return `<div
 /* ===== PURSUITS ===== */
 function screenPursuits(){
   const lines=vLines();
-  const pursuit=lines.filter(l=>l.stage!=='won');
-  const won=lines.filter(l=>l.stage==='won');
-  const rowHTML=l=>{const a=ACCOUNTS.find(x=>x.id===l.accountId);return `<div class="row" onclick="go('bl-detail','${l.id}')">
-    <div class="av" style="background:${aColor(a?.name||'?')};width:32px;height:32px;font-size:10px">${initials(a?.name||'?')}</div>
-    <div class="row-body"><div class="row-name">${esc(a?.name||'')} · ${esc(l.name)}</div><div class="row-meta">LMC ${fmtRel(l.lmc)}${l.lmcWho?' · '+esc(l.lmcWho):''} · Owner: ${esc(l.owner)}</div></div>
-    <div class="row-right"><span class="health ${l.health==='ok'?'hc-ok':'hc-att'}">${l.health==='ok'?'On Track':'Needs Attn'}</span><span class="stage sb-${l.stage}">${cap(l.stage)}</span></div>
-  </div>`};
+  const STAGES=[['prospect','Prospect'],['engaged','Engaged'],['discovery','Discovery'],['proposal','Proposal'],['pending','Pending'],['won','Active Client']];
+  const acct=id=>ACCOUNTS.find(x=>x.id===id);
+
+  const kanban=`<div class="kboard">${STAGES.map(([s,lbl])=>{
+    const items=lines.filter(l=>l.stage===s);
+    return `<div class="kcol" ondragover="event.preventDefault()" ondrop="dropLine(event,'${s}')">
+      <div class="khead"><span>${lbl}</span><span class="kcount">${items.length}</span></div>
+      ${items.map(l=>{const a=acct(l.accountId);return `<div class="kcard" draggable="true" ondragstart="dragLine(event,'${l.id}')" onclick="go('bl-detail','${l.id}')">
+        <div class="kcard-top"><span class="kav" style="background:${aColor(a?.name||'?')}">${initials(a?.name||'?')}</span><span class="health ${l.health==='ok'?'hc-ok':'hc-att'}">${l.health==='ok'?'On Track':'Attn'}</span></div>
+        <div class="kcard-name">${esc(a?.name||'')}</div><div class="kcard-line">${esc(l.name)}</div>
+        <div class="kcard-meta">${ICON('clock','ic')} LMC ${fmtRel(l.lmc)} · ${esc(l.owner)}</div>
+      </div>`}).join('')||'<div class="kempty">—</div>'}
+    </div>`}).join('')}</div>`;
+
+  const table=`<table class="ptable"><thead><tr><th>Carrier</th><th>Business Line</th><th>Stage</th><th>Health</th><th>Last Meaningful</th><th>Owner</th></tr></thead><tbody>
+    ${lines.map(l=>{const a=acct(l.accountId);return `<tr onclick="go('bl-detail','${l.id}')"><td><b>${esc(a?.name||'')}</b></td><td>${esc(l.name)}</td><td><span class="stage sb-${l.stage}">${cap(l.stage)}</span></td><td><span class="health ${l.health==='ok'?'hc-ok':'hc-att'}">${l.health==='ok'?'On Track':'Needs Attn'}</span></td><td>${fmtRel(l.lmc)}${l.lmcWho?' · '+esc(l.lmcWho):''}</td><td>${esc(l.owner)}</td></tr>`}).join('')}
+  </tbody></table>`;
+
   return `
   <div class="page-hdr">
-    <div><div class="page-title">Pursuits</div><div class="page-sub">${pursuit.length} active pursuit${pursuit.length!==1?'s':''} · ${won.length} active client line${won.length!==1?'s':''} · ${ROLES[ROLE].scope}</div></div>
-    <button class="btn btn-primary" onclick="openNewBusinessLine()">${ICON('plus')} New Business Line</button>
-  </div>
-  <div class="filter-bar">
-    <div class="lsearch-wrap">${ICON('search')}<input class="lsearch" placeholder="Search pursuits…" oninput="liveFilter(this,'.row')"></div>
-    <span class="filt-right">${lines.length} total</span>
+    <div><div class="page-title">Pursuits</div><div class="page-sub">${lines.filter(l=>l.stage!=='won').length} active pursuit(s) · ${lines.filter(l=>l.stage==='won').length} active client line(s) · ${ROLES[ROLE].scope}</div></div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="vtoggle"><button class="vtg ${PIPEVIEW==='kanban'?'on':''}" onclick="setPipeView('kanban')">Kanban</button><button class="vtg ${PIPEVIEW==='table'?'on':''}" onclick="setPipeView('table')">Table</button></div>
+      <button class="btn btn-primary" onclick="openNewBusinessLine()">${ICON('plus')} New Business Line</button>
+    </div>
   </div>
   <div class="content-body">
-    <div class="sec-lbl">${ICON('target','ic')} Active Pursuits <span class="pill-count" style="background:var(--purpleb);color:var(--purple)">${pursuit.length}</span></div>
-    ${pursuit.map(rowHTML).join('')||'<div class="empty">No active pursuits.</div>'}
-    <div class="sec-lbl" style="margin-top:18px">${ICON('check','ic')} Active Clients (Won) <span class="pill-count" style="background:var(--okb);color:var(--okd)">${won.length}</span></div>
-    ${won.map(rowHTML).join('')||'<div class="empty">No active client lines.</div>'}
+    ${PIPEVIEW==='kanban'?kanban+'<p class="kanban-hint">Drag a card between columns to move a pursuit through the pipeline.</p>':table}
   </div>`;
 }
 
@@ -1190,7 +1261,7 @@ function screenReports(){
 
   return `
   <div class="page-hdr">
-    <div><div class="page-title">Reports</div><div class="page-sub">${ROLE==='owner'?'Owner vantage — full book':'Team vantage'} · organised views of live relationship data · click any to open</div></div>
+    <div><div class="page-title">Reports</div><div class="page-sub">Manager vantage — full visibility · organised views of live relationship data · click any to open</div></div>
   </div>
   <div class="content-body">
     ${rep('port','building','Carrier Relationship Portfolio','Every relationship by lifecycle state, with the carriers named','<th>Count</th><th>State</th><th>Carriers</th>',portRows)}
