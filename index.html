@@ -15,7 +15,7 @@
   --ts:#20303f;--tb:#4a5568;--tm:#6a7485;--tsu:#9aa3b0;--tf:#c0c8d4;
   --ok:#27ae60;--okd:#1a6b34;--okb:#e8f8ef;--warn:#9a6200;--warnb:#fef3dc;
   --crit:#c0392b;--critb:#fde8e8;--info:#2563eb;--infob:#eff6ff;
-  --purple:#7c3aed;--purpleb:#faf5ff;
+  --purple:#7b52cc;--purpleb:#f3f0fe;
   --navh:54px;--subh:38px;--railw:206px;--railc:54px;--rsm:5px;--rmd:8px;--rlg:10px;
   --shc:0 1px 3px rgba(26,43,60,.08);--shm:0 2px 8px rgba(26,43,60,.09);--shl:0 8px 28px rgba(26,43,60,.16);
 }
@@ -428,7 +428,7 @@ svg{display:block}
     </div>
     <div class="search">
       <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-      <input id="global-search" placeholder="Search carriers, contacts, business lines…" oninput="globalSearch(this.value)" onfocus="globalSearch(this.value)">
+      <input id="global-search" placeholder="Search by carrier, contact, business line, line of business, owner, status…" oninput="globalSearch(this.value)" onfocus="globalSearch(this.value)">
       <button class="adv-btn" onclick="openAdvancedSearch()">Advanced</button>
     </div>
     <div class="topnav-right">
@@ -893,22 +893,19 @@ function screenAccounts(){
   const fb=Object.entries(RS).filter(([k])=>counts[k]>0).map(([k,v])=>`<div class="filt ${acctFilter===k?'on':''}" onclick="setAcctFilter('${k}')">${v.label} <b style="margin-left:3px">${counts[k]}</b></div>`).join('');
   let rows=all;
   if(acctFilter)rows=rows.filter(a=>a.rs===acctFilter);
-  const rowHTML=rows.map(a=>{
+  const showOwner=ROLE!=='sales';
+  const body=rows.map(a=>{
     const ld=lmcDays(a);
     const lmcCls=agingClass(ld);
     const lmcLbl=ld===null?'No contact':ld===0?'Today':ld+'d ago';
     const lc=vLines().filter(l=>l.accountId===a.id).length;
-    return `<div class="row" onclick="go('account-detail','${a.id}')">
-      <div class="av" style="background:${aColor(a.name)}">${initials(a.name)}</div>
-      <div class="row-body">
-        <div class="row-name">${esc(a.name)} ${a.isStrategic?`<span class="strat">${ICON('star','ic')}Strategic</span>`:''} <span class="rs ${RS[a.rs].cls}">${RS[a.rs].label}</span>${clientMarker(a)}</div>
-        <div class="row-meta">${esc(a.hq)} · ${esc(a.size)} · ${lc} business line${lc!==1?'s':''}</div>
-      </div>
-      <div class="row-right">
-        <div class="lmc ${lmcCls}">${ICON('clock','ic')} ${lmcLbl}${a.lmcWho?' · '+esc(a.lmcWho):''}</div>
-        ${ROLE!=='sales'?`<div class="owner-chip"><div class="owner-av" style="background:${a.ownerColor}">${initials(a.owner)}</div>${esc(a.owner)}${a.prevOwner?` <span style="color:var(--tf)">(from ${esc(a.prevOwner)})</span>`:''}</div>`:''}
-      </div>
-    </div>`;
+    return `<tr onclick="go('account-detail','${a.id}')">
+      <td><div style="display:flex;align-items:center;gap:9px"><span class="av" style="background:${aColor(a.name)};width:30px;height:30px;font-size:10px;flex-shrink:0">${initials(a.name)}</span><div style="min-width:0"><div style="font-weight:700;color:var(--ts);display:flex;align-items:center;gap:6px;flex-wrap:wrap">${esc(a.name)}${a.isStrategic?`<span class="strat">${ICON('star','ic')}Strategic</span>`:''}</div><div style="font-size:11px;color:var(--tsu)">${esc(a.hq)} · ${esc(a.size)}</div></div></div></td>
+      <td><span class="rs ${RS[a.rs].cls}">${RS[a.rs].label}</span>${clientMarker(a)}</td>
+      <td>${lc}</td>
+      <td><span class="lmc ${lmcCls}">${ICON('clock','ic')} ${lmcLbl}</span>${a.lmcWho?`<div style="font-size:10px;color:var(--tsu);margin-top:2px">${esc(a.lmcWho)}</div>`:''}</td>
+      ${showOwner?`<td><span class="owner-chip"><span class="owner-av" style="background:${a.ownerColor}">${initials(a.owner)}</span>${esc(a.owner)}</span></td>`:''}
+    </tr>`;
   }).join('');
   return `
   <div class="page-hdr">
@@ -916,11 +913,11 @@ function screenAccounts(){
     <button class="btn btn-primary" onclick="openNewAccount()">${ICON('plus')} New Account</button>
   </div>
   <div class="filter-bar">
-    <div class="lsearch-wrap">${ICON('search')}<input class="lsearch" placeholder="Search accounts…" oninput="liveFilter(this,'.row')"></div>
+    <div class="lsearch-wrap">${ICON('search')}<input class="lsearch" placeholder="Search accounts…" oninput="liveFilter(this,'.ptable tbody tr')"></div>
     <div class="filt ${!acctFilter?'on':''}" onclick="setAcctFilter('')">All</div>
     ${fb}<span class="filt-right">${rows.length} shown</span>
   </div>
-  <div class="content-body">${rowHTML||'<div class="empty"><strong>No accounts in this view.</strong></div>'}</div>`;
+  <div class="content-body">${rows.length?`<table class="ptable"><thead><tr><th>Carrier</th><th>Status</th><th>Lines</th><th>Last Meaningful</th>${showOwner?'<th>Owner</th>':''}</tr></thead><tbody>${body}</tbody></table>`:'<div class="empty"><strong>No accounts in this view.</strong></div>'}</div>`;
 }
 function setAcctFilter(k){acctFilter=k;document.getElementById('main').innerHTML=screenAccounts()}
 
@@ -1121,7 +1118,7 @@ function screenContacts(){
     <button class="btn btn-primary" onclick="openNewContact()">${ICON('plus')} New Contact</button>
   </div>
   <div class="filter-bar">
-    <div class="lsearch-wrap">${ICON('search')}<input class="lsearch" placeholder="Search contacts…" oninput="liveFilter(this,'.row')"></div>
+    <div class="lsearch-wrap">${ICON('search')}<input class="lsearch" placeholder="Search contacts…" oninput="liveFilter(this,'.ptable tbody tr')"></div>
     <div class="filt ${ctFilter==='all'?'on':''}" onclick="setCtFilter('all')">All</div>
     <div class="filt ${ctFilter==='engaged'?'on':''}" onclick="setCtFilter('engaged')">DM Engaged <b>${counts.engaged}</b></div>
     <div class="filt ${ctFilter==='identified'?'on':''}" onclick="setCtFilter('identified')">DM Identified <b>${counts.identified}</b></div>
@@ -1129,11 +1126,15 @@ function screenContacts(){
     <span class="filt-right">${rows.length} shown</span>
   </div>
   <div class="content-body">
-    ${rows.map(c=>{const a=ACCOUNTS.find(x=>x.id===c.accountId);const ln=LINES.filter(l=>l.accountId===c.accountId).map(l=>l.name).join(', ');return `<div class="row" onclick="go('contact-detail','${c.id}')">
-      <div class="av av-rd" style="background:${c.color}">${initials(c.name)}</div>
-      <div class="row-body"><div class="row-name">${esc(c.name)} ${dmChip(c.dm)} ${c.eng&&engScore(c)>=ENG_THRESHOLD?`<span class="eng-chip eng-${engBand(engScore(c))} has-tip" data-tip="${tip(engTip(c))}">${ICON('trend','ic')} ${engScore(c)}</span>`:''}</div><div class="row-meta">${esc(c.title)} · ${esc(a?.name||'')}${ln?' · '+esc(ln):''}</div></div>
-      <div class="row-right"><div class="lmc lmc-green" style="color:var(--tsu)">${ICON('clock','ic')} ${esc(c.lmc)}</div></div>
-    </div>`}).join('')||'<div class="empty"><strong>No contacts in this view.</strong></div>'}
+    ${rows.length?`<table class="ptable"><thead><tr><th>Name</th><th>Title</th><th>Account</th><th>Business Lines</th><th>Last Contact</th></tr></thead><tbody>
+    ${rows.map(c=>{const a=ACCOUNTS.find(x=>x.id===c.accountId);const ln=LINES.filter(l=>l.accountId===c.accountId).map(l=>l.name).join(', ');return `<tr onclick="go('contact-detail','${c.id}')">
+      <td><div style="display:flex;align-items:center;gap:9px"><span class="av av-rd" style="background:${c.color};width:30px;height:30px;font-size:10px;flex-shrink:0">${initials(c.name)}</span><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-weight:700;color:var(--ts)">${esc(c.name)} ${dmChip(c.dm)} ${c.eng&&engScore(c)>=ENG_THRESHOLD?`<span class="eng-chip eng-${engBand(engScore(c))} has-tip" data-tip="${tip(engTip(c))}">${ICON('trend','ic')} ${engScore(c)}</span>`:''}</div></div></td>
+      <td>${esc(c.title)}</td>
+      <td>${esc(a?.name||'')}</td>
+      <td style="color:var(--tm)">${ln?esc(ln):'—'}</td>
+      <td><span class="lmc lmc-green" style="color:var(--tsu)">${ICON('clock','ic')} ${esc(c.lmc)}</span></td>
+    </tr>`}).join('')}
+    </tbody></table>`:'<div class="empty"><strong>No contacts in this view.</strong></div>'}
   </div>`;
 }
 function setCtFilter(f){ctFilter=f;document.getElementById('main').innerHTML=screenContacts()}
