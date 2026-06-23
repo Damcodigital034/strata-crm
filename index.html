@@ -1654,8 +1654,9 @@ function openLogActivity(pre){
   ACT_TYPE='email_out';MC_ON=true;
   openModal(`<div class="modal-head"><span class="modal-title">Log Activity</span><button class="modal-close" onclick="closeModal()">${ICON('x')}</button></div>
   <div class="modal-body">
+    <div class="field"><label>Account / Carrier <span class="req">*</span></label><select id="f-acct"><option value="">— Select carrier —</option>${opts}</select></div>
     <div class="field"><label>Activity Type <span class="req">*</span></label><div class="type-grid">${ty.map(([t,i,l])=>`<div class="type-opt ${t==='email_out'?'sel':''}" data-t="${t}" onclick="selType('${t}',this)">${ICON(i)}<span>${l}</span></div>`).join('')}</div></div>
-    <div class="field-row"><div class="field"><label>Account <span class="req">*</span></label><select id="f-acct"><option value="">— Select —</option>${opts}</select></div><div class="field"><label>Contact</label><input id="f-contact" placeholder="Contact name"></div></div>
+    <div class="field"><label>Contact</label><input id="f-contact" placeholder="Who at the carrier?"></div>
     <div class="field"><label>Subject <span class="req">*</span></label><input id="f-subj" placeholder="What was this about?"></div>
     <div class="mc-toggle on" id="mc-t" onclick="toggleMC()"><div class="mc-info"><div class="mc-label">Counts as Meaningful Contact</div><div class="mc-desc">Updates Last Meaningful Contact on the carrier &amp; line</div></div><div class="tog on" id="mc-tog"><div class="tog-knob"></div></div></div>
   </div>
@@ -1663,7 +1664,7 @@ function openLogActivity(pre){
 }
 function selType(t,el){ACT_TYPE=t;document.querySelectorAll('.type-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');MC_ON=t!=='note';document.getElementById('mc-t').classList.toggle('on',MC_ON);document.getElementById('mc-tog').classList.toggle('on',MC_ON)}
 function toggleMC(){MC_ON=!MC_ON;document.getElementById('mc-t').classList.toggle('on',MC_ON);document.getElementById('mc-tog').classList.toggle('on',MC_ON)}
-function saveActivity(){const ac=document.getElementById('f-acct').value,s=document.getElementById('f-subj').value.trim();if(!ac){alert('Account required.');return}if(!s){alert('Subject required.');return}const cont=document.getElementById('f-contact').value.trim()||'';const map={email_out:'mail',email_in:'mail',call_out:'phone',call_in:'phone',meeting:'cal',note:'note'};const cls={email_out:'ai-email',email_in:'ai-email',call_out:'ai-call',call_in:'ai-call',meeting:'ai-meeting',note:'ai-note'};ACTIVITIES.unshift({type:ACT_TYPE,subject:s,accountId:ac,contact:cont,at:TODAY.toISOString(),meaningful:MC_ON,ic:map[ACT_TYPE],cls:cls[ACT_TYPE]});if(MC_ON){const a=ACCOUNTS.find(x=>x.id===ac);if(a){a.lmc=TODAY.toISOString();a.lmcWho=cont||'Unknown'}}closeModal();toast('Activity logged'+(MC_ON?' · LMC updated':''));render()}
+function saveActivity(){const ac=document.getElementById('f-acct').value,s=document.getElementById('f-subj').value.trim();if(!ac){alert('Account required.');return}if(!s){alert('Subject required.');return}const cont=document.getElementById('f-contact').value.trim()||'';const map={email_out:'mail',email_in:'mail',call_out:'phone',call_in:'phone',meeting:'cal',note:'note'};const cls={email_out:'ai-email',email_in:'ai-email',call_out:'ai-call',call_in:'ai-call',meeting:'ai-meeting',note:'ai-note'};ACTIVITIES.unshift({type:ACT_TYPE,subject:s,accountId:ac,contact:cont,at:TODAY.toISOString(),meaningful:MC_ON,ic:map[ACT_TYPE],cls:cls[ACT_TYPE]});if(MC_ON){const a=ACCOUNTS.find(x=>x.id===ac);if(a){a.lmc=TODAY.toISOString();a.lmcWho=cont||'Unknown'}}closeModal();toast('Activity logged'+(MC_ON?' · LMC updated':''));go('account-detail',ac);DTAB='activity';rerenderMain()}
 
 function openAddTask(pre){
   const opts=ACCOUNTS.map(a=>`<option value="${a.id}" ${a.id===pre?'selected':''}>${esc(a.name)}</option>`).join('');
@@ -1675,7 +1676,7 @@ function openAddTask(pre){
   </div>
   <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveTask()">Create Task</button></div>`);
 }
-function saveTask(){const t=document.getElementById('f-title').value.trim();if(!t){alert('Task required.');return}const ac=document.getElementById('f-acct').value;const a=ACCOUNTS.find(x=>x.id===ac);TASKS.unshift({id:'t_'+Math.random().toString(36).slice(2,7),title:t,carrier:a?a.name:'',acctId:ac,owner:ROLE==='sales'?'Joe Rivera':'Joe Rivera',due:document.getElementById('f-due').value,daysOver:0,isTrigger:false,done:false});closeModal();toast('Task created');render()}
+function saveTask(){const t=document.getElementById('f-title').value.trim();if(!t){alert('Task required.');return}const ac=document.getElementById('f-acct').value;const a=ACCOUNTS.find(x=>x.id===ac);TASKS.unshift({id:'t_'+Math.random().toString(36).slice(2,7),title:t,carrier:a?a.name:'',acctId:ac,owner:ROLE==='sales'?'Joe Rivera':'Joe Rivera',due:document.getElementById('f-due').value,daysOver:0,isTrigger:false,done:false});closeModal();toast('Task created');if(ac){go('account-detail',ac)}else{render()}}
 
 function openNewBusinessLine(pre){
   const opts=ACCOUNTS.map(a=>`<option value="${a.id}" ${a.id===pre?'selected':''}>${esc(a.name)}</option>`).join('');
