@@ -1655,9 +1655,9 @@ function openLogActivity(pre){
   openModal(`<div class="modal-head"><span class="modal-title">Log Activity</span><button class="modal-close" onclick="closeModal()">${ICON('x')}</button></div>
   <div class="modal-body">
     <div class="field"><label>Account / Carrier <span class="req">*</span></label><select id="f-acct"><option value="">— Select carrier —</option>${opts}</select></div>
-    <div class="field"><label>Activity Type <span class="req">*</span></label><div class="type-grid">${ty.map(([t,i,l])=>`<div class="type-opt ${t==='email_out'?'sel':''}" data-t="${t}" onclick="selType('${t}',this)">${ICON(i)}<span>${l}</span></div>`).join('')}</div></div>
     <div class="field"><label>Contact</label><input id="f-contact" placeholder="Who at the carrier?"></div>
     <div class="field"><label>Subject <span class="req">*</span></label><input id="f-subj" placeholder="What was this about?"></div>
+    <div class="field"><label>Activity Type <span class="req">*</span></label><div class="type-grid">${ty.map(([t,i,l])=>`<div class="type-opt ${t==='email_out'?'sel':''}" data-t="${t}" onclick="selType('${t}',this)">${ICON(i)}<span>${l}</span></div>`).join('')}</div></div>
     <div class="mc-toggle on" id="mc-t" onclick="toggleMC()"><div class="mc-info"><div class="mc-label">Counts as Meaningful Contact</div><div class="mc-desc">Updates Last Meaningful Contact on the carrier &amp; line</div></div><div class="tog on" id="mc-tog"><div class="tog-knob"></div></div></div>
   </div>
   <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveActivity()">Save Activity</button></div>`);
