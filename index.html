@@ -415,6 +415,35 @@ svg{display:block}
 .wm-over{color:var(--crit)}
 .wm-today{color:var(--warn)}
 .wm-go{margin-left:auto;color:var(--info);font-weight:600}
+/* detail: back button + light hero + tabs (CMS parity) */
+.backbtn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--tm);cursor:pointer;background:none;border:none;padding:11px 24px 4px;font-family:var(--font)}
+.backbtn:hover{color:var(--ts)}
+.backbtn .ic{width:14px;height:14px}
+.dhero{background:var(--card);border-bottom:1px solid var(--cb);padding:6px 24px 18px}
+.dhead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.dtitle{font-size:22px;font-weight:800;letter-spacing:-.4px;color:var(--ts);display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.dsub{font-size:13px;color:var(--tm);margin-top:4px}
+.dinfo{display:flex;gap:30px;margin-top:16px;flex-wrap:wrap}
+.dinfo .k{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--tsu)}
+.dinfo .v{font-size:13px;font-weight:600;color:var(--ts);margin-top:3px;display:flex;align-items:center;gap:6px}
+.dinfo .v .owner-av{width:20px;height:20px}
+.dtabs{display:flex;gap:2px;padding:0 24px;background:var(--card);border-bottom:1px solid var(--cb);overflow-x:auto}
+.dtab{font-size:12.5px;font-weight:600;color:var(--tm);padding:11px 14px;cursor:pointer;border:none;border-bottom:2px solid transparent;background:none;font-family:var(--font);white-space:nowrap}
+.dtab:hover{color:var(--ts)}
+.dtab.on{color:var(--ts);border-bottom-color:var(--lime);font-weight:700}
+/* filter dropdown panel (CMS parity) */
+.fwrap{position:relative}
+.fbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--cb);background:var(--card);color:var(--tm);font-size:11px;font-weight:600;padding:5px 12px;border-radius:7px;cursor:pointer;font-family:var(--font)}
+.fbtn:hover{border-color:var(--lime)}
+.fbtn .ic{width:13px;height:13px}
+.fbtn .fcount{background:var(--lime);color:#fff;border-radius:20px;font-size:9px;font-weight:700;padding:1px 6px}
+.fpanel{position:absolute;top:calc(100% + 6px);left:0;z-index:40;width:300px;background:var(--card);border:1px solid var(--cb);border-radius:10px;box-shadow:var(--shl);padding:14px;display:none}
+.fpanel.open{display:block}
+.fsec-t{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--tsu);margin-bottom:8px}
+.fchips{display:flex;flex-wrap:wrap;gap:6px}
+.fchip{font-size:11px;border:1px solid var(--cb);background:var(--card);color:var(--tm);border-radius:20px;padding:4px 11px;cursor:pointer;font-family:var(--font);font-weight:600;display:inline-flex;align-items:center;gap:5px}
+.fchip.on{background:var(--nav);border-color:var(--nav);color:#fff}
+.fclear{font-size:11px;color:var(--info);cursor:pointer;border:none;background:none;font-weight:600;padding:10px 0 0;font-family:var(--font)}
 #tooltip{position:fixed;z-index:1000;width:300px;background:var(--nav);color:#fff;border-radius:9px;padding:11px 13px;font-size:11px;line-height:1.55;box-shadow:var(--shl);opacity:0;visibility:hidden;transition:opacity .1s;pointer-events:none;border:1px solid rgba(255,255,255,.1)}
 #tooltip.show{opacity:1;visibility:visible}
 .tip-h{font-weight:700;color:#fff;margin-bottom:6px}
@@ -521,6 +550,7 @@ const I={
   checks:'<path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/>',
   chart:'<path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>',
   search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  filter:'<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>',
   sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/>',
   moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
   cleft:'<path d="m15 18-6-6 6-6"/>',cright:'<path d="m9 18 6-6-6-6"/>',
@@ -658,7 +688,12 @@ const vRisks=()=>vAttention().filter(a=>a.cat==='stewardship');
 
 /* ===== ROUTING ===== */
 let ROUTE='dashboard',PARAM=null;
-function go(route,param){ROUTE=route;PARAM=param||null;render();const m=document.getElementById('main');if(m)m.scrollTop=0}
+let DTAB='overview',FOPEN=false;
+function go(route,param){ROUTE=route;PARAM=param||null;DTAB='overview';FOPEN=false;render();const m=document.getElementById('main');if(m)m.scrollTop=0}
+function rerenderMain(){TIPS=[];document.getElementById('main').innerHTML=renderScreen()}
+function setDtab(t){DTAB=t;rerenderMain()}
+function toggleFP(){FOPEN=!FOPEN;rerenderMain()}
+function dtabBar(tabs){return `<div class="dtabs">${tabs.map(t=>`<button class="dtab ${DTAB===t.k?'on':''}" onclick="setDtab('${t.k}')">${t.label}${t.n!=null?` <span style="color:var(--tsu);font-weight:600">${t.n}</span>`:''}</button>`).join('')}</div>`}
 function render(){TIPS=[];document.getElementById('rail').innerHTML=renderRail();document.getElementById('main').innerHTML=renderScreen()}
 
 function setRole(r){
@@ -929,12 +964,22 @@ function screenAccounts(){
   </div>
   <div class="filter-bar">
     <div class="lsearch-wrap">${ICON('search')}<input class="lsearch" placeholder="Search accounts…" oninput="liveFilter(this,'.ptable tbody tr')"></div>
-    <div class="filt ${!acctFilter?'on':''}" onclick="setAcctFilter('')">All</div>
-    ${fb}<span class="filt-right">${rows.length} shown</span>
+    <div class="fwrap">
+      <button class="fbtn" onclick="toggleFP()">${ICON('filter')} Filter${acctFilter?` <span class="fcount">1</span>`:''}</button>
+      <div class="fpanel ${FOPEN?'open':''}">
+        <div class="fsec-t">Relationship Status</div>
+        <div class="fchips">
+          <button class="fchip ${!acctFilter?'on':''}" onclick="setAcctFilter('')">All</button>
+          ${Object.entries(RS).filter(([k])=>counts[k]>0).map(([k,v])=>`<button class="fchip ${acctFilter===k?'on':''}" onclick="setAcctFilter('${k}')">${v.label} ${counts[k]}</button>`).join('')}
+        </div>
+        ${acctFilter?`<button class="fclear" onclick="setAcctFilter('')">Clear all filters</button>`:''}
+      </div>
+    </div>
+    <span class="filt-right">${rows.length} shown</span>
   </div>
   <div class="content-body">${rows.length?`<table class="ptable"><thead><tr><th>Carrier</th><th>Status</th><th>Lines</th><th>Last Meaningful</th>${showOwner?'<th>Owner</th>':''}</tr></thead><tbody>${body}</tbody></table>`:'<div class="empty"><strong>No accounts in this view.</strong></div>'}</div>`;
 }
-function setAcctFilter(k){acctFilter=k;document.getElementById('main').innerHTML=screenAccounts()}
+function setAcctFilter(k){acctFilter=k;rerenderMain()}
 
 /* ===== ACCOUNT DETAIL ===== */
 function screenAccountDetail(id){
@@ -945,56 +990,51 @@ function screenAccountDetail(id){
   const tasks=TASKS.filter(t=>t.acctId===a.id&&!t.done);
   const lmcDays=a.lmc?Math.floor((TODAY-new Date(a.lmc))/864e5):null;
   const lastMcA=lastMC(a);
-  return `
-  <div class="bc"><a onclick="go('accounts')">Accounts</a><span class="sep">›</span><span style="font-weight:600">${esc(a.name)}</span><span class="rs ${RS[a.rs].cls}" style="margin-left:6px">${RS[a.rs].label}</span></div>
-  <div class="hero">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-      <div class="hero-title">${esc(a.name)} ${a.isStrategic?`<span class="strat" style="vertical-align:middle">${ICON('star','ic')}Strategic</span>`:''}</div>
-      <div style="display:flex;gap:8px">
-        <button class="btn" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#c8d8e8" onclick="openLogActivity('${a.id}')">${ICON('plus')} Log Activity</button>
-        <button class="btn" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#c8d8e8" onclick="openAddTask('${a.id}')">${ICON('plus')} Add Task</button>
-        <button class="btn" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#c8d8e8" onclick="openNewBusinessLine('${a.id}')">${ICON('plus')} New Line</button>
-      </div>
-    </div>
-    <div class="hero-meta">
-      <div><div class="hero-k">Relationship Owner</div><div class="hero-v"><div class="owner-av" style="background:${a.ownerColor}">${initials(a.owner)}</div>${esc(a.owner)}</div></div>
-      <div><div class="hero-k">Last Meaningful Contact</div><div class="hero-v" style="color:${lmcDays!==null&&lmcDays<30?'#86efac':'#fde68a'}">${lastMcA?`<span class="has-tip" data-tip="${tip(mcTip(lastMcA))}" style="cursor:help;border-bottom:1px dotted rgba(255,255,255,.4)">${lmcDays===null?'No contact yet':lmcDays+' days ago'}${a.lmcWho?' · '+esc(a.lmcWho):''}</span>`:(lmcDays===null?'No contact yet':lmcDays+' days ago')}</div></div>
-      <div><div class="hero-k">HQ</div><div class="hero-v">${esc(a.hq)}</div></div>
-      <div><div class="hero-k">Size</div><div class="hero-v">${esc(a.size)}</div></div>
-    </div>
-  </div>
-  <div class="content-body">
-    ${tasks.length?`<div class="card" style="border-left:3px solid var(--warn)">
+  const tasksCard=tasks.length?`<div class="card" style="border-left:3px solid var(--warn)">
       <div class="sec-lbl" style="margin-bottom:8px">${ICON('clock','ic')} Next actions on this carrier <span class="pill-count" style="background:var(--warnb);color:var(--warn)">${tasks.length}</span></div>
       ${tasks.map(taskHTML).join('')}
-    </div>`:''}
-    ${(function(){const ts=trialState(a);if(!ts){return a.rs==='active-client'&&a.claims?`<div class="card" style="border-left:3px solid var(--ok)"><div class="sec-lbl" style="margin-bottom:6px">${ICON('check','ic')} Established Active Client</div><div style="font-size:13px;color:var(--tb);line-height:1.6">${a.claims} claims received · stewardship owned by <b>${esc(a.owner)}</b>${a.prevOwner?` (transferred from ${esc(a.prevOwner)}, who keeps visibility)`:''}.</div></div>`:'';}
+    </div>`:'';
+  const trialCard=(function(){const ts=trialState(a);if(!ts){return a.rs==='active-client'&&a.claims?`<div class="card" style="border-left:3px solid var(--ok)"><div class="sec-lbl" style="margin-bottom:6px">${ICON('check','ic')} Established Active Client</div><div style="font-size:13px;color:var(--tb);line-height:1.6">${a.claims} claims received · stewardship owned by <b>${esc(a.owner)}</b>${a.prevOwner?` (transferred from ${esc(a.prevOwner)}, who keeps visibility)`:''}.</div></div>`:'';}
       const cp=Math.min(100,Math.round(ts.claims/20*100)),dp=Math.min(100,Math.round(ts.days/90*100));
       return `<div class="card trial-card"><div class="sec-lbl" style="margin-bottom:10px">${ICON('clock','ic')} Early Active Client · Trial Period <span class="cm cm-trial">Rep keeps ownership</span></div>
       <div class="trial-rows"><div class="trial-row"><span>Claims received</span><b>${ts.claims} / 20</b></div><div class="tbar"><div style="width:${cp}%"></div></div>
       <div class="trial-row"><span>Days since first claim</span><b>${ts.days} / 90</b></div><div class="tbar"><div style="width:${dp}%"></div></div></div>
       <div class="trial-note">Rep <b>${esc(a.owner)}</b> keeps ownership until <b>90 days or 20 claims, whichever comes first</b>. On threshold, ownership transfers to <b>${esc(ts.steward||'an operations relationship manager')}</b> for stewardship — and management confirms. The rep keeps visibility either way.</div></div>`;
-    })()}
-    ${relMapAccount(a)}
-    ${wnStrip(a.id)}
-    <div class="detail-grid">
+    })();
+  const linesHTML=lines.map(l=>`<div class="row" onclick="go('bl-detail','${l.id}')">
+      <div class="row-body"><div class="row-name">${esc(l.name)}</div><div class="row-meta">Last meaningful: ${fmtRel(l.lmc)}${l.lmcWho?' · '+esc(l.lmcWho):''} · Owner: ${esc(l.owner)}</div></div>
+      <div class="row-right"><span class="health ${l.health==='ok'?'hc-ok':'hc-att'}">${l.health==='ok'?'On Track':'Needs Attention'}</span><span class="stage sb-${l.stage}">${cap(l.stage)}</span></div>
+    </div>`).join('')||'<div class="empty"><strong>No business lines.</strong>Create one to start tracking a pursuit.</div>';
+  const contactsHTML=contacts.map(c=>`<div class="row" onclick="go('contact-detail','${c.id}')">
+      <div class="av av-rd" style="background:${c.color};width:32px;height:32px;font-size:10px">${initials(c.name)}</div>
+      <div class="row-body"><div class="row-name" style="font-size:12px">${esc(c.name)} ${dmChip(c.dm)}</div><div class="row-meta">${esc(c.title)} · ${esc(c.lmc)}</div></div>
+    </div>`).join('')||'<div class="empty">No contacts.</div>';
+  const activityHTML=acts.map(actHTML).join('')||'<div class="empty">No activity recorded.</div>';
+  const overview=`${tasksCard}${trialCard}${relMapAccount(a)}${wnStrip(a.id)}`;
+  return `
+  <button class="backbtn" onclick="go('accounts')">${ICON('cleft','ic')} Back to Accounts</button>
+  <div class="dhero">
+    <div class="dhead">
       <div>
-        <div class="sec-lbl">${ICON('target','ic')} Business Lines <span class="pill-count" style="background:var(--purpleb);color:var(--purple)">${lines.length}</span></div>
-        ${lines.map(l=>`<div class="row" onclick="go('bl-detail','${l.id}')">
-          <div class="row-body"><div class="row-name">${esc(l.name)}</div><div class="row-meta">Last meaningful: ${fmtRel(l.lmc)}${l.lmcWho?' · '+esc(l.lmcWho):''} · Owner: ${esc(l.owner)}</div></div>
-          <div class="row-right"><span class="health ${l.health==='ok'?'hc-ok':'hc-att'}">${l.health==='ok'?'On Track':'Needs Attention'}</span><span class="stage sb-${l.stage}">${cap(l.stage)}</span></div>
-        </div>`).join('')||'<div class="empty"><strong>No business lines.</strong>Create one to start tracking a pursuit.</div>'}
-        <div class="sec-lbl" style="margin-top:18px">${ICON('activity','ic')} Recent Activity <button class="sec-link" onclick="go('activities')">All →</button></div>
-        ${acts.slice(0,5).map(actHTML).join('')||'<div class="empty">No activity recorded.</div>'}
+        <div class="dtitle">${esc(a.name)} ${a.isStrategic?`<span class="strat">${ICON('star','ic')}Strategic</span>`:''} <span class="rs ${RS[a.rs].cls}">${RS[a.rs].label}</span>${clientMarker(a)}</div>
+        <div class="dsub">${esc(a.hq)} · ${esc(a.size)}</div>
       </div>
-      <div>
-        <div class="sec-lbl">${ICON('users','ic')} Contacts <span class="pill-count" style="background:var(--infob);color:var(--info)">${contacts.length}</span></div>
-        ${contacts.map(c=>`<div class="row" onclick="go('contact-detail','${c.id}')">
-          <div class="av av-rd" style="background:${c.color};width:32px;height:32px;font-size:10px">${initials(c.name)}</div>
-          <div class="row-body"><div class="row-name" style="font-size:12px">${esc(c.name)} ${dmChip(c.dm)}</div><div class="row-meta">${esc(c.title)} · ${esc(c.lmc)}</div></div>
-        </div>`).join('')||'<div class="empty">No contacts.</div>'}
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" onclick="openLogActivity('${a.id}')">${ICON('plus')} Log Activity</button>
+        <button class="btn" onclick="openAddTask('${a.id}')">${ICON('plus')} Add Task</button>
+        <button class="btn btn-primary" onclick="openNewBusinessLine('${a.id}')">${ICON('plus')} New Line</button>
       </div>
     </div>
+    <div class="dinfo">
+      <div><div class="k">Relationship Owner</div><div class="v"><span class="owner-av" style="background:${a.ownerColor}">${initials(a.owner)}</span>${esc(a.owner)}</div></div>
+      <div><div class="k">Last Meaningful Contact</div><div class="v">${lastMcA?`<span class="has-tip" data-tip="${tip(mcTip(lastMcA))}" style="cursor:help;border-bottom:1px dotted var(--cb)">${lmcDays===null?'No contact yet':lmcDays+' days ago'}${a.lmcWho?' · '+esc(a.lmcWho):''}</span>`:(lmcDays===null?'No contact yet':lmcDays+' days ago')}</div></div>
+      ${a.claims?`<div><div class="k">Claims received</div><div class="v">${a.claims}</div></div>`:''}
+      <div><div class="k">Business Lines</div><div class="v">${lines.length}</div></div>
+    </div>
+  </div>
+  ${dtabBar([{k:'overview',label:'Overview'},{k:'lines',label:'Business Lines',n:lines.length},{k:'contacts',label:'Contacts',n:contacts.length},{k:'activity',label:'Activity',n:acts.length}])}
+  <div class="content-body">
+    ${DTAB==='lines'?linesHTML:DTAB==='contacts'?contactsHTML:DTAB==='activity'?activityHTML:overview}
   </div>`;
 }
 const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
@@ -1049,44 +1089,38 @@ function screenBLDetail(id){
   const stages=['prospect','engaged','discovery','proposal','pending','onboarding','won'];
   const si=stages.indexOf(l.stage);
   const summary={tCAT:'Travelers is evaluating CAT panel vendors for Q3 storm season allocation. Sarah Chen is the confirmed decision maker. Scale capability — 40+ adjusters within 72 hours — is the deciding factor. Panel decision expected by June 20.',natCm:'Nationwide commercial property pursuit tied to their Sep 15 RFP window. Rachel Hughes is engaged. Currently sitting in Proposal longer than target — needs a re-engagement push before the RFP opens.'}[l.id];
-  return `
-  <div class="bc"><a onclick="go('accounts')">Accounts</a><span class="sep">›</span><a onclick="go('account-detail','${a?.id}')">${esc(a?.name||'')}</a><span class="sep">›</span><span style="font-weight:600">${esc(l.name)}</span></div>
-  <div class="hero">
-    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.5px">${esc(a?.name||'')} · ${esc(a?.size||'')}</div>
-    <div class="hero-title" style="margin-top:2px">${esc(l.name)}</div>
-    <div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">
-      <span class="health ${l.health==='ok'?'hc-ok':'hc-att'}">${l.health==='ok'?'On Track':'Needs Attention'}</span>
-      <span style="font-size:10px;color:#94a3b8;background:rgba(255,255,255,.08);padding:3px 9px;border-radius:20px">Owner: ${esc(l.owner)}</span>
-      <span style="font-size:10px;color:#94a3b8;background:rgba(255,255,255,.08);padding:3px 9px;border-radius:20px">LMC ${fmtRel(l.lmc)}</span>
-    </div>
-    <div style="display:flex;gap:3px;margin-top:14px;flex-wrap:wrap">
-      ${stages.map((s,i)=>`<div style="flex:1;min-width:60px;text-align:center;padding:6px 4px;border-radius:5px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;${i===si?'background:var(--lime);color:#fff':i<si?'background:rgba(124,184,0,.18);color:#a3e635':'background:rgba(255,255,255,.06);color:#5a7088'}">${s==='pending'?'Pending':cap(s)}</div>`).join('')}
-    </div>
-    ${summary?`<div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;margin-top:12px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#94a3b8;margin-bottom:4px">Pursuit Summary</div><div style="font-size:12px;color:#e2e8f0;line-height:1.6">${esc(summary)}</div></div>`:''}
-  </div>
-  <div class="content-body">
-    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+  const overview=`<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
       <button class="btn btn-primary" onclick="toast('Stage advanced')">${ICON('arr')} Advance Stage</button>
       <button class="btn" onclick="openLogActivity('${a?.id}')">${ICON('plus')} Log Activity</button>
       <button class="btn" onclick="openAddTask('${a?.id}')">${ICON('plus')} Add Task</button>
     </div>
-    <div class="detail-grid">
-      <div>
-        ${dm?`<div class="card"><div class="sec-lbl">${ICON('users','ic')} Decision Maker</div>
-          <div class="row" style="margin:0;cursor:pointer" onclick="go('contact-detail','${dm.id}')">
-            <div class="av av-rd" style="background:${dm.color}">${initials(dm.name)}</div>
-            <div class="row-body"><div class="row-name">${esc(dm.name)} ${dmChip(dm.dm)}</div><div class="row-meta">${esc(dm.title)} · Last contact ${esc(dm.lmc)}</div></div>
-          </div></div>`:''}
-        <div class="sec-lbl" style="margin-top:6px">${ICON('activity','ic')} Recent Activity <button class="sec-link" onclick="go('activities')">All →</button></div>
-        ${acts.slice(0,4).map(actHTML).join('')}
-      </div>
-      <div>
-        <div class="sec-lbl">${ICON('users','ic')} Contacts <span class="pill-count" style="background:var(--infob);color:var(--info)">${contacts.length}</span></div>
-        ${contacts.map(c=>`<div class="row" style="padding:9px 12px" onclick="go('contact-detail','${c.id}')"><div class="av av-rd" style="background:${c.color};width:28px;height:28px;font-size:9px">${initials(c.name)}</div><div class="row-body"><div class="row-name" style="font-size:12px">${esc(c.name)} ${dmChip(c.dm)}</div><div class="row-meta">${esc(c.title)}</div></div></div>`).join('')}
-        ${other.length?`<div class="sec-lbl" style="margin-top:16px">${ICON('target','ic')} Other Lines · ${esc(a?.name||'')}</div>
-          ${other.map(o=>`<div class="row" style="padding:9px 12px" onclick="go('bl-detail','${o.id}')"><div class="row-body"><div class="row-name" style="font-size:12px">${esc(o.name)}</div></div><span class="stage sb-${o.stage}">${cap(o.stage)}</span></div>`).join('')}`:''}
-      </div>
+    ${dm?`<div class="card"><div class="sec-lbl">${ICON('users','ic')} Decision Maker</div>
+      <div class="row" style="margin:0;cursor:pointer" onclick="go('contact-detail','${dm.id}')">
+        <div class="av av-rd" style="background:${dm.color}">${initials(dm.name)}</div>
+        <div class="row-body"><div class="row-name">${esc(dm.name)} ${dmChip(dm.dm)}</div><div class="row-meta">${esc(dm.title)} · Last contact ${esc(dm.lmc)}</div></div>
+      </div></div>`:''}
+    ${other.length?`<div class="sec-lbl">${ICON('target','ic')} Other Lines · ${esc(a?.name||'')}</div>
+      ${other.map(o=>`<div class="row" onclick="go('bl-detail','${o.id}')"><div class="row-body"><div class="row-name" style="font-size:12px">${esc(o.name)}</div></div><span class="stage sb-${o.stage}">${cap(o.stage)}</span></div>`).join('')}`:''}`;
+  const contactsHTML=contacts.map(c=>`<div class="row" onclick="go('contact-detail','${c.id}')"><div class="av av-rd" style="background:${c.color};width:32px;height:32px;font-size:10px">${initials(c.name)}</div><div class="row-body"><div class="row-name" style="font-size:12px">${esc(c.name)} ${dmChip(c.dm)}</div><div class="row-meta">${esc(c.title)}</div></div></div>`).join('')||'<div class="empty">No contacts.</div>';
+  const activity=acts.map(actHTML).join('')||'<div class="empty">No activity recorded.</div>';
+  return `
+  <button class="backbtn" onclick="go('account-detail','${a?.id}')">${ICON('cleft','ic')} Back to ${esc(a?.name||'account')}</button>
+  <div class="dhero">
+    <div class="dsub" style="margin:0 0 2px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--tsu)">${esc(a?.name||'')} · ${esc(a?.size||'')}</div>
+    <div class="dtitle">${esc(l.name)}</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <span class="health ${l.health==='ok'?'hc-ok':'hc-att'}">${l.health==='ok'?'On Track':'Needs Attention'}</span>
+      <span style="font-size:10px;color:var(--tm);background:var(--cbs);padding:3px 9px;border-radius:20px">Owner: ${esc(l.owner)}</span>
+      <span style="font-size:10px;color:var(--tm);background:var(--cbs);padding:3px 9px;border-radius:20px">LMC ${fmtRel(l.lmc)}</span>
     </div>
+    <div style="display:flex;gap:3px;margin-top:14px;flex-wrap:wrap">
+      ${stages.map((s,i)=>`<div style="flex:1;min-width:60px;text-align:center;padding:6px 4px;border-radius:5px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;${i===si?'background:var(--lime);color:#fff':i<si?'background:var(--lt);color:var(--ld)':'background:var(--cbs);color:var(--tsu)'}">${s==='pending'?'Pending':cap(s)}</div>`).join('')}
+    </div>
+    ${summary?`<div style="background:var(--cr);border:1px solid var(--cb);border-radius:8px;padding:10px 14px;margin-top:12px"><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--tsu);margin-bottom:4px">Pursuit Summary</div><div style="font-size:12px;color:var(--tb);line-height:1.6">${esc(summary)}</div></div>`:''}
+  </div>
+  ${dtabBar([{k:'overview',label:'Overview'},{k:'contacts',label:'Contacts',n:contacts.length},{k:'activity',label:'Activity',n:acts.length}])}
+  <div class="content-body">
+    ${DTAB==='contacts'?contactsHTML:DTAB==='activity'?activity:overview}
   </div>`;
 }
 
@@ -1134,10 +1168,19 @@ function screenContacts(){
   </div>
   <div class="filter-bar">
     <div class="lsearch-wrap">${ICON('search')}<input class="lsearch" placeholder="Search contacts…" oninput="liveFilter(this,'.ptable tbody tr')"></div>
-    <div class="filt ${ctFilter==='all'?'on':''}" onclick="setCtFilter('all')">All</div>
-    <div class="filt ${ctFilter==='engaged'?'on':''}" onclick="setCtFilter('engaged')">DM Engaged <b>${counts.engaged}</b></div>
-    <div class="filt ${ctFilter==='identified'?'on':''}" onclick="setCtFilter('identified')">DM Identified <b>${counts.identified}</b></div>
-    <div class="filt ${ctFilter==='none'?'on':''}" onclick="setCtFilter('none')">No DM <b>${counts.none}</b></div>
+    <div class="fwrap">
+      <button class="fbtn" onclick="toggleFP()">${ICON('filter')} Filter${ctFilter!=='all'?` <span class="fcount">1</span>`:''}</button>
+      <div class="fpanel ${FOPEN?'open':''}">
+        <div class="fsec-t">Decision-Maker Status</div>
+        <div class="fchips">
+          <button class="fchip ${ctFilter==='all'?'on':''}" onclick="setCtFilter('all')">All</button>
+          <button class="fchip ${ctFilter==='engaged'?'on':''}" onclick="setCtFilter('engaged')">DM Engaged ${counts.engaged}</button>
+          <button class="fchip ${ctFilter==='identified'?'on':''}" onclick="setCtFilter('identified')">DM Identified ${counts.identified}</button>
+          <button class="fchip ${ctFilter==='none'?'on':''}" onclick="setCtFilter('none')">No DM ${counts.none}</button>
+        </div>
+        ${ctFilter!=='all'?`<button class="fclear" onclick="setCtFilter('all')">Clear all filters</button>`:''}
+      </div>
+    </div>
     <span class="filt-right">${rows.length} shown</span>
   </div>
   <div class="content-body">
@@ -1152,7 +1195,7 @@ function screenContacts(){
     </tbody></table>`:'<div class="empty"><strong>No contacts in this view.</strong></div>'}
   </div>`;
 }
-function setCtFilter(f){ctFilter=f;document.getElementById('main').innerHTML=screenContacts()}
+function setCtFilter(f){ctFilter=f;rerenderMain()}
 
 /* ===== CONTACT DETAIL ===== */
 function screenContactDetail(id){
@@ -1161,23 +1204,7 @@ function screenContactDetail(id){
   const lines=LINES.filter(l=>l.accountId===c.accountId);
   const acts=ACTIVITIES.filter(x=>x.accountId===c.accountId&&x.contact===c.name);
   const related=CONTACTS.filter(x=>x.accountId===c.accountId&&x.id!==c.id);
-  return `
-  <div class="bc"><a onclick="go('contacts')">Contacts</a><span class="sep">›</span><a onclick="go('account-detail','${a?.id}')">${esc(a?.name||'')}</a><span class="sep">›</span><span style="font-weight:600">${esc(c.name)}</span></div>
-  <div class="hero">
-    <div style="display:flex;align-items:center;gap:14px">
-      <div class="av av-rd" style="background:${c.color};width:52px;height:52px;font-size:18px">${initials(c.name)}</div>
-      <div><div class="hero-title">${esc(c.name)}</div><div style="font-size:13px;color:#c8d8e8;margin-top:2px">${esc(c.title)} · ${esc(a?.name||'')}</div>
-      <div style="margin-top:6px;display:flex;align-items:center;gap:8px">${dmChip(c.dm)||'<span style="font-size:10px;color:#94a3b8">No DM designation</span>'}<span style="font-size:10px;color:#94a3b8">Last contact ${esc(c.lmc)}</span></div></div>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:14px">
-      <button class="btn" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#c8d8e8" onclick="toast('Compose email to ${esc(c.name)}')">${ICON('mail')} Email</button>
-      <button class="btn" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#c8d8e8" onclick="toast('Call ${esc(c.name)}')">${ICON('phone')} Call</button>
-      <button class="btn" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#c8d8e8" onclick="openLogActivity('${c.accountId}')">${ICON('plus')} Log Activity</button>
-    </div>
-  </div>
-  <div class="content-body">
-    ${relMapAccount(a)}
-    <div class="detail-grid">
+  const overview=`<div class="detail-grid">
       <div>
         <div class="card"><div class="sec-lbl">Contact Information</div>
           <div style="display:grid;grid-template-columns:110px 1fr;gap:9px;font-size:12px">
@@ -1188,8 +1215,7 @@ function screenContactDetail(id){
           </div>
         </div>
         ${c.eng?`<div class="card" style="border-left:3px solid var(--lime)"><div class="sec-lbl" style="margin-bottom:8px">${ICON('trend','ic')} Engagement <span class="eng-chip eng-${engBand(engScore(c))} has-tip" data-tip="${tip(engTip(c))}" style="margin-left:4px">${engScore(c)} pts · ${cap(engBand(engScore(c)))}</span></div><div style="font-size:11px;color:var(--tm);line-height:1.6">${c.eng.opens} email opens · ${c.eng.clicks} clicks · ${c.eng.visits} website visits · ${c.eng.downloads} download${c.eng.downloads!==1?'s':''}.${engScore(c)>=ENG_THRESHOLD?` <b style="color:var(--ld)">Crossed the ${ENG_THRESHOLD}-pt threshold — surfaced in the Qualification Queue for a personal outreach call.</b>`:' Building, not yet at threshold.'}</div></div>`:''}
-        <div class="sec-lbl" style="margin-top:6px">${ICON('activity','ic')} Activity with ${esc(c.name)} <button class="sec-link" onclick="go('activities')">All →</button></div>
-        ${acts.length?acts.map(actHTML).join(''):'<div class="empty">No activities logged with this contact yet.</div>'}
+        ${relMapAccount(a)}
       </div>
       <div>
         <div class="card"><div class="sec-lbl">${ICON('target','ic')} Business Lines at ${esc(a?.name||'')}</div>
@@ -1199,7 +1225,29 @@ function screenContactDetail(id){
           ${related.length?related.map(r=>`<div class="row" style="padding:9px 12px" onclick="go('contact-detail','${r.id}')"><div class="av av-rd" style="background:${r.color};width:26px;height:26px;font-size:9px">${initials(r.name)}</div><div class="row-body"><div class="row-name" style="font-size:12px">${esc(r.name)} ${dmChip(r.dm)}</div><div class="row-meta">${esc(r.title)}</div></div></div>`).join(''):'<div style="font-size:11px;color:var(--tsu)">No other contacts.</div>'}
         </div>
       </div>
+    </div>`;
+  const activity=acts.length?acts.map(actHTML).join(''):'<div class="empty">No activities logged with this contact yet.</div>';
+  return `
+  <button class="backbtn" onclick="go('contacts')">${ICON('cleft','ic')} Back to Contacts</button>
+  <div class="dhero">
+    <div class="dhead">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div class="av av-rd" style="background:${c.color};width:50px;height:50px;font-size:17px;flex-shrink:0">${initials(c.name)}</div>
+        <div>
+          <div class="dtitle">${esc(c.name)} ${dmChip(c.dm)}</div>
+          <div class="dsub">${esc(c.title)} · ${esc(a?.name||'')} · Last contact ${esc(c.lmc)}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" onclick="toast('Compose email to ${esc(c.name)}')">${ICON('mail')} Email</button>
+        <button class="btn" onclick="toast('Call ${esc(c.name)}')">${ICON('phone')} Call</button>
+        <button class="btn btn-primary" onclick="openLogActivity('${c.accountId}')">${ICON('plus')} Log Activity</button>
+      </div>
     </div>
+  </div>
+  ${dtabBar([{k:'overview',label:'Overview'},{k:'activity',label:'Activity',n:acts.length}])}
+  <div class="content-body">
+    ${DTAB==='activity'?activity:overview}
   </div>`;
 }
 
@@ -1219,15 +1267,24 @@ function screenActivities(){
   </div>
   <div class="filter-bar">
     <div class="lsearch-wrap">${ICON('search')}<input class="lsearch" placeholder="Search activities…" oninput="liveFilter(this,'.act')"></div>
-    <div class="filt ${actFilter==='all'?'on':''}" onclick="setActFilter('all')">All</div>
-    <div class="filt ${actFilter==='email'?'on':''}" onclick="setActFilter('email')">Email</div>
-    <div class="filt ${actFilter==='call'?'on':''}" onclick="setActFilter('call')">Calls</div>
-    <div class="filt ${actFilter==='meeting'?'on':''}" onclick="setActFilter('meeting')">Meetings</div>
+    <div class="fwrap">
+      <button class="fbtn" onclick="toggleFP()">${ICON('filter')} Filter${actFilter!=='all'?` <span class="fcount">1</span>`:''}</button>
+      <div class="fpanel ${FOPEN?'open':''}">
+        <div class="fsec-t">Activity Type</div>
+        <div class="fchips">
+          <button class="fchip ${actFilter==='all'?'on':''}" onclick="setActFilter('all')">All</button>
+          <button class="fchip ${actFilter==='email'?'on':''}" onclick="setActFilter('email')">Email</button>
+          <button class="fchip ${actFilter==='call'?'on':''}" onclick="setActFilter('call')">Calls</button>
+          <button class="fchip ${actFilter==='meeting'?'on':''}" onclick="setActFilter('meeting')">Meetings</button>
+        </div>
+        ${actFilter!=='all'?`<button class="fclear" onclick="setActFilter('all')">Clear all filters</button>`:''}
+      </div>
+    </div>
     <span class="filt-right">${rows.length} shown</span>
   </div>
   <div class="content-body">${rows.map(actHTML).join('')||'<div class="empty">No activities.</div>'}</div>`;
 }
-function setActFilter(f){actFilter=f;document.getElementById('main').innerHTML=screenActivities()}
+function setActFilter(f){actFilter=f;rerenderMain()}
 
 /* ===== WORK QUEUE ===== */
 function screenTasks(){
