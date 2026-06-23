@@ -406,6 +406,15 @@ svg{display:block}
 .tbar>div{height:100%;background:var(--warn);border-radius:3px}
 .trial-note{font-size:12px;color:var(--tm);line-height:1.6;border-top:1px solid var(--cbs);padding-top:10px}
 .trial-note b{color:var(--ts)}
+/* slim work marker (manager dashboard top) */
+.wmarker{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--cb);border-radius:10px;padding:12px 16px;cursor:pointer;font-size:12px;box-shadow:var(--shc)}
+.wmarker:hover{box-shadow:var(--shm)}
+.wmarker .ic{color:var(--tm)}
+.wm-lbl{font-weight:700;color:var(--ts)}
+.wm-c{font-weight:600;color:var(--tm)}
+.wm-over{color:var(--crit)}
+.wm-today{color:var(--warn)}
+.wm-go{margin-left:auto;color:var(--info);font-weight:600}
 #tooltip{position:fixed;z-index:1000;width:300px;background:var(--nav);color:#fff;border-radius:9px;padding:11px 13px;font-size:11px;line-height:1.55;box-shadow:var(--shl);opacity:0;visibility:hidden;transition:opacity .1s;pointer-events:none;border:1px solid rgba(255,255,255,.1)}
 #tooltip.show{opacity:1;visibility:visible}
 .tip-h{font-weight:700;color:#fff;margin-bottom:6px}
@@ -805,18 +814,7 @@ function screenDashboard(){
     ${steward.map(attHTML).join('')||'<div class="empty">No active-client stewardship items right now.</div>'}
   </div>`;
 
-  return `
-  <div class="page-hdr">
-    <div>
-      <div class="page-title">${greet}</div>
-      <div class="page-sub">Thursday, June 12, 2026 · ${att.length} ${att.length===1?'item needs':'items need'} attention</div>
-      <div class="scope">${ICON('pin','ic')}Viewing: <b>${R.scope}</b>${isMgr?` · focused on <b>${mode==='clients'?'current clients':'sales pursuits'}</b>`:''}</div>
-    </div>
-    <div style="display:flex;align-items:center;gap:12px">${toggle}<button class="btn btn-primary" onclick="openLogActivity()">${ICON('plus')} Log Activity</button></div>
-  </div>
-  <div class="content-body" style="display:flex;flex-direction:column;gap:22px">
-
-    ${focusItems.length||topSig?`<div class="focus">
+  const focusBlock = (focusItems.length||topSig)?`<div class="focus">
       <div class="focus-lbl">${ICON('alert','ic')} Today's Focus — ${mode==='clients'?'client stewardship':'sales pursuits'}</div>
       ${focusItems.map((a,i)=>`<div class="focus-item" onclick="go('account-detail','${a.acctId}')">
         <div class="focus-num">${i+1}</div>
@@ -827,9 +825,9 @@ function screenDashboard(){
         <div class="focus-num" style="background:var(--purpleb);color:var(--purple)">${ICON('star','ic')}</div>
         <div style="flex:1"><div class="focus-carrier">Worth noting · ${esc(ACCOUNTS.find(a=>a.id===topSig.acctId).name)}</div><div class="focus-cond" style="font-style:italic">"${esc(topSig.quote)}"</div></div>
       </div>`:''}
-    </div>`:''}
+    </div>`:'';
 
-    <div class="ask">
+  const askBlock = `<div class="ask">
       <div class="ask-head">${ICON('search','ic')} Ask your relationships</div>
       <div class="ask-row">${ICON('search')}<input id="ask-input" placeholder="e.g. what's gone cold? · what needs me on Travelers? · show overdue tasks" oninput="runAsk(this.value)"></div>
       <div class="ask-chips">
@@ -840,31 +838,32 @@ function screenDashboard(){
         <span class="ask-chip" onclick="ask('Tell me about Travelers')">About Travelers</span>
       </div>
       <div class="ask-ans" id="ask-ans"></div>
-    </div>
+    </div>`;
 
-    <div>
+  const attentionBlock = `<div>
       <div class="sec-lbl">${ICON('alert','ic')} Relationship Attention Needed <span class="pill-count" style="background:var(--critb);color:var(--crit)">${att.length}</span></div>
       ${mode==='clients'?stewardBlock+pursuitBlock:pursuitBlock+stewardBlock}
-    </div>
+    </div>`;
 
-    <div>
-      <div class="sec-lbl">${ICON('checks','ic')} My Work <span class="pill-count" style="background:var(--critb);color:var(--crit)">${overdue+today}</span><button class="sec-link" onclick="go('tasks')">Work Queue →</button></div>
-      <div class="work-grid">
+  const workLbl = `<div class="sec-lbl">${ICON('checks','ic')} My Work <span class="pill-count" style="background:var(--critb);color:var(--crit)">${overdue+today}</span><button class="sec-link" onclick="go('tasks')">Work Queue →</button></div>`;
+  const workTiles = `<div class="work-grid">
         <div class="wcc" onclick="go('tasks')"><div class="wcc-val" style="color:var(--crit)">${overdue}</div><div class="wcc-lbl">Overdue</div></div>
         <div class="wcc" onclick="go('tasks')"><div class="wcc-val" style="color:var(--warn)">${today}</div><div class="wcc-lbl">Due Today</div></div>
         <div class="wcc" onclick="go('tasks')"><div class="wcc-val" style="color:var(--okd)">${openTasks.length}</div><div class="wcc-lbl">Total Open</div></div>
-      </div>
-      ${openTasks.slice(0,5).map(taskHTML).join('')||'<div class="empty">No open tasks. Nicely done.</div>'}
-    </div>
+      </div>`;
+  const workTasks = openTasks.slice(0,5).map(taskHTML).join('')||'<div class="empty">No open tasks. Nicely done.</div>';
+  const myWorkHero = `<div>${workLbl}${workTiles}${workTasks}</div>`;          /* Sales Rep: full, as hero */
+  const myWorkSection = `<div>${workLbl}${workTasks}</div>`;                    /* Manager: tasks (counts are in the top marker) */
+  const workMarker = `<div class="wmarker" onclick="go('tasks')">${ICON('checks','ic')}<span class="wm-lbl">Your work</span><span class="wm-c wm-over">${overdue} overdue</span><span class="wm-c wm-today">${today} due today</span><span class="wm-c">${openTasks.length} open</span><span class="wm-go">Work Queue →</span></div>`;
 
-    <div>
+  const portfolioBlock = `<div>
       <div class="sec-lbl">${ICON('building','ic')} Carrier Relationship Portfolio <button class="sec-link" onclick="go('accounts')">All Accounts →</button></div>
       <div class="eco-strip">
         ${port.map(p=>`<div class="eco-tile" onclick="go('accounts','${p.key}')"><div class="eco-val" style="color:${p.color}">${p.val}</div><div class="eco-lbl">${p.label}</div></div>`).join('')}
       </div>
-    </div>
+    </div>`;
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+  const risksBlock = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <div>
         <div class="sec-lbl">${ICON('alert','ic')} Active Client Risks <span class="pill-count" style="background:var(--warnb);color:var(--warn)">${risks.length}</span></div>
         ${risks.map(r=>`<div class="att att-${r.sev==='crit'?'crit':'warn'}" onclick="go('account-detail','${r.acctId}')">
@@ -879,8 +878,24 @@ function screenDashboard(){
           <div class="row-body"><div class="row-name" style="font-size:12px">${esc(c.carrier)}</div><div class="row-meta">${esc(c.item)}</div></div>
         </div>`).join('')}
       </div>
-    </div>
+    </div>`;
 
+  // Sales Rep → My Work is the hero (their day, up top). Manager → keeps Attention as hero (Mark's order) with a slim work marker lifted to the top.
+  const body = ROLE==='sales'
+    ? [myWorkHero, focusBlock, askBlock, attentionBlock, portfolioBlock, risksBlock]
+    : [workMarker, focusBlock, askBlock, attentionBlock, myWorkSection, portfolioBlock, risksBlock];
+
+  return `
+  <div class="page-hdr">
+    <div>
+      <div class="page-title">${greet}</div>
+      <div class="page-sub">Thursday, June 12, 2026 · ${att.length} ${att.length===1?'item needs':'items need'} attention</div>
+      <div class="scope">${ICON('pin','ic')}Viewing: <b>${R.scope}</b>${isMgr?` · focused on <b>${mode==='clients'?'current clients':'sales pursuits'}</b>`:''}</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">${toggle}<button class="btn btn-primary" onclick="openLogActivity()">${ICON('plus')} Log Activity</button></div>
+  </div>
+  <div class="content-body" style="display:flex;flex-direction:column;gap:22px">
+    ${body.filter(Boolean).join('')}
   </div>`;
 }
 
