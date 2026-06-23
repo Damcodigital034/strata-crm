@@ -739,8 +739,20 @@ const vRisks=()=>vAttention().filter(a=>a.cat==='stewardship');
 
 /* ===== ROUTING ===== */
 let ROUTE='dashboard',PARAM=null;
-let DTAB='overview',FOPEN=false;
-function go(route,param){ROUTE=route;PARAM=param||null;DTAB='overview';FOPEN=false;render();const m=document.getElementById('main');if(m)m.scrollTop=0}
+let DTAB='overview',FOPEN=false,HISTORY=[];
+function go(route,param){
+  param=param||null;
+  if(ROUTE&&(ROUTE!==route||PARAM!==param)){HISTORY.push({route:ROUTE,param:PARAM});if(HISTORY.length>30)HISTORY.shift();}
+  ROUTE=route;PARAM=param;DTAB='overview';FOPEN=false;render();const m=document.getElementById('main');if(m)m.scrollTop=0;
+}
+function goBack(){const p=HISTORY.pop();if(p){ROUTE=p.route;PARAM=p.param;}else{ROUTE='dashboard';PARAM=null;}DTAB='overview';FOPEN=false;render();const m=document.getElementById('main');if(m)m.scrollTop=0;}
+const RT_LABEL={dashboard:'Dashboard',qualify:'Qualification Queue',accounts:'Accounts',pursuits:'Pursuits',contacts:'Contacts',gonecold:'Gone Cold',activities:'Activities',tasks:'Work Queue',reports:'Reports'};
+function backLabel(){const p=HISTORY[HISTORY.length-1];if(!p)return 'Back';
+  if(p.route==='account-detail'){const a=ACCOUNTS.find(x=>x.id===p.param);return 'Back to '+(a?a.name:'account')}
+  if(p.route==='bl-detail'){const l=LINES.find(x=>x.id===p.param);return 'Back to '+(l?l.name:'pursuit')}
+  if(p.route==='contact-detail'){const c=CONTACTS.find(x=>x.id===p.param);return 'Back to '+(c?c.name:'contact')}
+  return 'Back to '+(RT_LABEL[p.route]||'previous');}
+function backBtn(){return `<button class="backbtn" onclick="goBack()">${ICON('cleft','ic')} ${esc(backLabel())}</button>`}
 function rerenderMain(){TIPS=[];document.getElementById('main').innerHTML=renderScreen()}
 function setDtab(t){DTAB=t;rerenderMain()}
 function toggleFP(){FOPEN=!FOPEN;rerenderMain()}
@@ -1074,7 +1086,7 @@ function screenAccountDetail(id){
   })();
   const overview=`${tasksCard}${trialCard}${checkinCard}${relMapAccount(a)}${wnStrip(a.id)}`;
   return `
-  <button class="backbtn" onclick="go('accounts')">${ICON('cleft','ic')} Back to Accounts</button>
+  ${backBtn()}
   <div class="dhero">
     <div class="dhead">
       <div>
@@ -1166,7 +1178,7 @@ function screenBLDetail(id){
   const contactsHTML=contacts.map(c=>`<div class="row" onclick="go('contact-detail','${c.id}')"><div class="av av-rd" style="background:${c.color};width:32px;height:32px;font-size:10px">${initials(c.name)}</div><div class="row-body"><div class="row-name" style="font-size:12px">${esc(c.name)} ${dmChip(c.dm)}</div><div class="row-meta">${esc(c.title)}</div></div></div>`).join('')||'<div class="empty">No contacts.</div>';
   const activity=acts.map(actHTML).join('')||'<div class="empty">No activity recorded.</div>';
   return `
-  <button class="backbtn" onclick="go('account-detail','${a?.id}')">${ICON('cleft','ic')} Back to ${esc(a?.name||'account')}</button>
+  ${backBtn()}
   <div class="dhero">
     <div class="dsub" style="margin:0 0 2px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--tsu)">${esc(a?.name||'')} · ${esc(a?.size||'')}</div>
     <div class="dtitle">${esc(l.name)}</div>
@@ -1290,7 +1302,7 @@ function screenContactDetail(id){
     </div>`;
   const activity=acts.length?acts.map(actHTML).join(''):'<div class="empty">No activities logged with this contact yet.</div>';
   return `
-  <button class="backbtn" onclick="go('contacts')">${ICON('cleft','ic')} Back to Contacts</button>
+  ${backBtn()}
   <div class="dhero">
     <div class="dhead">
       <div style="display:flex;align-items:center;gap:14px">
