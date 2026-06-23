@@ -627,8 +627,8 @@ const RS={'active-client':{label:'Active Client',cls:'rs-ac'},'pending-assign':{
 
 /* ===== DATA (verbatim from Mark's v4) ===== */
 const ACCOUNTS=[
- {id:'trav',name:'Travelers Insurance',rs:'active-client',owner:'Alicia Torres',ownerColor:'#be123c',isStrategic:true,prevOwner:'Joe Rivera',lmc:dAgo(2),lmcWho:'Sarah Chen',hq:'Hartford, CT',size:'Large (National)',claims:64,firstClaim:dAgo(420),steward:'Alicia Torres'},
- {id:'all',name:'Allstate',rs:'active-client',owner:'Brent Hughes',ownerColor:'#0891b2',isStrategic:false,prevOwner:'Joe Rivera',lmc:dAgo(6),lmcWho:'James Mitchell',hq:'Northbrook, IL',size:'Large (National)',claims:31,firstClaim:dAgo(300),steward:'Brent Hughes'},
+ {id:'trav',name:'Travelers Insurance',rs:'active-client',owner:'Alicia Torres',ownerColor:'#be123c',isStrategic:true,prevOwner:'Joe Rivera',lmc:dAgo(2),lmcWho:'Sarah Chen',hq:'Hartford, CT',size:'Large (National)',claims:64,firstClaim:dAgo(420),steward:'Alicia Torres',cadenceM:1,lastCheckin:dAgo(20)},
+ {id:'all',name:'Allstate',rs:'active-client',owner:'Brent Hughes',ownerColor:'#0891b2',isStrategic:false,prevOwner:'Joe Rivera',lmc:dAgo(6),lmcWho:'James Mitchell',hq:'Northbrook, IL',size:'Large (National)',claims:31,firstClaim:dAgo(300),steward:'Brent Hughes',cadenceM:3,lastCheckin:dAgo(118)},
  {id:'usaa',name:'USAA Property Claims',rs:'active-client',owner:'Joe Rivera',ownerColor:'#0369a1',isStrategic:false,lmc:dAgo(3),lmcWho:'Karen Wu',hq:'San Antonio, TX',size:'Large (National)',claims:2,firstClaim:dAgo(22),steward:'Alicia Torres'},
  {id:'kins',name:'Kinsale Insurance',rs:'pending-assign',owner:'Joe Rivera',ownerColor:'#0369a1',isStrategic:false,lmc:dAgo(0),lmcWho:'Linda Park',hq:'Richmond, VA',size:'Regional'},
  {id:'nat',name:'Nationwide P&C',rs:'active-pursuit',owner:'Joe Rivera',ownerColor:'#0369a1',isStrategic:true,lmc:dAgo(45),lmcWho:'Rachel Hughes',hq:'Columbus, OH',size:'Large (National)'},
@@ -695,7 +695,6 @@ const ATTENTION=[
  {acctId:'rli',carrier:'RLI',line:'Daily Property',cond:'No meaningful contact — 298 days',dur:'Last contact Aug 2025 · Rick James',sev:'crit',rs:'rs-nu',ic:'phone',cat:'pursuit',owner:'Joe Rivera'},
  {acctId:'nat',carrier:'Nationwide P&C',line:'Commercial Property',cond:'Proposal stage — 54 days, target 21',dur:'In Proposal since Apr 19',sev:'warn',rs:'rs-ap',ic:'clock',cat:'pursuit',owner:'Joe Rivera'},
  {acctId:'usaa',carrier:'USAA Property Claims',line:'Residential Property',cond:'No claim assignments — 22 days since activation',dur:'Activated May 21 · routing suspected',sev:'warn',rs:'rs-ac',ic:'alert',cat:'stewardship',owner:'Joe Rivera'},
- {acctId:'all',carrier:'Allstate',line:'Residential Property',cond:'Q3 relationship review overdue — 3 months',dur:'Last review Q1 2026 · James Mitchell',sev:'warn',rs:'rs-ac',ic:'cal',cat:'stewardship',owner:'Brent Hughes'},
  {acctId:'all',carrier:'Indiana Farmers',line:'Daily Property',cond:'Annual executive review overdue 12+ months',dur:'No exec touchpoint since Jun 2025',sev:'warn',rs:'rs-ac',ic:'cal',cat:'stewardship',owner:'Alicia Torres'},
 ];
 const CRED=[
@@ -772,7 +771,7 @@ function syncThemeBtn(){
 /* ===== RAIL ===== */
 function renderRail(){
   const items=[
-    {k:'dashboard',ic:'dashboard',label:'Dashboard',badge:vAttention().length,red:true},
+    {k:'dashboard',ic:'dashboard',label:'Dashboard',badge:allAttention().length,red:true},
     {sep:'Prospecting'},
     {k:'qualify',ic:'trend',label:'Qualification Queue',badge:warmContacts().length,red:false},
     {sep:'Carriers'},
@@ -812,6 +811,22 @@ function dropLine(e,stage){e.preventDefault();const id=DRAGID||(e.dataTransfer&&
 /* Client = received-a-claim; 90-day / 20-claim trial */
 function trialState(a){if(a.rs!=='active-client'||!a.firstClaim)return null;const days=Math.floor((TODAY-new Date(a.firstClaim))/864e5);const claims=a.claims||0;return {inTrial:claims<20&&days<90,claims,days,steward:a.steward};}
 function clientMarker(a){const c=a.claims||0;if(!c)return '';const ts=trialState(a);if(ts&&ts.inTrial)return `<span class="cm cm-trial" title="Early Active Client — trial period">Trial · ${ts.claims}/20</span>`;return `<span class="cm cm-client" title="Received ${c} claims">Client · ${c} claims</span>`;}
+/* Check-in cadence (relationship review) — rule-suggested, rep sets, miss → alarm */
+const CAD={1:'Monthly',3:'Quarterly',6:'Semi-annual',12:'Annual'};
+function suggestCadence(a){let m=3;const lines=LINES.filter(l=>l.accountId===a.id).length;if(lines>=3)m=1;else if(lines===2)m=3;else m=6;const c=a.claims||0;if(c>=50)m=Math.min(m,1);else if(c>=20)m=Math.min(m,3);if(a.isStrategic)m=(m>=6?3:1);return m;}
+function checkinState(a){if(a.rs!=='active-client')return null;if(!a.cadenceM)return {set:false,suggest:suggestCadence(a)};const since=a.lastCheckin?Math.floor((TODAY-new Date(a.lastCheckin))/864e5):9999;const due=a.cadenceM*30-since;return {set:true,cadenceM:a.cadenceM,label:CAD[a.cadenceM],since,dueInDays:due,status:due<0?'overdue':due<=10?'soon':'ontrack',overdueDays:due<0?-due:0};}
+function checkinAlerts(){return vAccounts().filter(a=>{const cs=checkinState(a);return cs&&cs.set&&cs.status==='overdue'}).map(a=>{const cs=checkinState(a);return {acctId:a.id,carrier:a.name,line:'Relationship check-in',cond:cs.label+' check-in overdue',dur:cs.overdueDays+' days past due · '+a.owner,sev:'warn',rs:'rs-ac',ic:'cal',cat:'stewardship',owner:a.owner};});}
+function allAttention(){return vAttention().concat(checkinAlerts());}
+function openCadence(id){const a=ACCOUNTS.find(x=>x.id===id);if(!a)return;const sug=suggestCadence(a),cur=a.cadenceM||sug,lines=LINES.filter(l=>l.accountId===a.id).length;
+  openModal(`<div class="modal-head"><span class="modal-title">Check-in cadence · ${esc(a.name)}</span><button class="modal-close" onclick="closeModal()">${ICON('x')}</button></div>
+  <div class="modal-body">
+    <div style="font-size:12px;color:var(--tm);line-height:1.6">Suggested <b style="color:var(--ts)">${CAD[sug]}</b> — based on ${lines} business line${lines!==1?'s':''}${a.isStrategic?', strategic account':''}${a.claims?', '+a.claims+' claims':''}. The rep sets it; a missed check-in surfaces to the manager.</div>
+    <div class="field"><label>Cadence</label><select id="cad-sel">${Object.entries(CAD).map(([m,l])=>`<option value="${m}" ${(+m===cur)?'selected':''}>${l}${+m===sug?' · suggested':''}</option>`).join('')}</select></div>
+  </div>
+  <div class="modal-foot"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveCadence('${id}')">Save cadence</button></div>`);
+}
+function saveCadence(id){const a=ACCOUNTS.find(x=>x.id===id);if(!a)return;a.cadenceM=+document.getElementById('cad-sel').value;if(!a.lastCheckin)a.lastCheckin=TODAY.toISOString();closeModal();rerenderMain();toast('Cadence set: '+CAD[a.cadenceM]);}
+function logCheckin(id){const a=ACCOUNTS.find(x=>x.id===id);if(!a)return;a.lastCheckin=TODAY.toISOString();rerenderMain();toast('Check-in logged — cadence reset');}
 
 function renderScreen(){
   switch(ROUTE){
@@ -869,7 +884,7 @@ function screenDashboard(){
   const R=ROLES[ROLE];
   const isMgr=ROLE==='manager';
   const mode=isMgr?SALESMODE:'sales';   /* sales rep is always sales-focused on their own book */
-  const att=vAttention();
+  const att=allAttention();
   const pursuit=att.filter(a=>a.cat==='pursuit');
   const steward=att.filter(a=>a.cat==='stewardship');
   const tasks=vTasks();
@@ -994,6 +1009,7 @@ function screenAccounts(){
       <td><span class="rs ${RS[a.rs].cls}">${RS[a.rs].label}</span>${clientMarker(a)}</td>
       <td>${lc}</td>
       <td><span class="lmc ${lmcCls}">${ICON('clock','ic')} ${lmcLbl}</span>${a.lmcWho?`<div style="font-size:10px;color:var(--tsu);margin-top:2px">${esc(a.lmcWho)}</div>`:''}</td>
+      <td>${(function(){const cs=checkinState(a);if(!cs)return '<span style="color:var(--tf)">—</span>';if(!cs.set)return '<span class="cm" style="background:var(--cbs);color:var(--tm)">Not set</span>';return cs.status==='overdue'?`<span class="cm" style="background:var(--critb);color:var(--crit)">Overdue ${cs.overdueDays}d</span>`:cs.status==='soon'?`<span class="cm cm-trial">Due ${cs.dueInDays}d</span>`:`<span class="cm cm-client">On track</span>`;})()}</td>
       ${showOwner?`<td><span class="owner-chip"><span class="owner-av" style="background:${a.ownerColor}">${initials(a.owner)}</span>${esc(a.owner)}</span></td>`:''}
     </tr>`;
   }).join('');
@@ -1017,7 +1033,7 @@ function screenAccounts(){
     </div>
     <span class="filt-right">${rows.length} shown</span>
   </div>
-  <div class="content-body">${rows.length?`<table class="ptable"><thead><tr><th>Carrier</th><th>Status</th><th>Lines</th><th>Last Meaningful</th>${showOwner?'<th>Owner</th>':''}</tr></thead><tbody>${body}</tbody></table>`:'<div class="empty"><strong>No accounts in this view.</strong></div>'}</div>`;
+  <div class="content-body">${rows.length?`<table class="ptable"><thead><tr><th>Carrier</th><th>Status</th><th>Lines</th><th>Last Meaningful</th><th>Check-in</th>${showOwner?'<th>Owner</th>':''}</tr></thead><tbody>${body}</tbody></table>`:'<div class="empty"><strong>No accounts in this view.</strong></div>'}</div>`;
 }
 function setAcctFilter(k){acctFilter=k;rerenderMain()}
 
@@ -1050,7 +1066,13 @@ function screenAccountDetail(id){
       <div class="row-body"><div class="row-name" style="font-size:12px">${esc(c.name)} ${dmChip(c.dm)}</div><div class="row-meta">${esc(c.title)} · ${esc(c.lmc)}</div></div>
     </div>`).join('')||'<div class="empty">No contacts.</div>';
   const activityHTML=acts.map(actHTML).join('')||'<div class="empty">No activity recorded.</div>';
-  const overview=`${tasksCard}${trialCard}${relMapAccount(a)}${wnStrip(a.id)}`;
+  const checkinCard=(function(){const cs=checkinState(a);if(!cs)return '';const ln=lines.length;
+    if(!cs.set)return `<div class="card" style="border-left:3px solid var(--info)"><div class="sec-lbl" style="margin-bottom:6px">${ICON('cal','ic')} Relationship Check-in</div><div style="font-size:13px;color:var(--tb);line-height:1.6">No cadence set yet. Suggested <b>${CAD[cs.suggest]}</b> — based on ${ln} business line${ln!==1?'s':''}${a.isStrategic?', strategic':''}${a.claims?', '+a.claims+' claims':''}.</div><div style="margin-top:10px"><button class="btn btn-primary" onclick="openCadence('${a.id}')">${ICON('plus')} Set cadence</button></div></div>`;
+    const col=cs.status==='overdue'?'var(--crit)':cs.status==='soon'?'var(--warn)':'var(--ok)';
+    const msg=cs.status==='overdue'?`<b style="color:var(--crit)">Check-in overdue by ${cs.overdueDays} days</b>`:cs.status==='soon'?`<b style="color:var(--warn)">Due in ${cs.dueInDays} days</b>`:`On track — next in ${cs.dueInDays} days`;
+    return `<div class="card" style="border-left:3px solid ${col}"><div class="sec-lbl" style="margin-bottom:6px">${ICON('cal','ic')} Relationship Check-in · ${cs.label}</div><div style="font-size:13px;color:var(--tb);line-height:1.6">Last check-in ${cs.since>=9999?'never logged':cs.since+' days ago'}. ${msg}.</div><div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" onclick="logCheckin('${a.id}')">${ICON('check')} Log check-in</button><button class="btn" onclick="openCadence('${a.id}')">Change cadence</button></div></div>`;
+  })();
+  const overview=`${tasksCard}${trialCard}${checkinCard}${relMapAccount(a)}${wnStrip(a.id)}`;
   return `
   <button class="backbtn" onclick="go('accounts')">${ICON('cleft','ic')} Back to Accounts</button>
   <div class="dhero">
