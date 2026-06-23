@@ -444,6 +444,44 @@ svg{display:block}
 .fchip{font-size:11px;border:1px solid var(--cb);background:var(--card);color:var(--tm);border-radius:20px;padding:4px 11px;cursor:pointer;font-family:var(--font);font-weight:600;display:inline-flex;align-items:center;gap:5px}
 .fchip.on{background:var(--nav);border-color:var(--nav);color:#fff}
 .fclear{font-size:11px;color:var(--info);cursor:pointer;border:none;background:none;font-weight:600;padding:10px 0 0;font-family:var(--font)}
+/* Ask AI — floating assistant */
+.askfab{position:fixed;right:24px;bottom:24px;width:54px;height:54px;border-radius:50%;background:var(--nav);border:2px solid var(--lime);box-shadow:0 8px 24px rgba(0,0,0,.28);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:120;transition:transform .15s}
+.askfab:hover{transform:translateY(-2px) scale(1.04)}
+.askfab svg{width:24px;height:24px}
+.askfab.hidden{display:none}
+.askpanel{position:fixed;right:24px;bottom:24px;width:384px;max-width:calc(100vw - 32px);height:564px;max-height:calc(100vh - 48px);background:var(--card);border:1px solid var(--cb);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);z-index:121;display:none;flex-direction:column;overflow:hidden}
+.askpanel.open{display:flex;animation:askin .2s ease}
+@keyframes askin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.askp-head{background:var(--nav);color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.askp-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;color:#fff}
+.askp-sub{font-size:11px;color:rgba(255,255,255,.5);font-weight:500}
+.askp-x{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:14px;padding:2px 7px;border-radius:5px;font-family:var(--font)}
+.askp-x:hover{background:rgba(255,255,255,.12);color:#fff}
+.askp-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--page)}
+.askmsg{font-size:12.5px;line-height:1.55}
+.askmsg.user{align-self:flex-end;background:var(--lime);color:#fff;padding:9px 13px;border-radius:14px 14px 4px 14px;font-weight:500;max-width:85%}
+.askmsg.ai{align-self:flex-start;background:var(--card);border:1px solid var(--cb);color:var(--tb);padding:12px 14px;border-radius:14px 14px 14px 4px;width:90%}
+.askmsg.ai .ask-ans-h{font-weight:700;color:var(--ts);font-size:13px;margin-bottom:8px}
+.ask-para{color:var(--tb);font-size:12.5px;line-height:1.6}.ask-para b{color:var(--ts)}
+.ask-quote{font-style:italic;color:var(--tm);border-left:2px solid var(--lime);padding-left:10px;margin:9px 0;font-size:12px}
+.ask-egs{font-size:12px;color:var(--tm);line-height:1.85;margin-top:6px}
+.ask-note{font-size:11px;color:var(--tsu);font-style:italic;margin-top:8px}
+.askrow{display:flex;align-items:center;gap:9px;padding:8px;border-radius:8px;cursor:pointer;transition:background .12s}
+.askrow:hover{background:var(--cr)}
+.askrow-go{width:22px;height:22px;border-radius:6px;background:var(--lt);color:var(--ld);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.askrow-go .ic{width:12px;height:12px}
+.askrow-n{font-size:12px;font-weight:600;color:var(--ts)}
+.askrow-s{font-size:11px;color:var(--tm);margin-top:1px}
+.askrow-empty{font-size:12px;color:var(--tm)}
+.askp-chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px;border-top:1px solid var(--cbs);flex-shrink:0;max-height:104px;overflow-y:auto}
+.askchip{font-size:11px;font-weight:600;color:var(--ld);background:var(--lt);border:none;border-radius:20px;padding:5px 11px;cursor:pointer;font-family:var(--font)}
+.askchip:hover{background:var(--lime);color:#fff}
+.askp-input{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--cb);flex-shrink:0;align-items:center}
+.askp-input input{flex:1;border:1px solid var(--cb);border-radius:20px;padding:9px 14px;font-size:13px;font-family:var(--font);color:var(--ts);background:var(--card);outline:none}
+.askp-input input:focus{border-color:var(--lime)}
+.askp-send{width:36px;height:36px;border-radius:50%;background:var(--lime);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.askp-send:hover{background:var(--ld)}
+@media(max-width:520px){.askpanel{right:8px;left:8px;width:auto;bottom:8px;height:72vh}}
 #tooltip{position:fixed;z-index:1000;width:300px;background:var(--nav);color:#fff;border-radius:9px;padding:11px 13px;font-size:11px;line-height:1.55;box-shadow:var(--shl);opacity:0;visibility:hidden;transition:opacity .1s;pointer-events:none;border:1px solid rgba(255,255,255,.1)}
 #tooltip.show{opacity:1;visibility:visible}
 .tip-h{font-weight:700;color:#fff;margin-bottom:6px}
@@ -497,6 +535,20 @@ svg{display:block}
 
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal-container"></div></div>
 <div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- Ask AI — floating assistant -->
+<button id="askfab" class="askfab" onclick="toggleAsk()" title="Ask AI" aria-label="Ask AI">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"/><path d="M19 14l.8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8L19 14z"/></svg>
+</button>
+<div id="askpanel" class="askpanel">
+  <div class="askp-head">
+    <div class="askp-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"/></svg> Ask AI <span class="askp-sub">your relationships</span></div>
+    <button class="askp-x" onclick="toggleAsk()" aria-label="Close">✕</button>
+  </div>
+  <div class="askp-body" id="askp-body"></div>
+  <div class="askp-chips" id="askp-chips"></div>
+  <div class="askp-input"><input id="askp-q" placeholder="Ask anything…" onkeydown="if(event.key==='Enter')sendAsk()"><button class="askp-send" onclick="sendAsk()" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M2 8h11M9 4l4 4-4 4"/></svg></button></div>
+</div>
 
 <script>
 'use strict';
@@ -862,18 +914,6 @@ function screenDashboard(){
       </div>`:''}
     </div>`:'';
 
-  const askBlock = `<div class="ask">
-      <div class="ask-head">${ICON('search','ic')} Ask your relationships</div>
-      <div class="ask-row">${ICON('search')}<input id="ask-input" placeholder="e.g. what's gone cold? · what needs me on Travelers? · show overdue tasks" oninput="runAsk(this.value)"></div>
-      <div class="ask-chips">
-        <span class="ask-chip" onclick="ask('What has gone cold?')">What's gone cold?</span>
-        <span class="ask-chip" onclick="ask('What needs attention?')">What needs attention?</span>
-        <span class="ask-chip" onclick="ask('Which strategic carriers are quiet?')">Strategic &amp; quiet</span>
-        <span class="ask-chip" onclick="ask('Show overdue tasks')">Overdue</span>
-        <span class="ask-chip" onclick="ask('Tell me about Travelers')">About Travelers</span>
-      </div>
-      <div class="ask-ans" id="ask-ans"></div>
-    </div>`;
 
   const attentionBlock = `<div>
       <div class="sec-lbl">${ICON('alert','ic')} Relationship Attention Needed <span class="pill-count" style="background:var(--critb);color:var(--crit)">${att.length}</span></div>
@@ -917,8 +957,8 @@ function screenDashboard(){
 
   // Sales Rep → My Work is the hero (their day, up top). Manager → keeps Attention as hero (Mark's order) with a slim work marker lifted to the top.
   const body = ROLE==='sales'
-    ? [myWorkHero, focusBlock, askBlock, attentionBlock, portfolioBlock, risksBlock]
-    : [workMarker, focusBlock, askBlock, attentionBlock, myWorkSection, portfolioBlock, risksBlock];
+    ? [myWorkHero, focusBlock, attentionBlock, portfolioBlock, risksBlock]
+    : [workMarker, focusBlock, attentionBlock, myWorkSection, portfolioBlock, risksBlock];
 
   return `
   <div class="page-hdr">
@@ -1384,41 +1424,88 @@ function screenGoneCold(){
 }
 
 /* ===== ASK (in-app, scripted — production wires to Claude) ===== */
-function ask(q){const el=document.getElementById('ask-input');if(el)el.value=q;runAsk(q)}
-function ansList(title,rows){
-  if(!rows.length)return `<div class="ask-card"><div class="ask-ans-h">${esc(title)}</div><div style="font-size:12px;color:var(--tm)">Nothing matches — all clear.</div></div>`;
-  return `<div class="ask-card"><div class="ask-ans-h">${esc(title)} · ${rows.length}</div>`+rows.map(r=>`<div class="focus-item" onclick="go('account-detail','${r.acctId}')"><div class="focus-num" style="background:var(--lt);color:var(--ld)">${ICON('arr','ic')}</div><div style="flex:1"><div class="focus-carrier">${esc(r.name)}</div><div class="focus-cond">${esc(r.sub)}</div></div></div>`).join('')+`</div>`;
+/* ===== ASK AI — floating chat assistant ===== */
+let ASK_OPEN=false,ASK_CHIPS=[];
+function toggleAsk(){
+  ASK_OPEN=!ASK_OPEN;
+  document.getElementById('askpanel').classList.toggle('open',ASK_OPEN);
+  document.getElementById('askfab').classList.toggle('hidden',ASK_OPEN);
+  const p=document.getElementById('askpanel');
+  if(ASK_OPEN&&!p.dataset.init){p.dataset.init='1';askPush("Hi — I'm your relationships assistant. Ask me anything about carriers, pursuits, health, or what needs you right now. Try one of these, or just type.","ai");}
+  renderAskChips();
+  if(ASK_OPEN)setTimeout(()=>{const i=document.getElementById('askp-q');if(i)i.focus()},60);
 }
-function runAsk(q){
-  const out=document.getElementById('ask-ans');if(!out)return;
-  q=(q||'').toLowerCase().trim();
-  if(!q){out.innerHTML='';return}
-  const accts=vAccounts();let h='';
-  if(/cold|quiet|stale|gone|haven|not (talk|contact|spoke|heard)/.test(q)){
-    let list=accts.filter(a=>{const d=lmcDays(a);return d===null||d>60});
-    if(/strateg/.test(q))list=list.filter(a=>a.isStrategic);
-    list.sort((a,b)=>((lmcDays(b)===null?99999:lmcDays(b))-(lmcDays(a)===null?99999:lmcDays(a))));
-    h=ansList('Relationships that have gone quiet'+(/strateg/.test(q)?' (strategic)':''),list.map(a=>({acctId:a.id,name:a.name,sub:(lmcDays(a)===null?'No contact logged':lmcDays(a)+' days since last meaningful contact')+' · '+a.owner})));
-  } else if(/overdue/.test(q)){
-    const t=vTasks().filter(x=>x.due==='overdue'&&!x.done);
-    h=ansList('Overdue tasks',t.map(x=>({acctId:x.acctId,name:x.carrier,sub:x.title})));
-  } else if(/strateg/.test(q)){
-    h=ansList('Strategic carriers',accts.filter(a=>a.isStrategic).map(a=>({acctId:a.id,name:a.name,sub:RS[a.rs].label+' · owner '+a.owner})));
-  } else if(/risk|no claim|active client/.test(q)){
-    h=ansList('Active client risks',vRisks().map(a=>({acctId:a.acctId,name:a.carrier,sub:a.cond})));
-  } else if(/attention|need|urgent|focus|today|what.*do/.test(q)){
-    h=ansList(vAttention().length+' items need attention',vAttention().map(a=>({acctId:a.acctId,name:a.carrier,sub:a.cond})));
-  } else {
-    const a=accts.find(x=>q.includes(x.name.toLowerCase().split(' ')[0]));
-    if(a){const d=lmcDays(a);const ts=vTasks().filter(t=>t.acctId===a.id&&!t.done);const sg=SIGNALS.filter(s=>s.acctId===a.id);
-      h=`<div class="ask-card"><div class="ask-ans-h">${esc(a.name)} — ${RS[a.rs].label}</div>
-      <div style="font-size:12px;color:var(--tb);line-height:1.7">Owner: <b>${esc(a.owner)}</b><br>Last meaningful contact: <b>${d===null?'none logged':d+' days ago'}</b>${a.lmcWho?' ('+esc(a.lmcWho)+')':''}<br>${ts.length?'<b>'+ts.length+'</b> open task'+(ts.length>1?'s':''):'No open tasks'}.${sg.length?'<br>Worth noting: <i>"'+esc(sg[0].quote)+'"</i>':''}</div>
-      <div style="margin-top:9px"><button class="btn btn-primary" onclick="go('account-detail','${a.id}')">${ICON('arr')} Open ${esc(a.name)}</button></div></div>`;
-    } else {
-      h=`<div class="ask-card" style="font-size:12px;color:var(--tm);line-height:1.6">Try: <b>what's gone cold</b>, <b>what needs attention</b>, <b>overdue tasks</b>, <b>strategic carriers</b>, <b>active client risks</b> — or name a carrier (e.g. "Nationwide").</div>`;
-    }
+function renderAskChips(){
+  const mgr=ROLE!=='sales';
+  ASK_CHIPS = mgr
+    ? ["What's up with Travelers?","What's the priority for CAT claims?","Which relationships aren't healthy?","Who's gone cold?","Who should I call right now?","What's in jeopardy?"]
+    : ["Who should I call right now?","What's in jeopardy?","Which pursuits are stalling?","What's overdue?","What's up with Nationwide?"];
+  const el=document.getElementById('askp-chips');if(el)el.innerHTML=ASK_CHIPS.map((c,i)=>`<button class="askchip" onclick="sendAsk(ASK_CHIPS[${i}])">${esc(c)}</button>`).join('');
+}
+function askPush(html,who){const b=document.getElementById('askp-body');if(!b)return;const d=document.createElement('div');d.className='askmsg '+who;d.innerHTML=html;b.appendChild(d);b.scrollTop=b.scrollHeight}
+function sendAsk(preset){
+  const inp=document.getElementById('askp-q');
+  const q=((preset!=null?preset:(inp?inp.value:''))||'').trim();
+  if(!q)return;if(inp)inp.value='';
+  askPush(esc(q),'user');
+  setTimeout(()=>askPush(answerAsk(q),'ai'),140);
+}
+function answerAsk(raw){
+  const q=(raw||'').toLowerCase();
+  const accts=vAccounts();
+  const list=rows=>rows.length?rows.map(r=>`<div class="askrow" onclick="go('account-detail','${r.acctId}')"><span class="askrow-go">${ICON('arr','ic')}</span><div><div class="askrow-n">${esc(r.name)}</div><div class="askrow-s">${esc(r.sub)}</div></div></div>`).join(''):`<div class="askrow-empty">Nothing matches — all clear there.</div>`;
+  const head=t=>`<div class="ask-ans-h">${esc(t)}</div>`;
+
+  if(/who.*(call|reach)|call.*(now|right|first)|reach out/.test(q)){
+    const items=[];
+    vTasks().filter(t=>t.due==='overdue'&&!t.done).forEach(t=>items.push({acctId:t.acctId,name:t.carrier,sub:'Overdue — '+t.title}));
+    vAttention().filter(x=>x.sev==='crit').forEach(x=>{if(!items.find(i=>i.acctId===x.acctId))items.push({acctId:x.acctId,name:x.carrier,sub:x.cond})});
+    return head('Call these first — highest urgency')+list(items.slice(0,6));
   }
-  out.innerHTML=`<div class="ask-ans-q">You asked: "${esc(q)}"</div>${h}`;
+  if(/jeopard|at risk|losing|trouble|danger|slipping|about to/.test(q)){
+    const items=[];
+    vAttention().filter(x=>x.sev==='crit').forEach(x=>items.push({acctId:x.acctId,name:x.carrier,sub:x.cond}));
+    vRisks().forEach(r=>{if(!items.find(i=>i.acctId===r.acctId))items.push({acctId:r.acctId,name:r.carrier,sub:r.cond})});
+    return head('Relationships in jeopardy')+list(items);
+  }
+  if(/stall|stuck|not moving|going nowhere|sitting/.test(q)){
+    return head('Pursuits that are stalling')+list(vAttention().filter(x=>x.cat==='pursuit').map(x=>({acctId:x.acctId,name:x.carrier+' · '+x.line,sub:x.cond})));
+  }
+  if(/not healthy|unhealthy|wrong state|not.*(correct|right)|correct state|needs? attention|not on track|which.*attention/.test(q)){
+    const rows=vLines().filter(l=>l.health!=='ok').map(l=>{const ac=ACCOUNTS.find(x=>x.id===l.accountId);return {acctId:l.accountId,name:(ac?ac.name:'')+' · '+l.name,sub:'Needs attention · '+cap(l.stage)+' · LMC '+fmtRel(l.lmc)}});
+    return head('Relationships not on track')+list(rows);
+  }
+  if(/cold|quiet|stale|gone|haven|silent|not (talk|contact|spoke|heard)/.test(q)){
+    let l=accts.filter(x=>{const d=lmcDays(x);return d===null||d>60});if(/strateg/.test(q))l=l.filter(x=>x.isStrategic);
+    l.sort((x,y)=>((lmcDays(y)===null?9e9:lmcDays(y))-(lmcDays(x)===null?9e9:lmcDays(x))));
+    return head('Gone quiet'+(/strateg/.test(q)?' (strategic)':''))+list(l.map(x=>({acctId:x.id,name:x.name,sub:(lmcDays(x)===null?'No contact logged':lmcDays(x)+' days since last meaningful contact')+' · '+x.owner})));
+  }
+  if(/overdue/.test(q)){
+    return head('Overdue tasks')+list(vTasks().filter(t=>t.due==='overdue'&&!t.done).map(t=>({acctId:t.acctId,name:t.carrier,sub:t.title})));
+  }
+  if(/strateg/.test(q)){
+    return head('Strategic carriers')+list(accts.filter(a=>a.isStrategic).map(a=>({acctId:a.id,name:a.name,sub:RS[a.rs].label+' · owner '+a.owner})));
+  }
+  if(/volume|how many claims|claim (count|flow)/.test(q)){
+    const cl=accts.filter(x=>x.claims).sort((p,n)=>(n.claims||0)-(p.claims||0));
+    return head('Active clients by claim volume')+list(cl.map(x=>({acctId:x.id,name:x.name,sub:x.claims+' claims · '+(trialState(x)&&trialState(x).inTrial?'in trial':'established')})))+`<div class="ask-note">Live volume-trend tracking arrives with the CMS claim feed (Volume Watch).</div>`;
+  }
+  const lob=/\bcat\b|storm|catastrophe/.test(q)?'CAT':/daily/.test(q)?'Daily':/commercial/.test(q)?'Commercial':/residential/.test(q)?'Residential':null;
+  if(lob){
+    const lns=vLines().filter(l=>(lob==='CAT'?/cat|storm/i:new RegExp(lob,'i')).test(l.name));
+    lns.sort((x,y)=>(x.health==='ok'?1:0)-(y.health==='ok'?1:0));
+    const rows=lns.map(l=>{const ac=ACCOUNTS.find(x=>x.id===l.accountId);return {acctId:l.accountId,name:(ac?ac.name:'')+' · '+l.name,sub:cap(l.stage)+' · '+(l.health==='ok'?'On Track':'Needs Attention')+' · LMC '+fmtRel(l.lmc)}});
+    return head((/priorit/.test(q)?'Priority on ':'')+lob+' lines'+(/priorit/.test(q)?' (needs-attention first)':''))+list(rows);
+  }
+  const a=accts.find(x=>{const t=x.name.toLowerCase().split(/[ /]/)[0];return t.length>2&&q.includes(t)});
+  if(a){
+    const d=lmcDays(a),ts=vTasks().filter(t=>t.acctId===a.id&&!t.done),sg=SIGNALS.filter(s=>s.acctId===a.id),lns=LINES.filter(l=>l.accountId===a.id),att=lns.filter(l=>l.health!=='ok').length;
+    return head(`${a.name} — ${RS[a.rs].label}${a.claims?' · '+a.claims+' claims':''}`)
+      +`<div class="ask-para">Owner <b>${esc(a.owner)}</b>. Last meaningful contact <b>${d===null?'none logged':d+' days ago'}</b>${a.lmcWho?' ('+esc(a.lmcWho)+')':''}. ${lns.length} business line${lns.length!==1?'s':''}${att?', <b>'+att+' need attention</b>':' — all on track'}. ${ts.length?'<b>'+ts.length+'</b> open task'+(ts.length>1?'s':'')+'.':'No open tasks.'}</div>`
+      +(sg.length?`<div class="ask-quote">"${esc(sg[0].quote)}" — ${esc(sg[0].person)}</div>`:'')
+      +`<div class="askrow" onclick="go('account-detail','${a.id}')"><span class="askrow-go">${ICON('arr','ic')}</span><div><div class="askrow-n">Open ${esc(a.name)}</div></div></div>`;
+  }
+  return `<div class="ask-para">I can help with things like:</div><div class="ask-egs">"What's up with Travelers?" · "Priority for CAT claims?" · "Which relationships aren't healthy?" · "Who's gone cold?" · "Who should I call right now?" · "What's in jeopardy?" · "What's overdue?"</div>`;
 }
 
 /* ===== ADVANCED SEARCH (CMS-style) ===== */
