@@ -415,6 +415,18 @@ svg{display:block}
 .wm-over{color:var(--crit)}
 .wm-today{color:var(--warn)}
 .wm-go{margin-left:auto;color:var(--info);font-weight:600}
+/* company status hero (manager) */
+.cstat-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.cstat{background:var(--card);border:1px solid var(--cb);border-top:3px solid var(--cb);border-radius:11px;padding:16px 14px;cursor:pointer;transition:box-shadow .15s,transform .1s}
+.cstat:hover{box-shadow:var(--shm);transform:translateY(-1px)}
+.cstat-v{font-size:28px;font-weight:800;letter-spacing:-.5px;line-height:1;color:var(--ts)}
+.cstat-l{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--tsu);margin-top:6px}
+.cstat.crit{border-top-color:var(--crit)}.cstat.crit .cstat-v{color:var(--crit)}
+.cstat.ok{border-top-color:var(--ok)}.cstat.ok .cstat-v{color:var(--okd)}
+.cstat.warn{border-top-color:var(--warn)}.cstat.warn .cstat-v{color:var(--warn)}
+.cstat.purple{border-top-color:var(--purple)}.cstat.purple .cstat-v{color:var(--purple)}
+.cstat.info{border-top-color:var(--info)}.cstat.info .cstat-v{color:var(--info)}
+@media(max-width:900px){.cstat-grid{grid-template-columns:repeat(3,1fr)}}
 /* detail: back button + light hero + tabs (CMS parity) */
 .backbtn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--tm);cursor:pointer;background:none;border:none;padding:11px 24px 4px;font-family:var(--font)}
 .backbtn:hover{color:var(--ts)}
@@ -829,6 +841,7 @@ function suggestCadence(a){let m=3;const lines=LINES.filter(l=>l.accountId===a.i
 function checkinState(a){if(a.rs!=='active-client')return null;if(!a.cadenceM)return {set:false,suggest:suggestCadence(a)};const since=a.lastCheckin?Math.floor((TODAY-new Date(a.lastCheckin))/864e5):9999;const due=a.cadenceM*30-since;return {set:true,cadenceM:a.cadenceM,label:CAD[a.cadenceM],since,dueInDays:due,status:due<0?'overdue':due<=10?'soon':'ontrack',overdueDays:due<0?-due:0};}
 function checkinAlerts(){return vAccounts().filter(a=>{const cs=checkinState(a);return cs&&cs.set&&cs.status==='overdue'}).map(a=>{const cs=checkinState(a);return {acctId:a.id,carrier:a.name,line:'Relationship check-in',cond:cs.label+' check-in overdue',dur:cs.overdueDays+' days past due · '+a.owner,sev:'warn',rs:'rs-ac',ic:'cal',cat:'stewardship',owner:a.owner};});}
 function allAttention(){return vAttention().concat(checkinAlerts());}
+function clientNeedsAttention(a){const won=LINES.filter(l=>l.accountId===a.id&&l.stage==='won');const cs=checkinState(a);const d=lmcDays(a);return won.some(l=>l.health!=='ok')||(cs&&cs.set&&cs.status==='overdue')||(d!==null&&d>60);}
 function openCadence(id){const a=ACCOUNTS.find(x=>x.id===id);if(!a)return;const sug=suggestCadence(a),cur=a.cadenceM||sug,lines=LINES.filter(l=>l.accountId===a.id).length;
   openModal(`<div class="modal-head"><span class="modal-title">Check-in cadence · ${esc(a.name)}</span><button class="modal-close" onclick="closeModal()">${ICON('x')}</button></div>
   <div class="modal-body">
@@ -983,9 +996,25 @@ function screenDashboard(){
     </div>`;
 
   // Sales Rep → My Work is the hero (their day, up top). Manager → keeps Attention as hero (Mark's order) with a slim work marker lifted to the top.
+  const active=vAccounts().filter(a=>a.rs==='active-client');
+  const needsAttn=active.filter(clientNeedsAttention).length;
+  const coldN=vAccounts().filter(a=>{const d=lmcDays(a);return d===null||d>60}).length;
+  const inTrialN=active.filter(a=>{const ts=trialState(a);return ts&&ts.inTrial}).length;
+  const openPursuitsN=vLines().filter(l=>l.stage!=='won').length;
+  const companyStatus=`<div>
+    <div class="sec-lbl">${ICON('building','ic')} State of the book — where we are right now</div>
+    <div class="cstat-grid">
+      <div class="cstat" onclick="go('accounts','active-client')"><div class="cstat-v">${active.length}</div><div class="cstat-l">Active Clients</div></div>
+      <div class="cstat crit" onclick="go('accounts','active-client')"><div class="cstat-v">${needsAttn}</div><div class="cstat-l">Need Attention</div></div>
+      <div class="cstat ok" onclick="go('accounts','active-client')"><div class="cstat-v">${active.length-needsAttn}</div><div class="cstat-l">On Track</div></div>
+      <div class="cstat warn" onclick="go('gonecold')"><div class="cstat-v">${coldN}</div><div class="cstat-l">Gone Cold</div></div>
+      <div class="cstat info" onclick="go('accounts','active-client')"><div class="cstat-v">${inTrialN}</div><div class="cstat-l">In Trial</div></div>
+      <div class="cstat purple" onclick="go('pursuits')"><div class="cstat-v">${openPursuitsN}</div><div class="cstat-l">Open Pursuits</div></div>
+    </div>
+  </div>`;
   const body = ROLE==='sales'
     ? [myWorkHero, focusBlock, attentionBlock, portfolioBlock, risksBlock]
-    : [workMarker, focusBlock, attentionBlock, myWorkSection, portfolioBlock, risksBlock];
+    : [companyStatus, workMarker, focusBlock, attentionBlock, myWorkSection, portfolioBlock, risksBlock];
 
   return `
   <div class="page-hdr">
